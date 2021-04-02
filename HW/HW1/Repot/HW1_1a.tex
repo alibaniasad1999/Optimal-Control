@@ -1,0 +1,41 @@
+$z = f(x, y) = y\sin(x+y)-x\sin(x-y)$ \\
+Gradient of f(x, y):
+$$\vec{\nabla} f = \begin{bmatrix}
+	\frac{\partial f}{\partial x} \\[6pt]
+	\frac{\partial f}{\partial y}
+\end{bmatrix} $$
+$$\vec{\nabla} f = \begin{bmatrix}
+	y \cos(x + y) - \sin(x - y) - x  \cos(x - y) \\
+	y  \cos(x + y) + \sin(x + y) + x  \cos(x - y)
+\end{bmatrix} $$
+
+non linear equations with two unknowns. We use MATLAB to solve this equations. MATLAB file is attached.
+\begin{table}[h]
+				\caption {Answers} \label{ans} 
+	\begin{center}
+		\begin{tabular}{| l | l |}
+			\hline
+			x & y\\ \hline
+			-3.41877 & -1.82764 \\ \hline
+			-2.88904 & 1.84693 \\ \hline
+			-2.02875 & 0.00000 \\ \hline
+			-1.84693 & -2.88904 \\ \hline
+			-1.82764 & 3.41877 \\ \hline
+			-1.75560 & 0.36547 \\  \hline
+			-0.36547 & -1.7556 \\ \hline
+			0.00000 & -2.02875 \\ \hline
+			0.00000 & 0.00000 \\ \hline
+			0.00000 & 2.02875 \\ \hline
+			0.36547 & 1.7556 \\ \hline
+			1.75560 & -0.36547 \\ \hline
+			1.82764 & -3.41877 \\ \hline
+			1.84693 & 2.88904 \\ \hline
+			2.02875 & 0.00000 \\ \hline
+			2.88904 & -1.84693 \\ \hline
+			3.41877 & 1.82764 \\ \hline
+		\end{tabular}
+	\end{center}
+\end{table}
+Answers are provided in table \ref{ans}
+
+
