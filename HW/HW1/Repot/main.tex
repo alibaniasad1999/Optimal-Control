@@ -19,16 +19,10 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass[
-	12pt, % Default font size, values between 10pt-12pt are allowed
-	%letterpaper, % Uncomment for US letter paper size
-	%spanish, % Uncomment for Spanish
-]{fphw}
+\documentclass[12]{fphw}
 
 % Template-specific packages
 \usepackage[utf8]{inputenc} % Required for inputting international characters
-\usepackage[T1]{fontenc} % Output font encoding for international characters
-\usepackage{mathpazo} % Use the Palatino font
 
 \usepackage{graphicx} % Required for including images
 
@@ -36,8 +30,8 @@
 
 \usepackage{listings} % Required for insertion of code
 
-\usepackage{enumerate} % To modify the enumerate environment
 \usepackage{fullpage,enumitem,amsmath,amssymb,graphicx}
+\usepackage{pdfpages}
 
 
 %----------------------------------------------------------------------------------------
@@ -65,7 +59,7 @@
 
 \begin{enumerate}[label=(\alph*)]
 	\item 
-	\input{HW1_1a}
+	\input{Q1/HW1_1a}
 	\item (your solution)
 \end{enumerate}
 
