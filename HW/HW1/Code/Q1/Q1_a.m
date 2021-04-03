@@ -10,7 +10,6 @@ figure2 = figure('Name','Contour','NumberTitle','off');
 contour(X, Y, Z)
 xlabel('x')
 ylabel('y')
-zlabel('z')
 %% solve f Gradaian %%
 % x and y decelration %
 syms x y
@@ -99,7 +98,6 @@ figure4 = figure('Name','Contour With Point','NumberTitle','off');
 contour(X, Y, Z)
 xlabel('x')
 ylabel('y')
-zlabel('z')
 hold;
 for i = 1:length(x)
     plot(x(i), y(i),'.r','markersize',10);
