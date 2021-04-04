@@ -1,0 +1,35 @@
+$z = f(x_1, x_2, x_3) = x_1^2 + x_1x_2 - 4x_2^2-x_3^2 + 3x_2x_3$ \\
+Gradient of $f(x_1, x_2, x_3)$:
+$$\vec{\nabla} f = \dfrac{\partial f}{\partial \vec{X}}= \begin{bmatrix}
+	\dfrac{\partial f}{\partial x_1} \\[8pt]
+	\dfrac{\partial f}{\partial x_2} \\[8pt]
+	\dfrac{\partial f}{\partial x_3} \\
+\end{bmatrix} $$
+$$\vec{\nabla} f =   \begin{bmatrix}
+	2x_1 + x_2 \\
+	x_1 -8x_2 + 3x_3 \\
+	3x_2 - 2x_3
+\end{bmatrix}  = \vec{0}$$
+Three linear equations with Three unknowns.
+$$	2x_1 + x_2 = 0 $$
+$$x_1 -8x_2 + 3x_3 = 0$$
+$$3x_2 - 2x_3 = 0 $$
+Answers is $x_1 = x_2 = x_3 = 0$
+Hessian matrix:
+$$H = \dfrac{\partial^2 f}{\partial \vec{X}^2} = \begin{bmatrix}
+	\dfrac{\partial^2 f}{\partial x_!^2} & \dfrac{\partial^2 f}{\partial x_1x_2} & \dfrac{\partial^2 f}{\partial x_1x_3} \\[8pt]
+	\dfrac{\partial^2 f}{\partial x_2x_1}  & \dfrac{\partial f}{\partial x_2^2} & \dfrac{\partial^2 f}{\partial x_2x_3}  \\[8pt]
+		\dfrac{\partial^2 f}{\partial x_3x_1}  & \dfrac{\partial f}{\partial x_3x_2} & \dfrac{\partial^2 f}{\partial x_3^2} 
+\end{bmatrix} $$
+$$H = \begin{bmatrix}
+	2 & 1 & 0 \\
+	1 & -8 & 3 \\
+	0 & 3 & -2
+\end{bmatrix}$$
+All Hessian eigenvalues are:
+$$eig(H) = \begin{bmatrix}
+	-9.3182  \\
+	-0.8077 \\
+	2.1259
+\end{bmatrix}$$
+So $(0, 0, 0)$ is saddle point.
