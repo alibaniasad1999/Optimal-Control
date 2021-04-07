@@ -15,8 +15,11 @@ r = sqrt(f);
 rx = [0, sol_x];
 ry = [0, sol_y];
 rz = [0, sol_z];
-[X,Y] = meshgrid([-4:.001:4]);
+[X, Y] = meshgrid(-1:.1:1);
 Z = sin(X) + cos(Y);
+[RX, RY] = meshgrid(-0.5787224241179413703304116508523:.1:0.5787224241179413703304116508523);
+RZ = sin(RX) + cos(RY);
 plot(rx, ry)
 hold;
 contour(X, Y, Z)
+contour(RX, RY, RZ)

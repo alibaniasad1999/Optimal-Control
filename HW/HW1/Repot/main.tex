@@ -29,7 +29,10 @@
 \usepackage{fullpage,enumitem,amsmath,amssymb,graphicx}
 \usepackage{pdfpages}
 \usepackage{amsmath} 
-
+% for table
+\newcommand\Tstrut{\rule{0pt}{2.6ex}}       % "top" strut
+\newcommand\Bstrut{\rule[-0.9ex]{0pt}{0pt}} % "bottom" strut
+\newcommand{\TBstrut}{\Tstrut\Bstrut} % top&bottom struts
 %----------------------------------------------------------------------------------------
 %	ASSIGNMENT INFORMATION
 %----------------------------------------------------------------------------------------
@@ -69,5 +72,15 @@
 \begin{enumerate}[label=(\alph*)]
 	\item 
 	\input{Q2/HW1_2a}
+	\item 
+	\input{Q2/HW1_2b}
+\end{enumerate}
+
+
+\newpage
+\section*{Problem 3}
+\input{Q3/HW1_3base}
+\begin{enumerate}[label=(\alph*)]
+	\item 
 \end{enumerate}
 \end{document}
