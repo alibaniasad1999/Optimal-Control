@@ -1,0 +1,34 @@
+Direct Substitution:
+
+
+
+$f(x_1, x_2, y_1, y_2) = (x_1- x_2)^2 + (y_1 - y_2)^2 \xrightarrow{y_1 = x_1^2, \quad y_2 = x_2-1} f(x_1, x_2) = (x_1- x_2)^2 + (x_1^2 - (x_2-1)^2)^2$
+$$f(x_1, x_2) = x_1^4 - 2x_1^2x_2^2 + 4x_1^2x_2 - x_1^2 - 2x_1x_2 + x_2^4 - 4x_2^3 + 7x_2^2 - 4x_2 + 1$$
+
+
+Gradient of $f(x_1, x_2)$:
+$$\vec{\nabla} f = \begin{bmatrix}
+	\dfrac{\partial f}{\partial x_1} \\[6pt]
+	\dfrac{\partial f}{\partial x_2}
+\end{bmatrix} $$
+$$\vec{\nabla} f = \begin{bmatrix}
+	4x_1^3 - 4x_1x_2^2 + 8x_1x_2 - 2x_1 - 2x_2 \\
+	- 4x_1^2x_2 + 4x_1^2 - 2x_1 + 4x_2^3 - 12x_2^2 + 14x_2 - 4
+\end{bmatrix} $$
+Two nonlinear equations with two unknowns. We use MATLAB to solve this equations. MATLAB file (Q3\_a.m) is attached.
+$$	4x_1^3 - 4x_1x_2^2 + 8x_1x_2 - 2x_1 - 2x_2 =  0 $$
+$$- 4x_1^2x_2 + 4x_1^2 - 2x_1 + 4x_2^3 - 12x_2^2 + 14x_2 - 4 = 0$$
+$x_1 = \dfrac{1}{2} \to y_1 = \dfrac{1}{4}, \quad x_2 = \dfrac{7}{8} \to y_2 = \dfrac{1}{8}$
+\begin{table}[H]
+	\caption {Answers} \label{ans} 
+	\begin{center}
+		\begin{tabular}{| l | l | l | l |}
+			\hline
+			$x_1$ & $y_1$ & $x_2$ & $y_2$ \TBstrut \\
+			\hline
+			$0.5$ & $0.25$ & $0.875$ & $0.125$ \Tstrut\\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
