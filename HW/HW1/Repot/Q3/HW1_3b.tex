@@ -1,0 +1,45 @@
+Lagrange multipliers:
+
+
+$\min \mathcal{L}(\vec{X}, \vec{\lambda}) = f(\vec{X}) +\vec{\lambda}^T \vec{g}$
+necessary condition:
+$$\vec{\nabla} \mathcal{L}  =  \begin{bmatrix}
+	 \vec{\nabla}_{\vec{X}} \mathcal{L} \\[6pt]
+	 \vec{\nabla}_{\vec{\lambda}} \mathcal{L}
+\end{bmatrix} = \begin{bmatrix}
+\dfrac{\partial \mathcal{L}}{\partial \vec{X}} \\[10pt]
+\dfrac{\partial \mathcal{L}}{\partial \vec{\lambda}}
+\end{bmatrix} = \vec{0}$$
+$f(\vec{X}) = (x_1- x_2)^2 + (y_1 - y_2)^2, \quad  g(\vec{X}) = \begin{bmatrix}
+y_1-x_1^2 &
+y_2-x_2+1
+\end{bmatrix} = \vec{0}$
+$$\min \mathcal{L}(\vec{X}, \vec{\lambda}) = (x_1- x_2)^2 + (y_1 - y_2)^2 + \lambda_1(y_1-x_1^2) + \lambda_2(y_2-x_2+1)$$
+$$\vec{\nabla} \mathcal{L} = \begin{bmatrix}
+	\dfrac{\partial \mathcal{L}}{\partial x_1} \\[10pt]
+	\dfrac{\partial \mathcal{L}}{\partial y_1} \\[10pt]
+	\dfrac{\partial \mathcal{L}}{\partial x_2} \\[10pt]
+	\dfrac{\partial \mathcal{L}}{\partial y_2} \\[10pt]
+	\dfrac{\partial \mathcal{L}}{\partial \lambda_1} \\[10pt]
+	\dfrac{\partial \mathcal{L}}{\partial \lambda_2} 
+\end{bmatrix}  =  \begin{bmatrix}
+2x_1 - 2x_2 - 2\lambda_1x_1 \\
+2y_1 - 2y_2 + \lambda_1 \\
+2x_2 - 2x_1 - \lambda_2 \\
+2y_2 - y_1 + \lambda_2 \\
+y_1-x_1^2\\
+y_2-x_2+1
+\end{bmatrix} $$
+Six nonlinear equations with six unknowns. We use MATLAB to solve this equations. MATLAB file (Q3\_b.m) is attached.
+\begin{table}[H]
+	\caption {Answers} \label{ans} 
+	\begin{center}
+		\begin{tabular}{| l | l | l | l | l | l | l |}
+			\hline
+			$x_1$ & $y_1$ & $x_2$ & $y_2$ &  $\lambda_1$&  $\lambda_2$ \TBstrut \\
+			\hline
+			$0.5$ & $0.25$ & $0.875$ & $-0.125$ & -0.75& 0.75 \Tstrut\\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{table}
