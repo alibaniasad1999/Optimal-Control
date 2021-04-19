@@ -1,0 +1,14 @@
+Potential function:
+
+
+$$dP = xg_0dm = xg_0\rho_s ds = xg_0\rho_s\sqrt{1+\dot{x}^2}dt
+\to dP = g_0\rho_sx\sqrt{1+\dot{x}^2} dt\to P = \int_{t_0}^{t_f} g_0\rho_sx\sqrt{1+\dot{x}^2}dt
+$$
+$$P = g_0\rho_s\int_{t_0}^{t_f} x\sqrt{1+\dot{x}^2}dt$$
+$$\min J(\dot{x}, x) = \int_{t_0}^{t_f} x\sqrt{1+\dot{x}^2}dt$$
+length of rope is L so problem subject to:
+$$z(t) = \int_{t_0}^{t_f} \sqrt{1+\dot{x}^2}dt = L$$ 
+$z(t)$ is new state:
+$$z(t) = \int_{t_0}^{t_f} \sqrt{1+\dot{x}^2}dt\to \dfrac{dz}{dt} =\sqrt{1+\dot{x}^2} $$
+New differential constraints:
+$$\dfrac{dz}{dt} - \sqrt{1+\dot{x}^2}  = 0$$
