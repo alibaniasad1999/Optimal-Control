@@ -12,3 +12,28 @@ $z(t)$ is new state:
 $$z(t) = \int_{t_0}^{t_f} \sqrt{1+\dot{x}^2}dt\to \dfrac{dz}{dt} =\sqrt{1+\dot{x}^2} $$
 New differential constraints:
 $$\dfrac{dz}{dt} - \sqrt{1+\dot{x}^2}  = 0$$
+$$g_a(x, \dot x, z, t, \lambda) = g_a(x, \dot x, t) + \lambda(t)f(x, \dot x, z, t) $$
+$$g_a = x\sqrt{1+\dot{x}^2} + \lambda (\dot z - \sqrt{1+\dot{x}^2})$$
+Euler–Lagrange equation:
+$$\dfrac{\partial g_a}{\partial x} - \dfrac{d}{dt}\dfrac{\partial g_a}{\partial \dot x} = 0$$
+$$\dfrac{\partial g_a}{\partial \lambda} - \dfrac{d}{dt}\dfrac{\partial g_a}{\partial \dot \lambda} = 0 \to 
+\dot z -  \sqrt{1+\dot{x}^2} = 0
+$$
+$$\dfrac{\partial g_a}{\partial z} - \dfrac{d}{dt}\dfrac{\partial g_a}{\partial \dot z} = 0 \to \lambda = C$$
+$\lambda$ is constant.
+$$\dfrac{\partial g_a}{\partial x} =  \sqrt{1+\dot{x}^2}d$$
+$$g_{a_{\dot{x}}} = \dfrac{\partial g_a}{\partial \dot x} = \dfrac{x\dot x}{\sqrt{1+\dot x^2}}  - \dfrac{\lambda \dot x}{\sqrt{1+\dot x^2}} $$
+$$\dfrac{d}{dt}\dfrac{\partial g_a}{\partial \dot x} = \dfrac{\partial g_{a_{\dot{x}}}}{\partial  t}+
+\dfrac{\partial g_{a_{\dot{x}}}}{\partial \dot x}\dot x+
+\dfrac{\partial g_{a_{\dot{x}}}}{\partial \ddot x} \ddot x
+$$
+$$\dfrac{\partial g_{a_{\dot{x}}}}{\partial t} = 0$$
+$$\dfrac{\partial g_{a_{\dot{x}}}}{\partial x} =  \dfrac{ \dot x^2}{\sqrt{1+\dot x^2}}$$
+$$\dfrac{\partial g_{a_{\dot{x}}}}{\partial \dot x} = (\dfrac{x - \lambda }{\sqrt{1+\dot x^2}}
+- \dfrac{x\dot x^2 - \lambda \dot x^2}{\sqrt{(1+\dot x^2)^3}})\ddot x
+$$
+
+
+$$t_0 = 0,\quad t_f =t_f,\quad x(t_0) = 0,\quad x(t_f) = 0,\quad z(t_0) = 0,\quad z(t_f) = L$$
+
+
