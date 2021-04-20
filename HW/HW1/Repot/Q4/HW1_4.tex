@@ -32,8 +32,19 @@ $$\dfrac{\partial g_{a_{\dot{x}}}}{\partial x} =  \dfrac{ \dot x^2}{\sqrt{1+\dot
 $$\dfrac{\partial g_{a_{\dot{x}}}}{\partial \dot x} = (\dfrac{x - \lambda }{\sqrt{1+\dot x^2}}
 - \dfrac{x\dot x^2 - \lambda \dot x^2}{\sqrt{(1+\dot x^2)^3}})\ddot x
 $$
-
-
+g is a function of $x$ and $\dot x$ so:
+$$g - \dot x g_{\dot x} = a$$
+a is constant.
+$$\dfrac{x-\lambda}{\sqrt{1+\dot x^2}} = a \to dt = \dfrac{adx}{\sqrt{(x-\lambda)^2-a^2}}$$
+$$x(t) = \lambda + a\cosh(\dfrac{t-b}{a})$$
+Boundary conditions:
 $$t_0 = 0,\quad t_f =t_f,\quad x(t_0) = 0,\quad x(t_f) = 0,\quad z(t_0) = 0,\quad z(t_f) = L$$
+$$\int_{t_0}^{t_f} \sqrt{1 + \dot x^2} =\int_{0}^{t_f}  \cosh(\dfrac{t-b}{a}) = L$$
+\begin{align}
+a \sinh(\dfrac{t_f-b}{a}) &= L\\
+\lambda + a\cosh(\dfrac{-b}{a} )  & = 0\\
+\lambda + a\cosh(\dfrac{t_f- b}{a} )  & = 0
+\end{align}
+Three nonlinear equations with Three unknowns.
 
 
