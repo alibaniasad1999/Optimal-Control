@@ -1,0 +1,42 @@
+minimize:
+$$\int_0^1( x^2(t)+\dot x^2(t))dt$$
+Subjected to:
+$$\int_0^1 x(t)dt = 1$$
+$z(t)$ is new state:
+$$z(t) = \int_{0}^{t} x(t)dt \to \dfrac{dz}{dt} = x(t) $$
+New $g$ function:
+$$g_a(x, \dot x, \dot z, \lambda, t) = g_a(x, \dot x, t) + \lambda(t)f(x, \dot z, t) $$
+Euler–Lagrange equation:
+$$\dfrac{\partial g_a}{\partial x} - \dfrac{d}{dt}\dfrac{\partial g_a}{\partial \dot x} = 0$$
+$$\dfrac{\partial g_a}{\partial \lambda} - \dfrac{d}{dt}\dfrac{\partial g_a}{\partial \dot \lambda} = 0 \to 
+\dot z - x(t) = 0
+$$
+$$\dfrac{\partial g_a}{\partial z} - \dfrac{d}{dt}\dfrac{\partial g_a}{\partial \dot z} = 0 \to \lambda = C$$
+$\lambda$ is constant.
+$$\dfrac{\partial g_a}{\partial x} =  2x - \lambda$$
+$$g_{a_{\dot{x}}} = 2 \dot x$$
+$$\dfrac{d}{dt}\dfrac{\partial g_a}{\partial \dot x} = \dfrac{\partial g_{a_{\dot{x}}}}{\partial  t}+
+\dfrac{\partial g_{a_{\dot{x}}}}{\partial  x}\dot x+
+\dfrac{\partial g_{a_{\dot{x}}}}{\partial \dot x}\ddot x+
+\dfrac{\partial g_{a_{\dot{x}}}}{\partial \ddot x} \dddot x
+= 2\ddot x
+$$
+Euler–Lagrange equation:
+$$
+\ddot x -2x+\lambda = 0
+$$
+Above differential equation solve with MATLAB(Q5\_5e.m).
+Answer:
+$$ x(t) = C_1\exp(\sqrt{2}t) + C_2\exp(-\sqrt{2}t) + \lambda/2 $$
+Boundary conditions:
+$$\int_0^1 x(t)dt = 1 \to \left.\dfrac{\sqrt{2}}{2}C_1\exp(\sqrt{2}t) -
+\dfrac{\sqrt{2}}{2} C_2\exp(-\sqrt{2}t) + \lambda t/2 \right\vert_0^1$$
+$$x (0) = C_1+C_2+\lambda/2 = 0$$
+$$ x(1) = C_1\exp(\sqrt{2}) + C_2\exp(-\sqrt{2}) + \lambda/2 = 1 $$
+There is There nonlinear equation and there Unknowns. Above differential equation solve with MATLAB(Q5\_5e.m).
+
+
+Answers:
+$$C_1 = \dfrac{1}{\exp(\sqrt{2}) - \exp(-\sqrt{2})}, \quad C_2 = \dfrac{-1}{\exp(\sqrt{2}) - \exp(-\sqrt{2})}, \quad \lambda = 0$$
+$$ x(t) = \dfrac{\exp(\sqrt{2}t)}{\exp(\sqrt{2}) - \exp(-\sqrt{2})}
++  \dfrac{-\exp(-\sqrt{2}t)}{\exp(\sqrt{2}) - \exp(-\sqrt{2})} $$

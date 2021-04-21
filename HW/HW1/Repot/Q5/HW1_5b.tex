@@ -1,0 +1,26 @@
+$g = t\dot x^2 (t) + \ln(\dot x^2(t))$
+
+
+$g$ is a function of $\dot x$ and $t$ so:
+$$\dfrac{dg_{\dot x}}{dt} = 0 \to g_{\dot x} = C $$
+$C$ is constant.
+$$g_{\dot x} = 2t\dot x + \dfrac{2}{\dot x}\to  \dot x^2 + \dot x (\dfrac{2-C}{2t})=0$$
+Above equation solved with MATLAB(Q5\_d.m).
+
+
+
+Answer:
+
+
+There is two answer for above differential equation:
+\begin{itemize}
+	\item first
+	$$x(t) = C_1$$
+	\item second
+	$$C_2 + \ln(t)(C/2 - 1)$$
+\end{itemize}
+
+Boundary conditions:
+$$x(0) = 1, \quad x(2) = 2$$
+With those boundary conditions there is no acceptable answer.
+

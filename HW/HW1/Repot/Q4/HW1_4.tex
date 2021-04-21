@@ -7,12 +7,12 @@ $$
 $$P = g_0\rho_s\int_{t_0}^{t_f} x\sqrt{1+\dot{x}^2}dt$$
 $$\min J(\dot{x}, x) = \int_{t_0}^{t_f} x\sqrt{1+\dot{x}^2}dt$$
 length of rope is L so problem subject to:
-$$z(t) = \int_{t_0}^{t_f} \sqrt{1+\dot{x}^2}dt = L$$ 
+$$z(t) = \int_{t_0}^{t} \sqrt{1+\dot{x}^2}dt = L$$ 
 $z(t)$ is new state:
 $$z(t) = \int_{t_0}^{t_f} \sqrt{1+\dot{x}^2}dt\to \dfrac{dz}{dt} =\sqrt{1+\dot{x}^2} $$
 New differential constraints:
 $$\dfrac{dz}{dt} - \sqrt{1+\dot{x}^2}  = 0$$
-$$g_a(x, \dot x, z, t, \lambda) = g_a(x, \dot x, t) + \lambda(t)f(x, \dot x, z, t) $$
+$$g_a(x, \dot x, \dot z, t, \lambda) = g_a(x, \dot x, t) + \lambda(t)f(x, \dot x, \dot z, t) $$
 $$g_a = x\sqrt{1+\dot{x}^2} + \lambda (\dot z - \sqrt{1+\dot{x}^2})$$
 Euler–Lagrange equation:
 $$\dfrac{\partial g_a}{\partial x} - \dfrac{d}{dt}\dfrac{\partial g_a}{\partial \dot x} = 0$$
@@ -24,13 +24,9 @@ $\lambda$ is constant.
 $$\dfrac{\partial g_a}{\partial x} =  \sqrt{1+\dot{x}^2}$$
 $$g_{a_{\dot{x}}} = \dfrac{\partial g_a}{\partial \dot x} = \dfrac{x\dot x}{\sqrt{1+\dot x^2}}  - \dfrac{\lambda \dot x}{\sqrt{1+\dot x^2}} $$
 $$\dfrac{d}{dt}\dfrac{\partial g_a}{\partial \dot x} = \dfrac{\partial g_{a_{\dot{x}}}}{\partial  t}+
-\dfrac{\partial g_{a_{\dot{x}}}}{\partial \dot x}\dot x+
-\dfrac{\partial g_{a_{\dot{x}}}}{\partial \ddot x} \ddot x
-$$
-$$\dfrac{\partial g_{a_{\dot{x}}}}{\partial t} = 0$$
-$$\dfrac{\partial g_{a_{\dot{x}}}}{\partial x} =  \dfrac{ \dot x^2}{\sqrt{1+\dot x^2}}$$
-$$\dfrac{\partial g_{a_{\dot{x}}}}{\partial \dot x} = (\dfrac{x - \lambda }{\sqrt{1+\dot x^2}}
-- \dfrac{x\dot x^2 - \lambda \dot x^2}{\sqrt{(1+\dot x^2)^3}})\ddot x
+\dfrac{\partial g_{a_{\dot{x}}}}{\partial  x}\dot x+
+\dfrac{\partial g_{a_{\dot{x}}}}{\partial \dot x}\ddot x+
+\dfrac{\partial g_{a_{\dot{x}}}}{\partial \ddot x} \dddot x
 $$
 g is a function of $x$ and $\dot x$ so:
 $$g - \dot x g_{\dot x} = a$$
