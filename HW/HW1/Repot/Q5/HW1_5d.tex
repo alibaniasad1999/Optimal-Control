@@ -1,0 +1,40 @@
+$g(x, \dot x, \ddot x) = x^2 + 2\dot x^2 + \ddot x$
+Euler–Lagrange equation:
+$$\dfrac{\partial g}{\partial x} - \dfrac{d}{dt}\dfrac{\partial g}{\partial \dot x} + 
+\dfrac{d^2}{dt^2}\dfrac{\partial g}{\partial \ddot x} = 0
+$$
+$$\dfrac{\partial g}{\partial x} = 2x, \quad 
+\dfrac{\partial g}{\partial \dot x} = 4\dot x, \quad 
+\dfrac{\partial g}{\partial \ddot x} = 2 \ddot{x}
+$$
+In below equation we use this syntax:
+$$\dfrac{\partial g}{\partial \ddot x} = g_{\dot x}, \quad
+\dfrac{\partial g}{\partial \ddot x} = g_{\ddot x}
+$$
+$$\dfrac{dg_{\dot x}}{dt} = \dfrac{\partial g_{\dot x}}{\partial t} + 
+\dfrac{\partial g_{\dot x}}{\partial x} \dot x +
+\dfrac{\partial g_{\dot x}}{\partial \dot x} \ddot x +
+\dfrac{\partial g_{\dot x}}{\partial \ddot x} \dddot x = 4 \ddot x
+$$
+$$\dfrac{dg_{\ddot x}}{dt} = \dfrac{\partial g_{\ddot x}}{\partial t} + 
+\dfrac{\partial g_{\ddot x}}{\partial x} \dot x +
+\dfrac{\partial g_{\ddot x}}{\partial \dot x} \ddot x +
+\dfrac{\partial g_{\ddot x}}{\partial \ddot x} \dddot x = 2 \dddot x
+$$
+$$ \dfrac{d^2}{dt^2}\dfrac{\partial g}{\partial \ddot x} = \dfrac{\partial (\dfrac{dg_{\ddot x}}{dt})}{\partial t} + 
+\dfrac{\partial (\dfrac{dg_{\ddot x}}{dt})}{\partial  x} \dot x +
+\dfrac{\partial (\dfrac{dg_{\ddot x}}{dt})}{\partial \dot x} \ddot x +
+\dfrac{\partial (\dfrac{dg_{\ddot x}}{dt})}{\partial \ddot x} \dddot x +
+\dfrac{\partial (\dfrac{dg_{\ddot x}}{dt})}{\partial \dddot x} \ddddot x
+ = 2 \ddddot x
+$$
+Euler–Lagrange equation:
+$$2 \ddddot x - 4\ddot x + 2 x = 0 \to \ddddot x - 2\ddot x +  x = 0 $$
+Above differential equation solve with MATLAB(Q5\_5d.m).
+Answer:
+$$x(t) = C_3\exp(t) + C_1\exp(-t) + C_2t\exp(-t) + C_4t\exp(t)$$
+$$\dot x(t) = (C_3 + C_4 + C_4t)\exp(t) + (C_2 -C_2 -C_2t)\exp(-t)$$
+Boundary conditions:
+$$x(0) = 1, \quad \dot x(0) = 2, \quad x(\infty) = \dot x(\infty) = 0 $$
+$C_1 + C_3  = 1, \quad C_4 = C_3  = 0,\quad C_2 - C_1 = 2 $
+$$x(t) =  \exp(-t) + 3t\exp(-t) $$
