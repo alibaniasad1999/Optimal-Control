@@ -22,6 +22,7 @@ eq = [eq1, eq2];
 ans_counter = 1;
 sol_x = zeros(1);
 sol_y = zeros(1);
+H_ans = zeros(1);
 for i = -3:3
     for j = -3:3
         [ans_x, ans_y] = vpasolve(eq, [x,y], [i; j]);
@@ -67,14 +68,11 @@ H2 = cos(x + y) - y .* sin(x + y) + cos(x - y) - x .* sin(x - y);
 H3 = cos(x + y) - y .* sin(x + y) + cos(x - y) - x .* sin(x - y);
 % d^2f/dy^2
 H4 = x .* sin(x - y) + 2 * cos(x + y) - y .* sin(x + y);
-H = [H1 H2;
-     H3 H4];
-H_ans = zeros(1, length(x));
 for i = 1:length(x)
-    h1 = -y(i) .* sin(x(i) + y(i)) - 2 * cos(x(i) - y(i)) + x(i) .* cos(x(i) -y(i));
-    h2 = cos(x(i) + y(i)) - y(i) .* sin(x(i) + y(i)) + cos(x(i) - y(i)) - x(i) .* sin(x(i) - y(i));
-    h3 = cos(x(i) + y(i)) - y(i) .* sin(x(i) + y(i)) + cos(x(i) - y(i)) - x(i) .* sin(x(i) - y(i));
-    h4 = x(i) .* sin(x(i) - y(i)) + 2 * cos(x(i) + y(i)) - y(i) .* sin(x(i) + y(i));
+    h1 = -y(i) * sin(x(i) + y(i)) - 2 * cos(x(i) - y(i)) + x(i) * cos(x(i) -y(i));
+    h2 = cos(x(i) + y(i)) - y(i) * sin(x(i) + y(i)) + cos(x(i) - y(i)) - x(i) * sin(x(i) - y(i));
+    h3 = cos(x(i) + y(i)) - y(i) * sin(x(i) + y(i)) + cos(x(i) - y(i)) - x(i) * sin(x(i) - y(i));
+    h4 = x(i) * sin(x(i) - y(i)) + 2 * cos(x(i) + y(i)) - y(i) * sin(x(i) + y(i));
     temp_H = [h1 h2;
               h3 h4];
     d = eig(temp_H);
