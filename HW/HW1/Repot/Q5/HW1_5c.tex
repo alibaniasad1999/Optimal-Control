@@ -1,1 +1,41 @@
-kir
+$g = \dot x_1^2 + \dot x_2^2 -2x_1x_2$
+Euler–Lagrange equation:
+$$\dfrac{\partial g_{\vec{x}}}{\partial \vec{x}} - \dfrac{d}{dt}\dfrac{\partial g_{\vec{x}}}{\partial  \vec{\dot x}} = 0$$
+$$ \begin{bmatrix}
+	\dfrac{\partial g}{\partial x_1} \\[10pt]
+	\dfrac{\partial g}{\partial x_2} \\[10pt]
+\end{bmatrix}  - \frac{d}{dt} \begin{bmatrix}
+\dfrac{\partial g}{\partial \dot{x_1}} \\[10pt]
+\dfrac{\partial g}{\partial \dot{x_2}} \\[10pt]
+\end{bmatrix} = 
+\begin{bmatrix}
+	-2x_2 + 2\ddot x_1 \\[10pt]
+	-2x_1 + 2\ddot x_2 \\[10pt]
+\end{bmatrix} = 0$$
+We can find out from above equation that $x_2 = \ddddot x_2$ and this equation solve in MATLAB(Q5\_c.m).
+$$
+x_1(t) = C_3\cos(t) - C_2\exp(t) - C_4\sin(t) - C_1\exp(-t)
+$$
+$$x_2(t) = C_3\cos(t) + C_2\exp(t) - C_4\sin(t) + C_1\exp(-t) $$
+
+On of the boundry conditions are free so we must make another equation.
+$$\left. g_{\dot x_2} \right \vert_{t_f} = 0 \to \dot x_2(t_f) = 0$$
+Boundary conditions:
+$$x_1(0) = x_2(0) = 1, \quad x_1(\pi) = 4, \quad \dot x_2(\pi) = 0$$
+$C_3 - C_2 - C_1 = 1, \quad C_3 + C_2 + C_1 = 1, \quad -C_3 -C_2\exp(\pi) - C_1\exp(-\pi) = 4  $
+
+
+
+$C_3 = 1, \quad C_1 = -C_2 = \dfrac{5}{\exp(\pi) - \exp(-\pi)}$
+
+
+
+$-C_1\exp(-\pi) + C_2\exp(\pi) + C_4 = 0 \to C_4 = \dfrac{10(\exp(\pi) + \exp(-\pi))}{\exp(\pi) - \exp(-\pi)}$
+
+
+
+
+$$x_1(t) = \cos(t) - \dfrac{5}{\exp(-\pi) - \exp(\pi)}\exp(t) - \dfrac{10(\exp(\pi) + \exp(-\pi))}{\exp(\pi) - \exp(-\pi)} \sin(t) - \dfrac{5}{\exp(\pi) - \exp(-\pi)}\exp(-t)
+$$
+$$x_2(t) = \cos(t) + \dfrac{5}{\exp(-\pi) - \exp(\pi)}\exp(t) - \dfrac{10(\exp(\pi) + \exp(-\pi))}{\exp(\pi) - \exp(-\pi)} \sin(t) + \dfrac{5}{\exp(\pi) - \exp(-\pi)}\exp(-t)
+$$
