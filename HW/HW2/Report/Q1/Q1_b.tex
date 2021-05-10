@@ -1,3 +1,14 @@
 $$J = \int_0^{100}-x(t)dt$$
 Subjected to:
 $$\int_0^{100}u(t)dt = K\text{(a known constant)}$$
+$z(t)$ is new state:
+$$z(t) = \int_0^{t}u(t)dt \to \dfrac{dz}{dt} =u(t) $$
+New differential constraints:
+$$\dfrac{dz}{dt} - u(t) = 0$$
+$$g_a(x, \dot x, \dot z, t, \lambda) = g(x, \dot x, t) + \lambda(t)f(x, \dot x, \dot z, t) $$
+$$g_a = -x(t) + \lambda (\dot z (t)- u(t))$$
+$$\mathcal{H} =  g_a(\vec x(t), u(t), z(t), \lambda,  t) + {\vec{p}(t)}^Ta(\vec x(t), u(t), t)$$
+Hamiltonian matrix:
+\begin{equation} \label{HamiltonianQ1_a}
+\mathcal{H} = -x(t) + \lambda (\dot z (t)- u(t)) -0.1p(t)x(t)+p(t)u(t) + 
+\end{equation}
