@@ -1,0 +1,30 @@
+$$J = \int_0^{100}-x(t)dt$$
+Hamiltonian matrix:
+$$\mathcal{H} =  g(\vec x(t), u(t), t) + {\vec{p}(t)}^Ta(\vec x(t), u(t), t)$$
+$$\mathcal{H} = -x(t) -0.1p(t)x(t)+p(t)u(t)$$
+Euler–Lagrange equation:
+\begin{align}
+\dot{\vec{x}} &= \dfrac{\partial \mathcal{H} }{\partial \vec{p}} = a(\vec x(t), u(t), t)\\
+\dot{\vec{p}} &= -\dfrac{\partial \mathcal{H} }{\partial \vec{x}}
+\end{align}
+Now we use above equation for solve problem.
+$$-\dfrac{\partial \mathcal{H} }{\partial x} = 1 + 0.1p$$
+There is two differential equation and two unknowns.
+\begin{align}
+\dot x = -x(t) -0.1px+pu\\
+\dot p = 1 + 0.1p\label{pQ1_a}
+\end{align}
+Equation \ref{pQ1_a} solved in MATLAB(Q1\_a.m) and code attached to file.
+\begin{equation} \label{ans_pQ1_a}
+p(t) = C_1*\exp(-t/10) - 10
+\end{equation}
+Final $x(t)$ is free so:
+$$ \left .h_{\vec x} - \vec{p} = \vec{0} \right \vert_{*, t_f} \to p(t_f) = 0$$
+Use new boundry condition($p(t_f) = 0$) in equation \ref{ans_pQ1_a} to find $p$ function($p(t)$).
+$$p(100) = C_1*\exp(-100/10) - 10  = 0\to C_1 = 10\exp(10)$$
+\begin{equation} \label{fullans_pQ1_a}
+p(t) = 10\exp \left(0.1(100-t)\right)-10
+\end{equation}
+
+
+
