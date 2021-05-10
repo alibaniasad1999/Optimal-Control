@@ -1,0 +1,12 @@
+$$\ddot x(t) = -x(t) - 0.1\dot x(t) + u(t), \qquad x(0) = \dot x(0) = 1 $$
+Assume:
+$$x_1(t) = x(t), \quad x_2(t) = \dot x(t) \to a(\vec x, u, t) =
+ \begin{bmatrix}
+	\dot x_1(t)\\
+	\dot x_2(t)
+\end{bmatrix}
+= \begin{bmatrix}
+	x_2(t)\\
+	-x_1(t)- 0.1x_2(t) + u(t) 
+\end{bmatrix}  $$
+$$J = \dfrac 12 x^T(t_f)Hx(t_f) + \dfrac 12 \int_0^{t_f}\left(\alpha(x^2 + \dot x^2) + \beta u^2) \right)dt $$
