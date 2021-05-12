@@ -1,3 +1,53 @@
 $$J = -x(100)$$
 Subjected to:
 $$\int_0^{100}u(t)dt = K\text{(a known constant)}$$
+$z(t)$ is new state:
+$$z(t) = \int_0^{t}u(t)dt \to \dfrac{dz}{dt} =u(t) $$
+New differential constraints:
+$$\dfrac{dz}{dt} - u(t) = 0$$
+$$g_a(x, \dot x, \dot z, t, \lambda) = g(x, \dot x, t) + \lambda(t)f(x, \dot x, \dot z, t) $$
+$$g_a = -x(t) + \lambda (\dot z (t)- u(t))$$
+Hamiltonian matrix:
+$$\mathcal{H} =  g_a(\vec x(t), u(t), z(t), \lambda,  t) + {\vec{p}(t)}^Ta(\vec x(t), u(t), t)$$
+We assume $p_2 = \lambda$
+\begin{equation}\label{HamiltonianQ1_c}
+	\mathcal{H} = -0.1p_1(t)x(t)+p_1(t)u(t) + p_2(t)(\dot z(t)- u(t))
+\end{equation}
+$$\dot{\vec{p}} = -\dfrac{\partial \mathcal{H} }{\partial \vec x} =  \begin{bmatrix}
+	-\dfrac{\partial \mathcal{H} }{\partial x} \\[10pt]
+	-\dfrac{\partial \mathcal{H} }{\partial z} 
+\end{bmatrix} = 
+\begin{bmatrix}
+	\dot p_1 \\
+	\dot p_2
+\end{bmatrix}
+$$
+$$
+\begin{bmatrix}
+	\dot p_1 \\
+	\dot p_2
+\end{bmatrix} = \begin{bmatrix}
+	0.1p_1\\
+	0
+\end{bmatrix}
+$$
+\begin{equation}\label{pSolveQ1_c}
+	\begin{bmatrix}
+		p_1(t)\\
+		p_2(t)
+	\end{bmatrix} = 
+	\begin{bmatrix}
+		C_1\exp(t/10)\\
+		C_2
+	\end{bmatrix}
+\end{equation}
+\begin{equation}\label{pBoundryQ1_c}
+ \left .h_{\vec x} - \vec{p} = \vec{0} \right \vert_{*, t_f} \to p_1(t_f) = -1
+\end{equation}
+From equation \ref{pSolveQ1_c} and \ref{pBoundryQ1_c} we can find $p_1(t)$ function.
+$$
+p_1(100) = C_1\exp(100/10) = -1 \to C_1 = -\exp(-10)
+$$
+$$
+p_1(t) = -\exp(0.1(t-100))$$
+This problem is like section \ref{Q1_b} and have the same scenarios.
