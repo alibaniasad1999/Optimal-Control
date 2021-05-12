@@ -11,7 +11,7 @@ $$\mathcal{H} = 1 + \begin{bmatrix}
 	\dfrac{T}{M} \sin(u(t))
 \end{bmatrix}$$
 \begin{equation} \label{HamiltonianQ2_a}
-	\mathcal{H} = 1 + p_1(t)x_2(t) + p_2(t)\dfrac{T}{M}\cos(u(t)) +p_3(t)x_4(t) +p_4(t)\dfrac{T}{M}\sin(u(t))
+	\mathcal{H} = 1 + p_1(t)x_2(t) + \dfrac{T}{M}p_2(t)\cos(u(t)) +p_3(t)x_4(t) +\dfrac{T}{M}p_4(t)\sin(u(t))
 \end{equation}
 Euler–Lagrange equation:
 \begin{align}
@@ -52,6 +52,11 @@ Solution of equation \ref{diffpQ2_a} is:
 		-C_3t+C_4
 	\end{bmatrix} 
 \end{equation}
+From Euler-Lagrange equation:
+$$
+{\vec{0}} = \dfrac{\partial \mathcal{H} }{\partial \vec{u}} \to 
+p_4\cos(u) = p_2\sin(u) \to u(t) = \tan^{-1}\left(\dfrac{p_4(t)}{p_2(t)}\right)
+$$
 Boundary conditions:
 $$t_0 = 0,\quad t_f = \text{free}$$
 $$\vec{x}(0) = \begin{bmatrix}
