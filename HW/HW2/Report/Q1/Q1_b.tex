@@ -7,8 +7,53 @@ New differential constraints:
 $$\dfrac{dz}{dt} - u(t) = 0$$
 $$g_a(x, \dot x, \dot z, t, \lambda) = g(x, \dot x, t) + \lambda(t)f(x, \dot x, \dot z, t) $$
 $$g_a = -x(t) + \lambda (\dot z (t)- u(t))$$
-$$\mathcal{H} =  g_a(\vec x(t), u(t), z(t), \lambda,  t) + {\vec{p}(t)}^Ta(\vec x(t), u(t), t)$$
 Hamiltonian matrix:
-\begin{equation} \label{HamiltonianQ1_a}
-\mathcal{H} = -x(t) + \lambda (\dot z (t)- u(t)) -0.1p(t)x(t)+p(t)u(t) + 
+$$\mathcal{H} =  g_a(\vec x(t), u(t), z(t), \lambda,  t) + {\vec{p}(t)}^Ta(\vec x(t), u(t), t)$$
+We assume $p_2 = \lambda$
+\begin{equation}\label{HamiltonianQ1_b}
+\mathcal{H} = -x(t)  -0.1p_1(t)x(t)+p_1(t)u(t) + p_2(t)(\dot z(t)- u(t))
 \end{equation}
+$$\dot{\vec{p}} = -\dfrac{\partial \mathcal{H} }{\partial \vec x} =  \begin{bmatrix}
+	 -\dfrac{\partial \mathcal{H} }{\partial x} \\[10pt]
+	 -\dfrac{\partial \mathcal{H} }{\partial z} 
+\end{bmatrix} = 
+\begin{bmatrix}
+	\dot p_1 \\
+	\dot p_2
+\end{bmatrix}
+$$
+$$
+\begin{bmatrix}
+	\dot p_1 \\
+	\dot p_2
+\end{bmatrix} = \begin{bmatrix}
+ 0.1p_1+1\\
+0
+\end{bmatrix}
+$$
+Above equation solved in previous part.
+\begin{equation}\label{pSolveQ1_b}
+	\begin{bmatrix}
+		p_1(t)\\
+		p_2(t)
+	\end{bmatrix} = 
+	\begin{bmatrix}
+		10\exp \left(0.1(t-100)\right)-10\\
+		C_1
+	\end{bmatrix}
+\end{equation}
+In this part we have the same condition that described in previous in equation \ref{HConditionQ1_a}.
+From equation \ref{HamiltonianQ1_b} we calculate $\dfrac{\partial \mathcal{H}}{\partial u}$.
+$$\dfrac{\partial \mathcal{H}}{\partial u} = p_1 - p_2 = \left(10\exp \left(0.1(t-100)\right)-10\right)-C_1$$
+From equation \ref{pSolveQ1_b} we know that $C_1$ is constant.
+
+
+There is four scenario for this problem.
+\begin{enumerate}
+	\item For all the time($t_0\to t_f$) $\dfrac{\partial \mathcal{H}}{\partial u} > 0$ so $u(t) = 0$,this scenario maybe possible if $K = 0$.
+	\item For all the time($t_0\to t_f$) $\dfrac{\partial \mathcal{H}}{\partial u} < 0$ so $u(t) = M$,this scenario maybe possible if $K = M\times t_f$.
+	\item For time($t_0\to t $) $\dfrac{\partial \mathcal{H}}{\partial u} < 0$ and 
+	for time($t\to t_f $) $\dfrac{\partial \mathcal{H}}{\partial u} > 0$ so for time($t_0\to t $), $u(t) = M$ and  for time($t\to t_f$), $u(t) = 0$ and this scenario maybe possible for $0 \leq K \leq M\times t_f$.
+	\item For time($t_0\to t $) $\dfrac{\partial \mathcal{H}}{\partial u} > 0$ and 
+	for time($t\to t_f $) $\dfrac{\partial \mathcal{H}}{\partial u} < 0$ so for time($t_0\to t $), $u(t) = 0$ and  for time($t\to t_f$), $u(t) = M$ and this scenario is not possible because $p_1$ is growing by the time and $p_2$ is constant all the time.  
+\end{enumerate}
