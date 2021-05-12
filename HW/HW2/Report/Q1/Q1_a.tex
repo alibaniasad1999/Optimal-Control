@@ -18,12 +18,12 @@ There is two differential equation and two unknowns.
 \end{align}
 Equation \ref{pQ1_a} solved in MATLAB(Q1\_a.m) and code attached to file.
 \begin{equation} \label{ans_pQ1_a}
-p(t) = C_1*\exp(t/10) - 10
+p(t) = C_1\exp(t/10) - 10
 \end{equation}
 Final $x(t)$ is free so:
 $$ \left .h_{\vec x} - \vec{p} = \vec{0} \right \vert_{*, t_f} \to p(t_f) = 0$$
 Use new boundry condition($p(t_f) = 0$) in equation \ref{ans_pQ1_a} to find $p$ function($p(t)$).
-$$p(100) = C_1*\exp(100/10) - 10  = 0\to C_1 = 10\exp(-10)$$
+$$p(100) = C_1\exp(100/10) - 10  = 0\to C_1 = 10\exp(-10)$$
 \begin{equation} \label{fullans_pQ1_a}
 p(t) = 10\exp \left(0.1(t-100)\right)-10
 \end{equation}
