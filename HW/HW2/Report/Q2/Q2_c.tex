@@ -3,4 +3,19 @@ There is 11($2n+3$)  equation and 11 unknowns.
 
 
 Unknowns:
-$$\vec{x}(t)\vert_{4\times 1}, \quad \vec{p}(t)\vert_{4\times 1},\quad t_f, \quad x_1(t_f), u(t)$$
+$$\vec{x}(t)\vert_{4\times 1}, \quad \vec{p}(t)\vert_{4\times 1},\quad t_f, \quad x_1(t_f),\quad u(t)$$
+Now use previous equation to find unknowns.
+From equation \ref{Solvep_1Q2_a} and \ref{SolvepQ2_a} we can find out:
+\begin{equation}\label{ansp_1p_2}
+	p_1(t) = C_1 = 0, \quad p_2(t) = 0t + C_2 = C_2
+\end{equation}
+Now we use equation \ref{ansp_1p_2}, \ref{SolvepQ2_a}, \ref{AnsU} and \ref{HamiltonianQ2_a} to have new equation and put parameters in equation  \ref{timeBand}. 
+\begin{equation*}
+	\left.\mathcal{H}\right\vert_{*, t_f}  = 1 + 0\times x_2(t_f) + \dfrac{T}{M}C_2\cos\left(\tan^{-1}\left(\dfrac{-C_3t+C_4}{C_2}\right)\right) +p_3(t_f) \times 0 +\dfrac{T}{M}p_4(t)\sin\left(\tan^{-1}\left(\dfrac{-C_3t+C_4}{C_2}\right)\right)
+\end{equation*}
+\begin{equation}\label{finalHamiltonian}
+		\left.\mathcal{H}\right\vert_{*, t_f}  = 1  + \dfrac{T}{M}C_2\cos\left(\tan^{-1}\left(\dfrac{-C_3t+C_4}{C_2}\right)\right) +\dfrac{T}{M}p_4(t)\sin\left(\tan^{-1}\left(\dfrac{-C_3t+C_4}{C_2}\right)\right) = 0
+\end{equation}
+This far i could go to solve problem analytically. :)
+
+

@@ -38,7 +38,7 @@ Now  we use equation \ref{HamiltonianQ2_a} to solve Euler-Lagrange equation.
 		-p_3
 	\end{bmatrix}
 \end{equation} 
-Solution of equation \ref{diffpQ2_a} is:
+Answer of equation \ref{diffpQ2_a} is:
 \begin{equation}\label{SolvepQ2_a}
 	\begin{bmatrix}
 		p_1(t)\\
@@ -53,10 +53,10 @@ Solution of equation \ref{diffpQ2_a} is:
 	\end{bmatrix} 
 \end{equation}
 From Euler-Lagrange equation:
-$$
-{\vec{0}} = \dfrac{\partial \mathcal{H} }{\partial \vec{u}} \to 
-p_4\cos(u) = p_2\sin(u) \to u(t) = \tan^{-1}\left(\dfrac{p_4(t)}{p_2(t)}\right)
-$$
+\begin{equation}\label{AnsU}
+	{\vec{0}} = \dfrac{\partial \mathcal{H} }{\partial \vec{u}} \to 
+	p_4\cos(u) = p_2\sin(u) \to u(t) = \tan^{-1}\left(\dfrac{p_4(t)}{p_2(t)}\right)
+\end{equation}
 Boundary conditions:
 $$t_0 = 0,\quad t_f = \text{free}$$
 $$\vec{x}(0) = \begin{bmatrix}
@@ -83,7 +83,9 @@ $$\vec{x}(0) = \begin{bmatrix}
 \end{bmatrix}
 (D, v \text{ Are known constant})$$
 Final time is free so:
-$$\left(\mathcal{H} + h_t)\right \vert_{*, t_f} = 0 \to \mathcal{H} \vert_{*, t_f} = 0 $$
+\begin{equation}\label{timeBand}
+	\left(\mathcal{H} + h_t)\right \vert_{*, t_f} = 0 \to \mathcal{H} \vert_{*, t_f} = 0 
+\end{equation}
 Final $x_1$ is free so:
 \begin{equation}\label{Solvep_1Q2_a}
 	\left.(\dfrac{\partial h}{\partial x_1} - p_1) \right \vert_{*, t_f} = 0 \to p_1(t_f) = 0
