@@ -28,6 +28,16 @@ xlabel('time');
 ylabel('x');
 legend('x1', 'x2');
 print(figure2, 'figures/K2ODE.png','-dpng','-r400');
+%%%%%%%%%%% u %%%%%%%%%%%
+ue = zeros(1);
+for i = 1:length(t_2)
+    ue(i) = -R_inv*B'*K2*x_2(i,:)';
+end
+figure3 = figure('Name','u(t)','NumberTitle','off');
+plot(t_2, ue)
+xlabel('time');
+ylabel('u');
+print(figure3, 'figures/uODE.png','-dpng','-r400');
 %% Functions for K1 and K2%%
 function d = diff_eq_statesK1(~, x)
 global A B R_inv K1
