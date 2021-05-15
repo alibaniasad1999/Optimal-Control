@@ -6,6 +6,12 @@ Riccati equation:
 \begin{equation}\label{riccati_equation}
 	\dot{K} + KA +A^TK - KBR^{-1}B^TK + Q = 0
 \end{equation}
+\begin{equation}\label{uQ3_a}
+	u(t)	= -R^{-1}B^TK(t)x(t);
+\end{equation}
+\begin{equation}\label{xQ3_a}
+	\dot x(t) = Ax(t) + Bu(t)
+\end{equation}
 Because of $t \to \infty$, $\dot K = 0$ so Differential riccati equation change to Algebraic riccati equation.  
 \begin{equation}\label{Al_riccati_equation}
 	KA +A^TK - KBR^{-1}B^TK + Q = 0
@@ -66,4 +72,18 @@ There is two answer in real numbers.
 $$K_1 = \begin{bmatrix} 
 	-2.0175&  0.4142\\
 	0.4142& -1.4556
+\end{bmatrix}, \quad K_2 = \begin{bmatrix} 
+1.8175&  0.4142\\
+0.4142& 1.2558
 \end{bmatrix}$$
+Now we use equation \ref{uQ3_a} and \ref{xQ3_a} in MATLAB ode45(Q3\_aODE.m) to simulate system and find out which K is appropriate for system.
+\begin{figure}[H]
+	\caption{System simulation with $K_1$ matrix}
+	\centering
+	\includegraphics[width=12cm]{../Code/Q3/figures/K1ODE.png}
+\end{figure}
+\begin{figure}[H]
+	\caption{System simulation with $K_2$ matrix}
+	\centering
+	\includegraphics[width=12cm]{../Code/Q3/figures/K2ODE.png}
+\end{figure}
