@@ -1,0 +1,69 @@
+$\alpha = \beta = 1$, $t_f\to \infty $ and $H = 0$
+
+
+
+Riccati equation:
+\begin{equation}\label{riccati_equation}
+	\dot{K} + KA +A^TK - KBR^{-1}B^TK + Q = 0
+\end{equation}
+Because of $t \to \infty$, $\dot K = 0$ so Differential riccati equation change to Algebraic riccati equation.  
+\begin{equation}\label{Al_riccati_equation}
+	KA +A^TK - KBR^{-1}B^TK + Q = 0
+\end{equation}
+\begin{align*}
+ \begin{bmatrix}
+		K_{11} & K_{12} \\
+		K_{21} & K_{22}
+	\end{bmatrix} 
+	\begin{bmatrix}
+		0 & 1 \\
+		-1 & -0.1
+	\end{bmatrix} &+
+	\begin{bmatrix}
+		0 & -1 \\
+		1 & -0.1
+	\end{bmatrix} 
+	\begin{bmatrix}
+		K_{11} & K_{12} \\
+		K_{21} & K_{22}
+	\end{bmatrix} + \\
+ \begin{bmatrix}
+	K_{11} & K_{12} \\
+	K_{21} & K_{22}
+\end{bmatrix}  \begin{bmatrix}
+0 \\
+1
+\end{bmatrix}
+ \begin{bmatrix}
+	1
+\end{bmatrix}
+ \begin{bmatrix}
+ 0 & 1
+\end{bmatrix}   
+ \begin{bmatrix}
+	K_{11} & K_{12} \\
+	K_{21} & K_{22}
+\end{bmatrix} &+  \begin{bmatrix}
+1 & 0 \\
+0 & 1
+\end{bmatrix}  =  \begin{bmatrix}
+0 & 0 \\
+0 & 0
+\end{bmatrix} 
+\end{align*}
+$$
+ \begin{bmatrix}\label{alrecattiequation}
+	1 - K_{21} - K_{12}K_{21} - K_{12} &  K_{11} - K_{12}/10 - K_{22} - K_{12}K_{22} \\
+	K_{11} - K_{21}/10 - K_{22} - K_{21}K_{22} & K_{22}^2 - K_{22}/5 + K_{12} + K_{21} + 1
+\end{bmatrix} 
+= \begin{bmatrix}
+	0 & 0\\0 &0
+\end{bmatrix}
+$$
+We know that $K_{12} = K_{21}$
+Equation \ref{alrecattiequation} solved in MATLAB(Q3\_a.m).
+There is two answer in real numbers.
+$$K_1 = \begin{bmatrix} 
+	-2.0175&  0.4142\\
+	0.4142& -1.4556
+\end{bmatrix}$$
