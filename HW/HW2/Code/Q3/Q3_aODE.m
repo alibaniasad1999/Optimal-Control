@@ -16,10 +16,18 @@ K2 = ...
   0.4142135623730950488016887242097, 1.2558861031613938986501027136414];
 [t_1,x_1] = ode45(@diff_eq_statesK1,[0, 10], x0);
 [t_2,x_2] = ode45(@diff_eq_statesK2,[0, 10], x0);
+figure1 = figure('Name','System simulation with K1','NumberTitle','off');
 plot(t_1, x_1)
-hold on
+xlabel('time');
+ylabel('x');
+legend('x1', 'x2');
+print(figure1, 'figures/K1ODE.png','-dpng','-r400');
+figure2 = figure('Name','System simulation with K2','NumberTitle','off');
 plot(t_2, x_2)
-axis([0 10 -1 1.5])
+xlabel('time');
+ylabel('x');
+legend('x1', 'x2');
+print(figure2, 'figures/K2ODE.png','-dpng','-r400');
 %% Functions for K1 and K2%%
 function d = diff_eq_statesK1(~, x)
 global A B R_inv K1
