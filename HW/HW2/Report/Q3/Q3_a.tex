@@ -1,5 +1,5 @@
 $\alpha = \beta = 1$, $t_f\to \infty $ and $H = 0$:
-$$J = \dfrac 12 \int_0^{t_f} (x^2 + \dot x^2 + u^2)dt$$
+$$J =  \int_0^{t_f} \dfrac 12(x^2 + \dot x^2 + u^2)dt$$
 $$\vec{p}(t) = \begin{bmatrix}
 	p_1(t) \\
 	p_2(t)
@@ -18,7 +18,7 @@ x_1^2(t) +  x_2^2(t) + u^2(t)  +
 $$
 $$
 \mathcal{H} = 
-x_1^2(t) +  x_2^2(t) + u^2(t) + 
+\dfrac 12 x_1^2(t) + \dfrac 12 x_2^2(t) + \dfrac 12 u^2(t) + 
 p_1(t)x_2(t) -p_2(t)x_1(t)- 0.1p_2(t)x_2(t)+p_2(t)u(t)
 $$
 Euler–Lagrange equation:
@@ -57,4 +57,5 @@ There is four differential equation and four unknowns.
 \dot p_1 &= -2x_1+p_2\\
 \dot p_2 &= -2x_2-p_1 +0.1p_2
 \end{align}
+
 
