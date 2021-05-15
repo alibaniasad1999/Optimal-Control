@@ -1,61 +1,95 @@
-$\alpha = \beta = 1$, $t_f\to \infty $ and $H = 0$:
-$$J =  \int_0^{t_f} \dfrac 12(x^2 + \dot x^2 + u^2)dt$$
-$$\vec{p}(t) = \begin{bmatrix}
-	p_1(t) \\
-	p_2(t)
-\end{bmatrix} $$
-Hamiltonian matrix:
-$$\mathcal{H} =  g(\vec x(t), u(t), t) + {\vec{p}(t)}^Ta(\vec x(t), u(t), t)$$
-$$
-\mathcal{H} = 
-x_1^2(t) +  x_2^2(t) + u^2(t)  +
+$\alpha = \beta = 1$, $t_f\to \infty $ and $H = 0$
+
+
+
+Riccati equation:
+\begin{equation}\label{riccati_equation}
+	\dot{K} + KA +A^TK - KBR^{-1}B^TK + Q = 0
+\end{equation}
+\begin{equation}\label{uQ3_a}
+	u(t)	= -R^{-1}B^TK(t)x(t);
+\end{equation}
+\begin{equation}\label{xQ3_a}
+	\dot x(t) = Ax(t) + Bu(t)
+\end{equation}
+Because of $t \to \infty$, $\dot K = 0$ so Differential riccati equation change to Algebraic riccati equation.  
+\begin{equation}\label{Al_riccati_equation}
+	KA +A^TK - KBR^{-1}B^TK + Q = 0
+\end{equation}
+\begin{align*}
  \begin{bmatrix}
-	p_1(t) & p_2(t)
+		K_{11} & K_{12} \\
+		K_{21} & K_{22}
+	\end{bmatrix} 
+	\begin{bmatrix}
+		0 & 1 \\
+		-1 & -0.1
+	\end{bmatrix} &+
+	\begin{bmatrix}
+		0 & -1 \\
+		1 & -0.1
+	\end{bmatrix} 
+	\begin{bmatrix}
+		K_{11} & K_{12} \\
+		K_{21} & K_{22}
+	\end{bmatrix} + \\
+ \begin{bmatrix}
+	K_{11} & K_{12} \\
+	K_{21} & K_{22}
 \end{bmatrix}  \begin{bmatrix}
-	x_2(t)\\
-	-x_1(t)- 0.1x_2(t) + u(t) 
+0 \\
+1
+\end{bmatrix}
+ \begin{bmatrix}
+	1
+\end{bmatrix}
+ \begin{bmatrix}
+ 0 & 1
+\end{bmatrix}   
+ \begin{bmatrix}
+	K_{11} & K_{12} \\
+	K_{21} & K_{22}
+\end{bmatrix} &+  \begin{bmatrix}
+1 & 0 \\
+0 & 1
+\end{bmatrix}  =  \begin{bmatrix}
+0 & 0 \\
+0 & 0
 \end{bmatrix} 
+\end{align*}
 $$
-$$
-\mathcal{H} = 
-\dfrac 12 x_1^2(t) + \dfrac 12 x_2^2(t) + \dfrac 12 u^2(t) + 
-p_1(t)x_2(t) -p_2(t)x_1(t)- 0.1p_2(t)x_2(t)+p_2(t)u(t)
-$$
-Euler–Lagrange equation:
-\begin{align}
-\dot{\vec{x}} &= \dfrac{\partial \mathcal{H} }{\partial \vec{p}} = a(\vec x(t), u(t), t)\\
-\dot{\vec{p}} &= -\dfrac{\partial \mathcal{H} }{\partial \vec{x}} =  \begin{bmatrix}
-	-\dfrac{\partial \mathcal{H} }{\partial x_1}\\[10pt]
-	-\dfrac{\partial \mathcal{H} }{\partial x_2}
-\end{bmatrix} \\
-\vec{0} &= \dfrac{\partial \mathcal{H} }{\partial \vec{u}}
-\end{align}
-Now we use above equation for solve problem.
-$$
-\begin{bmatrix}
-	-\dfrac{\partial \mathcal{H} }{\partial x_1}\\[10pt]
-	-\dfrac{\partial \mathcal{H} }{\partial x_2}\\
-\end{bmatrix}  = 
-\begin{bmatrix}
-	-2x_1+p_2\\
-	-2x_2-p_1 +0.1p_2
+ \begin{bmatrix}\label{alrecattiequation}
+	1 - K_{21} - K_{12}K_{21} - K_{12} &  K_{11} - K_{12}/10 - K_{22} - K_{12}K_{22} \\
+	K_{11} - K_{21}/10 - K_{22} - K_{21}K_{22} & K_{22}^2 - K_{22}/5 + K_{12} + K_{21} + 1
 \end{bmatrix} 
-= 
-\begin{bmatrix}
-	\dot p_1\\
-	\dot p_2\\
-\end{bmatrix} 
+= \begin{bmatrix}
+	0 & 0\\0 &0
+\end{bmatrix}
 $$
-
-$$
-\dfrac{\partial \mathcal{H} }{\partial \vec{u}} = 2u+p_2 = 0 \to u = -0.5p_2
-$$
-There is four differential equation and four unknowns.
-\begin{align}
-\dot x_1 &= x_2\\
-\dot x_2 &= -x_1- 0.1x_2 - 0.5p_2 \\
-\dot p_1 &= -2x_1+p_2\\
-\dot p_2 &= -2x_2-p_1 +0.1p_2
-\end{align}
-
-
+We know that $K_{12} = K_{21}$
+Equation \ref{alrecattiequation} solved in MATLAB(Q3\_a.m).
+There is two answer in real numbers.
+$$K_1 = \begin{bmatrix} 
+	-2.0175&  0.4142\\
+	0.4142& -1.4556
+\end{bmatrix}, \quad K_2 = \begin{bmatrix} 
+1.8175&  0.4142\\
+0.4142& 1.2558
+\end{bmatrix}$$
+Now we use equation \ref{uQ3_a} and \ref{xQ3_a} in MATLAB ode45(Q3\_aODE.m) to simulate system and find out which K is appropriate for system.
+\begin{figure}[H]
+	\caption{System simulation with $K_1$ matrix}
+	\centering
+	\includegraphics[width=12cm]{../Code/Q3/figures/K1ODE.png}
+\end{figure}
+\begin{figure}[H]
+	\caption{System simulation with $K_2$ matrix}\label{fQ3_ax}
+	\centering
+	\includegraphics[width=12cm]{../Code/Q3/figures/K2ODE.png}
+\end{figure}
+From ode simulation we can find out that $K_2$ is appropriate for system. Figure of system sate had plot in figure \ref{fQ3_ax}. 
+\begin{figure}[H]
+	\caption{System effort $u(t)$}
+	\centering
+	\includegraphics[width=12cm]{../Code/Q3/figures/uODE.png}
+\end{figure}
