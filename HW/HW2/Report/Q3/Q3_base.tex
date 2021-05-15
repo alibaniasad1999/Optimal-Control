@@ -9,4 +9,30 @@ $$x_1(t) = x(t), \quad x_2(t) = \dot x(t) \to a(\vec x, u, t) =
 	x_2(t)\\
 	-x_1(t)- 0.1x_2(t) + u(t) 
 \end{bmatrix}  $$
+\begin{equation}
+	\dot{\vec{x}} = A(t)\vec{x}(t) + B(t)\vec{u}(t)
+\end{equation}
+\begin{equation}\label{SystemDynamicsQ3_base}
+	\dot{\vec{x}} = \begin{bmatrix}
+		0 & 1 \\
+		-1 & -0.1
+	\end{bmatrix} \begin{bmatrix}
+	x_1 \\
+	x_2
+\end{bmatrix} + \begin{bmatrix}
+0 \\
+1
+\end{bmatrix} u
+\end{equation}
+
 $$J = \dfrac 12 x^T(t_f)Hx(t_f) + \dfrac 12 \int_0^{t_f}\left(\alpha(x^2 + \dot x^2) + \beta u^2) \right)dt $$
+It's LQR problem.
+\begin{equation}\label{CostLQRQ3}
+	J = \dfrac 12 x^T(t_f)Hx(t_f) + \dfrac 12 \int_0^{t_f}\left(\dot{\vec{x}}^T(t)Q(t)\dot{\vec{x}}(t) + \dot{\vec{u}}^T(t)R(t)\dot{\vec{u}}(t) \right)dt
+\end{equation}
+$$
+Q(t) = \begin{bmatrix}
+	\alpha & 0 \\
+	0      & \alpha
+\end{bmatrix} , \quad R(t) = \beta
+$$
