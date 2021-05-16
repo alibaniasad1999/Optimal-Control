@@ -20,13 +20,13 @@ figure1 = figure('Name','System simulation with K1','NumberTitle','off');
 plot(t_1, x_1)
 xlabel('time');
 ylabel('x');
-legend('x1', 'x2');
+legend('$x_1$', '$x_2$','Interpreter','latex');
 print(figure1, 'figures/K1ODE.png','-dpng','-r400');
 figure2 = figure('Name','System simulation with K2','NumberTitle','off');
 plot(t_2, x_2)
 xlabel('time');
 ylabel('x');
-legend('x1', 'x2');
+legend('$x_1$', '$x_2$','Interpreter','latex');
 print(figure2, 'figures/K2ODE.png','-dpng','-r400');
 %%%%%%%%%%% u %%%%%%%%%%%
 ue = zeros(1);
