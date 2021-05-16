@@ -34,19 +34,24 @@ plot(t, x)
 xlabel('time');
 ylabel('x');
 legend('x1', 'x2');
+print(figure1, 'figures/FinalBeta.png','-dpng','-r400');
 %%% X(x_1^2 + x_2^2) %%%
 figure2 = figure('Name','X cost','NumberTitle','off');
 loglog(R, xCost)
 xlabel('$\beta$','Interpreter','latex','FontSize',20);
 ylabel('Cost');
+grid on
+print(figure2, 'figures/xCost.png','-dpng','-r400');
 %%% u %%%%
 figure3 = figure('Name','u cost','NumberTitle','off');
 loglog(R, uCost)
 xlabel('$\beta$','Interpreter','latex','FontSize',20);
 ylabel('Cost');
+grid on
+print(figure3, 'figures/uCost.png','-dpng','-r400');
 %% System %%
 function d = diff_eq_states(~, x)
 global A B R_inv K
-u	= -R_inv*B'*K*x;	
-d	= A*x + B*u;
+u	= -R_inv * B' * K * x;	
+d	=  A * x + B * u;
 end
