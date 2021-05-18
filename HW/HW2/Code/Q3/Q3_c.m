@@ -1,4 +1,4 @@
-%%%% ODE Question 3 part c sub part I %%%%
+%% ODE Question 3 part c sub part I %%
 global A B Q R R_inv n H
 A = [ 0    1  ;
      -1 -0.1] ;
@@ -15,8 +15,6 @@ K0 = H;
 %%%% ODE %%%%
 global t_K K_arr
 tf_arr = [3 5 10 15];
-    subplot(2,2,1)
-    hold;
 for i = 1:length(tf_arr)
     %%% initial final time %%%
     tf = tf_arr(i);
@@ -24,16 +22,80 @@ for i = 1:length(tf_arr)
     [t_K, K_arr] = ode45(@diff_eq_Riccati, [tf, 0], K0);
     %%% solve System equation %%%
     [t, x] = ode45(@diff_eq_states, [0, tf], x0);
+    %%% K %%%
     figure_name = strcat('System response tf = ', num2str(tf));
+    figure1K = figure('Name',figure_name, 'NumberTitle','off');
+    plot(t_K, K_arr);
+    xlabel('time');
+    ylabel('K');
+    legend('$K_1$', '$K_2$', '$K_3$', '$K_4$', 'Interpreter','latex');
+    figure_save_name = append('figures/K', num2str(tf), '.png');
+    print(figure1K, figure_save_name,'-dpng','-r400');
+    close;
+    %%% u %%%
+    figure1u = figure('Name',figure_name, 'NumberTitle','off');
+    %%% calculate u(t) %%%
+    ue = zeros(1);
+    for j = 1:length(t_K)
+        ue(j) = -R_inv*B'*reshape(K_arr(j, :), n, n)*x(j,:)';
+    end
+    plot(t_K, ue);
+    xlabel('time');
+    ylabel('u');
+    figure_save_name = append('figures/u', num2str(tf), '.png');
+    print(figure1u, figure_save_name,'-dpng','-r400');
+    close;
+    %%% states %%%
     figure1 = figure('Name',figure_name, 'NumberTitle','off');
     plot(t, x)
     xlabel('time');
     ylabel('x');
-    legend('$x_1$', '$x_2$','Interpreter','latex');
+    legend('$x_1$', '$x_2$', 'Interpreter','latex');
     figure_save_name = append('figures/tf', num2str(tf), '.png');
     print(figure1, figure_save_name,'-dpng','-r400');
+    close;
 end
 %%%% in one subplot %%%%
+%%% k(t) %%%%
+for i = 1:length(tf_arr)
+    %%% initial final time %%%
+    tf = tf_arr(i);
+    %%% solve diffrential ricaati %%%
+    [t_K, K_arr] = ode45(@diff_eq_Riccati, [tf, 0], K0);
+    %%% solve System equation %%%
+    [t, x] = ode45(@diff_eq_states, [0, tf], x0);
+    subplot(2,2,i);
+    plot(t_K, K_arr);
+    figure_name = strcat('System response tf =  ', num2str(tf));
+    title(figure_name);
+    xlabel('time');
+    ylabel('K');
+    legend('$K_1$', '$K_2$', '$K_3$', '$K_4$', 'Interpreter','latex');
+end
+print('figures/SubplotQ3_cKI.png','-dpng','-r600');
+close;
+%%% u(t) %%%%
+for i = 1:length(tf_arr)
+    %%% initial final time %%%
+    tf = tf_arr(i);
+    %%% solve diffrential ricaati %%%
+    [t_K, K_arr] = ode45(@diff_eq_Riccati, [tf, 0], K0);
+    %%% solve System equation %%%
+    [t, x] = ode45(@diff_eq_states, [0, tf], x0);
+    subplot(2,2,i);
+    ue = zeros(1);
+    for j = 1:length(t_K)
+        ue(j) = -R_inv*B'*reshape(K_arr(j, :), n, n)*x(j,:)';
+    end
+    plot(t_K, ue);
+    figure_name = strcat('System response tf =  ', num2str(tf));
+    title(figure_name);
+    xlabel('time');
+    ylabel('u');
+end
+print('figures/SubplotQ3_cuI.png','-dpng','-r600');
+close;
+%%% states %%%%
 for i = 1:length(tf_arr)
     %%% initial final time %%%
     tf = tf_arr(i);
@@ -50,7 +112,8 @@ for i = 1:length(tf_arr)
     legend('$x_1$', '$x_2$','Interpreter','latex');
 end
 print('figures/SubplotQ3_cI.png','-dpng','-r600');
-%%%% ODE Question 3 part c sub part II %%%%
+close;
+%% ODE Question 3 part c sub part II %%
 %%% Final time %%%
 tf = 3;
 for i = 0:2
