@@ -24,7 +24,7 @@ for i = 1:length(alpha)
     %%% solve System equation %%%
     [t, x] = ode45(@diff_eq_states, [0, tf], x0);
     %%% K %%%
-    figure_name = strcat('System response alpha = ', num2str(alpha(i)));
+    figure_name = strcat('System response (alpha = ', num2str(alpha(i)), ')');
     figure1K = figure('Name',figure_name, 'NumberTitle','off');
     plot(t_K, K_arr);
     xlabel('time');
@@ -53,10 +53,89 @@ for i = 1:length(alpha)
     xlabel('time');
     ylabel('x');
     legend('$x_1$', '$x_2$', 'Interpreter','latex');
-    figure_save_name = append('figures/alpha(i)', num2str(alpha(i)), '.png');
+    figure_save_name = append('figures/xalpha', num2str(alpha(i)), '.png');
     print(figure1, figure_save_name,'-dpng','-r400');
     close;
 end
+%%%% in one subplot %%%%
+%%% Set initial Q %%%
+Q = H;
+%%% K(t) %%%
+for i = 1:length(alpha)
+    %%% initial alpha and Q %%%
+    Q = alpha(i) * Q;
+    %%% solve diffrential ricaati %%%
+    [t_K, K_arr] = ode45(@diff_eq_Riccati, [tf, 0], K0);
+    %%% K %%%
+    if i == 3
+        subplot(2,2,[i, i+1]);
+    else
+        subplot(2,2,i);
+    end
+    plot(t_K, K_arr)
+    figure_name = append('K(t) (alpha = ', num2str(alpha(i)), ')');
+    title(figure_name);
+    xlabel('time');
+    ylabel('K');
+    legend('$K_1$', '$K_2$', '$K_3$', '$K_4$', 'Interpreter','latex');
+end
+print('figures/SubplotQ3_dK.png','-dpng','-r600');
+close;
+%%% u(t) %%%
+%%% Set initial Q %%%
+Q = H;
+for i = 1:length(alpha)
+    %%% initial alpha and Q %%%
+    Q = alpha(i) * Q;
+    %%% solve diffrential ricaati %%%
+    [t_K, K_arr] = ode45(@diff_eq_Riccati, [tf, 0], K0);
+    %%% K %%%
+    if i == 3
+        subplot(2,2,[i, i+1]);
+    else
+        subplot(2,2,i);
+    end
+    ue = zeros(1);
+    K_t	= interp1(t_K, K_arr, t);
+    for j = 1:length(t)
+        ue(j) = -R_inv*B'*reshape(K_t(j, :), n, n)*x(j,:)';
+    end
+    plot(t, ue)
+    figure_name = append('u(t) (alpha = ', num2str(alpha(i)), ')');
+    title(figure_name);
+    xlabel('time');
+    ylabel('u');
+end
+print('figures/SubplotQ3_du.png','-dpng','-r600');
+close;
+%%% states %%%%
+%%% Set initial Q %%%
+Q = H;
+for i = 1:length(alpha)
+    %%% initial alpha and Q %%%
+    Q = alpha(i) * Q;
+    %%% solve diffrential ricaati %%%
+    [t_K, K_arr] = ode45(@diff_eq_Riccati, [tf, 0], K0);
+    %%% K %%%
+    if i == 3
+        subplot(2,2,[i, i+1]);
+    else
+        subplot(2,2,i);
+    end
+    ue = zeros(1);
+    K_t	= interp1(t_K, K_arr, t);
+    for j = 1:length(t)
+        ue(j) = -R_inv*B'*reshape(K_t(j, :), n, n)*x(j,:)';
+    end
+    plot(t, x)
+    figure_name = append('System response (alpha = ', num2str(alpha(i)), ')');
+    title(figure_name);
+    xlabel('time');
+    ylabel('x');
+    legend('$x_1$', '$x_2$', 'Interpreter','latex');
+end
+print('figures/SubplotQ3_d.png','-dpng','-r600');
+close;
 %% Functions %%
 %%% Riccati %%%
 function d = diff_eq_Riccati(~,k)
