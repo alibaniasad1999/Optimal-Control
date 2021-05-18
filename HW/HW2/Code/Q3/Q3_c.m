@@ -67,7 +67,7 @@ for i = 1:length(tf_arr)
     [t, x] = ode45(@diff_eq_states, [0, tf], x0);
     subplot(2,2,i);
     plot(t_K, K_arr);
-    figure_name = strcat('K(t) (tf =  ', num2str(tf), ')');
+    figure_name = append('K(t) (tf =  ', num2str(tf), ')');
     title(figure_name);
     xlabel('time');
     ylabel('K');
@@ -107,7 +107,7 @@ for i = 1:length(tf_arr)
     [t, x] = ode45(@diff_eq_states, [0, tf], x0);
     subplot(2,2,i);
     plot(t, x)
-    figure_name = strcat('System response (tf =  ', num2str(tf), ')'));
+    figure_name = append('System response (tf =  ', num2str(tf), ')');
     title(figure_name);
     xlabel('time');
     ylabel('x');
@@ -166,7 +166,11 @@ for i = 0:2
     K0 = H;
     %%% solve diffrential ricaati %%%
     [t_K, K_arr] = ode45(@diff_eq_Riccati, [tf, 0], K0);
-    subplot(2,2,i+1);
+    if i == 2
+        subplot(2,2,[i+1, i+2]);
+    else
+        subplot(2,2,i+1);
+    end
     plot(t_K, K_arr)
     figure_name = append('K(t) (H = ', num2str(10^i), 'I)');
     title(figure_name);
@@ -184,7 +188,11 @@ for i = 0:2
     [t_K, K_arr] = ode45(@diff_eq_Riccati, [tf, 0], K0);
     %%% solve System equation %%%
     [t, x] = ode45(@diff_eq_states, [0, tf], x0);
-    subplot(2,2,i+1);
+    if i == 2
+        subplot(2,2,[i+1, i+2]);
+    else
+        subplot(2,2,i+1);
+    end
     ue = zeros(1);
     K_t	= interp1(t_K, K_arr, t);
     for j = 1:length(t)
@@ -206,7 +214,11 @@ for i = 0:2
     [t_K, K_arr] = ode45(@diff_eq_Riccati, [tf, 0], K0);
     %%% solve System equation %%%
     [t, x] = ode45(@diff_eq_states, [0, tf], x0);
-    subplot(2,2,i+1);
+    if i == 2
+        subplot(2,2,[i+1, i+2]);
+    else
+        subplot(2,2,i+1);
+    end
     plot(t, x)
     figure_name = append('System response (H = ', num2str(10^i), 'I)');
     title(figure_name);
