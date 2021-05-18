@@ -67,7 +67,7 @@ for i = 1:length(tf_arr)
     [t, x] = ode45(@diff_eq_states, [0, tf], x0);
     subplot(2,2,i);
     plot(t_K, K_arr);
-    figure_name = strcat('K(t) tf =  ', num2str(tf));
+    figure_name = strcat('K(t) (tf =  ', num2str(tf), ')');
     title(figure_name);
     xlabel('time');
     ylabel('K');
@@ -90,7 +90,7 @@ for i = 1:length(tf_arr)
         ue(j) = -R_inv*B'*reshape(K_t(j, :), n, n)*x(j,:)';
     end
     plot(t, ue);
-    figure_name = strcat('u(t) tf =  ', num2str(tf));
+    figure_name = strcat('u(t) (tf =  ', num2str(tf), ')');
     title(figure_name);
     xlabel('time');
     ylabel('u');
@@ -107,7 +107,7 @@ for i = 1:length(tf_arr)
     [t, x] = ode45(@diff_eq_states, [0, tf], x0);
     subplot(2,2,i);
     plot(t, x)
-    figure_name = strcat('System response tf =  ', num2str(tf));
+    figure_name = strcat('System response (tf =  ', num2str(tf), ')'));
     title(figure_name);
     xlabel('time');
     ylabel('x');
@@ -168,7 +168,7 @@ for i = 0:2
     [t_K, K_arr] = ode45(@diff_eq_Riccati, [tf, 0], K0);
     subplot(2,2,i+1);
     plot(t_K, K_arr)
-    figure_name = append('K(t) H = ', num2str(10^i), 'I');
+    figure_name = append('K(t) (H = ', num2str(10^i), 'I)');
     title(figure_name);
     xlabel('time');
     ylabel('K');
@@ -191,7 +191,7 @@ for i = 0:2
         ue(j) = -R_inv*B'*reshape(K_t(j, :), n, n)*x(j,:)';
     end
     plot(t, ue);
-    figure_name = append('u(t) H = ', num2str(10^i), 'I');
+    figure_name = append('u(t) (H = ', num2str(10^i), 'I)');
     title(figure_name);
     xlabel('time');
     ylabel('u');
@@ -208,7 +208,7 @@ for i = 0:2
     [t, x] = ode45(@diff_eq_states, [0, tf], x0);
     subplot(2,2,i+1);
     plot(t, x)
-    figure_name = append('System response H = ', num2str(10^i), 'I');
+    figure_name = append('System response (H = ', num2str(10^i), 'I)');
     title(figure_name);
     xlabel('time');
     ylabel('x');
