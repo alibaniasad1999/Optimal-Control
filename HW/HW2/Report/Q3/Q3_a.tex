@@ -87,9 +87,20 @@ Now we use equation \ref{uQ3_a} and \ref{xQ3_a} in MATLAB ode45(Q3\_aODE.m) to s
 	\centering
 	\includegraphics[width=12cm]{../Code/Q3/figures/K2ODE.png}
 \end{figure}
-From ode simulation we can find out that $K_2$ is appropriate for system. Figure of system sate had plot in figure \ref{fQ3_ax}. 
+From ode simulation we can find out that $K_2$ is appropriate for system. Figure of system sate had plot in figure \ref{fQ3_ax}.  Other way is to calculate eigenvalue of $K$ matrix, if all eigenvalue are negative the system is stable so $K$ matrix is true.
+$$eig(K_1) = \begin{bmatrix}
+ -1.236\\
+ -2.237
+\end{bmatrix}
+$$   
+$$eig(K_2) = \begin{bmatrix}
+ 2.0371\\
+ 1.0362\\
+\end{bmatrix}
+$$   
+Because all eigenvalue of $K_1$ are negative so the answer is $K_1$. 
 \begin{figure}[H]
-	\caption{System effort $u(t)$}
+	\caption{System control effort $u(t)$}
 	\centering
 	\includegraphics[width=12cm]{../Code/Q3/figures/uODE.png}
 \end{figure}
