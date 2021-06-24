@@ -10,7 +10,7 @@ epsilon = 0.01;
 while abs(dJ) > gradient_tol
     if isequal(X, X_prev)
         B = eye(2);
-        search_dir = B * dJ;
+        search_dir = -B * dJ;
         [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
         lambda = golden_section(a, b, c, f_b, search_dir, X, li_rol);
         X_prev = X;
@@ -22,6 +22,7 @@ while abs(dJ) > gradient_tol
     d =  X -  X_prev;
     g = dJ - dJ_prev;
     search_dir = BFGS(B, d, g, dJ);
+    [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
     lambda = golden_section(a, b, c, f_b, search_dir, X, li_rol);
     X_prev = X;
     X = X + lambda * search_dir;
@@ -62,7 +63,7 @@ function search_dir = BFGS(B, d, g, dJ)
     % g = dJ - dJ_prev
     B = B + d * d' / (d' * g) * (1 + g' * B * g / (d' * g)) - ...
         B * g * d' / (d' * g) - d * g' * B /  (d' * g);
-    search_dir = B * dJ;
+    search_dir = -B * dJ;
 end
 %======================================================================
 % Bracketing
