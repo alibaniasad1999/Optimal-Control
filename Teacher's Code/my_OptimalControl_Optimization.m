@@ -209,9 +209,11 @@ while (norm_gradient > tol && counter < max_count)
     %----------------------------------------------------------------------
     % ---------------     Quadratic Interpolation         -----------------
     % This algorithm must be written by the student.
-    
-    
-    
+    % lambda tilda is the optimum lambda
+%     lambda_tilda = zeros(1);
+%     function lambda_tilda = quadratic_interpolation(A, B, C , epsilon)
+%         lambda_tilda = 1;
+%     end
   
     
     %----------------------------------------------------------------------
