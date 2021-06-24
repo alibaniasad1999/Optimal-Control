@@ -39,30 +39,39 @@ end
 % Bracketing
 %======================================================================
 % In this section, Bracket is  found using golden number(1.618)
-function [a, b, c] = bracketing(X, search_dir, epsilon)
+function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
     a =       0;
     b = epsilon;
     X_a = X + a * search_dir;
     X_b = X + b * search_dir;
-    if cost(X_a) < X_a
+    f_a = cost(X_a);
+    f_b = cost(X_b);
+    if f_a < f_b
         disp('change epsilon or search direction')
         return;
     end
     gamma = 1.618; % golden number
     c = b + gamma * (b - a);
     X_c = X + c * search_dir;
-    while cost(X_b) > cost(X_c)
+    f_c = cost(X_c);
+    while f_b > f_c
         a = b;
         b = c;
         c = b + gamma * (b - a);
+        X_a = X_b;
+        X_b = X_c;
+        X_c = X + c * search_dir;
+        f_b = cost(X_b);
+        f_c = cost(X_c);
     end
+    f_a = cost(X_a);
 end
 %----------------------------------------------------------------------
 %----------------------------------------------------------------------
 %----------------------------------------------------------------------
 % ---------------     Quadratic Interpolation         -----------------
 function lambda_tilda = quadratic_interpolation(A, B, C, search_dir,...
-    X, epsilon)
+    X, tol)
 	X_a = X + A * search_dir;
     X_b = X + B * search_dir;
     X_c = X + C * search_dir;
@@ -81,7 +90,7 @@ function lambda_tilda = quadratic_interpolation(A, B, C, search_dir,...
     h = a + b * lambda_tilda + c * lambda_tilda^2;
     X_lambda = X + lambda_tilda * search_dir;
     f_lambda_tilda = cost(X_lambda);
-    while abs((h - f_lambda_tilda) / f_lambda_tilda) >= epsilon
+    while abs((h - f_lambda_tilda) / f_lambda_tilda) >= tol
         if lambda_tilda > B && f_lambda_tilda < f_b
             A = B;
             B = lambda_tilda;
@@ -112,4 +121,54 @@ function lambda_tilda = quadratic_interpolation(A, B, C, search_dir,...
         X_lambda = X + lambda_tilda * search_dir;
         f_lambda_tilda = cost(X_lambda);
     end
+end
+%----------------------------------------------------------------------
+%----------------------------------------------------------------------
+%----------------------------------------------------------------------
+% -------------------      Golden Section         ---------------------
+function lambda_tilda = golden_section(a, b, c, f_b,...
+    search_dir, X, tol)
+    % cuase we use golden number in bracketing a = a b = x_1 c = b
+    % a is lower and b is upper
+    % initial condition from bracketing
+    goldnum = .618;
+    f_1 = f_b;
+    %f_b = f_c;
+    x_1 = b;
+    b   = c;
+    d   = (b - a) * goldnum;
+    x_2 = a + d;
+    X_2 = X + x_2 * search_dir;
+    f_2 = cost(X_2);
+    while abs(a - b) > tol
+        if f_1 > f_2
+            % new a
+            a   = x_1;
+            %f_a = f_1;
+            % new x_1
+            x_1 = x_2;
+            f_1 = f_2;
+            % new x_2
+            d   = (b - a) * goldnum;
+            x_2 = a + d;
+            X_2 = X + x_2 * search_dir;
+            f_2 = cost(X_2);
+        elseif f_2 > f_1
+            % new b
+            b = x_2;
+            %f_b = f_2;
+            % new x_2
+            x_2 = x_1;
+            f_2 = f_1;
+            % new x_1
+            d   = (b - a) * goldnum;
+            x_1 = b - d;
+            X_1 = X + x_1 * search_dir;
+            f_1 = cost(X_1);
+        else
+            a = (x_1 + x_2) / 2;
+            b = a;
+        end
+    end
+    lambda_tilda = (x_1 + x_2) / 2;
 end
