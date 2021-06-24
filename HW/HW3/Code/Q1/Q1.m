@@ -1,18 +1,19 @@
-X_zero = [-1; -1];
+X_zero = [-1; 1];
 X      = X_zero; % current  X
 X_prev = X_zero; % previous X
 gradient_tol = 1e-8; 
-li_rol = 1e-3; % linear serach
-% BFGS + Golden Section
+li_tol = 1e-3; % linear serach
 dJ = gradient(X)';
 dJ_prev = gradient(X_prev)';
 epsilon = 0.01;
+% BFGS + Golden Section
+%{
 while abs(dJ) > gradient_tol
     if isequal(X, X_prev)
         B = eye(2);
         search_dir = -B * dJ;
         [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
-        lambda = golden_section(a, b, c, f_b, search_dir, X, li_rol);
+        lambda = golden_section(a, b, c, f_b, search_dir, X, li_tol);
         X_prev = X;
         X = X + lambda * search_dir;
         dJ_prev = dJ;
@@ -23,12 +24,64 @@ while abs(dJ) > gradient_tol
     g = dJ - dJ_prev;
     search_dir = BFGS(B, d, g, dJ);
     [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
-    lambda = golden_section(a, b, c, f_b, search_dir, X, li_rol);
+    lambda = golden_section(a, b, c, f_b, search_dir, X, lr_tol);
     X_prev = X;
     X = X + lambda * search_dir;
     dJ_prev = dJ;
     dJ = gradient(X)';
 end
+%}
+% BFGS + Quadratic Interpolation
+%{
+while abs(dJ) > gradient_tol
+    if isequal(X, X_prev)
+        B = eye(2);
+        search_dir = -B * dJ;
+        [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
+        lambda = quadratic_interpolation(a, b, c, search_dir, X, li_tol);
+        X_prev = X;
+        X = X + lambda * search_dir;
+        dJ_prev = dJ;
+        dJ = gradient(X)';
+        continue
+    end
+    d =  X -  X_prev;
+    g = dJ - dJ_prev;
+    search_dir = BFGS(B, d, g, dJ);
+    [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
+    if ~(a == 0 && b == 0 && c == 0)
+        lambda = golden_section(a, b, c, f_b, search_dir, X, li_tol);
+    end
+    X_prev = X;
+    X = X + lambda * search_dir;
+    dJ_prev = dJ;
+    dJ = gradient(X)';
+end
+%}
+% Steepest Descent + Quadratic Interpolation
+
+while abs(dJ) > gradient_tol
+    search_dir = steepest_decsent(dJ);
+    [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
+    if ~(a == 0 && b == 0 && c == 0)
+        lambda = quadratic_interpolation(a, b, c ,search_dir, X, li_tol);
+    end
+    X = X + lambda * search_dir;
+    dJ = gradient(X)';
+end
+
+% Steepest Descent + Golden Section
+%{
+while abs(dJ) > gradient_tol
+    search_dir = steepest_decsent(dJ);
+    [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
+    if ~(a == 0 && b == 0 && c == 0)
+        lambda = golden_section(a, b, c, f_b, search_dir, X, li_tol);
+    end
+    X = X + lambda * search_dir;
+    dJ = gradient(X)';
+end
+%}
 %==========================================================================
 % FUNCTIONS
 %==========================================================================
@@ -82,8 +135,16 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
         X_b = X + b * search_dir;
         f_a = cost(X_a);
         f_b = cost(X_b);
-        if f_a < f_b
+        if abs(f_a - f_b) > 0.01
             disp('change epsilon number');
+            return;
+        else
+            a = 0;
+            b = 0;
+            c = 0;
+            f_a = 0;
+            f_b = 0;
+            f_c = 0;
             return;
         end
     end
