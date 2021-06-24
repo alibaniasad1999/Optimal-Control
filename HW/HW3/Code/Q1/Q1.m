@@ -1,6 +1,33 @@
-X1_zero = [-1; -1];
-X1      = X1_zero; % current  X
-X1_prev = X1_zero; % previous X
+X_zero = [-1; -1];
+X      = X_zero; % current  X
+X_prev = X_zero; % previous X
+gradient_tol = 1e-8; 
+li_rol = 1e-3; % linear serach
+% BFGS + Golden Section
+dJ = gradient(X)';
+dJ_prev = gradient(X_prev)';
+epsilon = 0.01;
+while abs(dJ) > gradient_tol
+    if isequal(X, X_prev)
+        B = eye(2);
+        search_dir = B * dJ;
+        [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
+        lambda = golden_section(a, b, c, f_b, search_dir, X, li_rol);
+        X_prev = X;
+        X = X + lambda * search_dir;
+        dJ_prev = dJ;
+        dJ = gradient(X)';
+        continue
+    end
+    d =  X -  X_prev;
+    g = dJ - dJ_prev;
+    search_dir = BFGS(B, d, g, dJ);
+    lambda = golden_section(a, b, c, f_b, search_dir, X, li_rol);
+    X_prev = X;
+    X = X + lambda * search_dir;
+    dJ_prev = dJ;
+    dJ = gradient(X)';
+end
 %==========================================================================
 % FUNCTIONS
 %==========================================================================
@@ -10,7 +37,9 @@ function J = cost(X)
     y = X(2);
     J = y * sin(x + y) - x * sin(x - y);
 end
-function dJ = gradient(x, y)
+function dJ = gradient(X)
+    x = X(1);
+    y = X(2);
     % df/dx
     dJ(1) = y * cos(x + y) - sin(x - y) - x * cos(x - y);
     % df/dy
@@ -47,8 +76,15 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
     f_a = cost(X_a);
     f_b = cost(X_b);
     if f_a < f_b
-        disp('change epsilon or search direction')
-        return;
+        search_dir = -search_dir;
+        X_a = X + a * search_dir;
+        X_b = X + b * search_dir;
+        f_a = cost(X_a);
+        f_b = cost(X_b);
+        if f_a < f_b
+            disp('change epsilon number');
+            return;
+        end
     end
     gamma = 1.618; % golden number
     c = b + gamma * (b - a);
