@@ -14,8 +14,7 @@
 function OptimalControl_Optimization_a()
 clc
 
-global tf t_u R Q H A B x0 dt plot_flag
-
+global tf t_u R Q H A B x0 dt plot_flag time_x x_global
 % ------------------        Dynamic System Modeling       -----------------
 % Dynamic System Modeling is an approach to understanding the behaviour of
 % systems. A linear control system can be written as:xdot=Ax+Bu and y=Cx;
@@ -33,6 +32,7 @@ B	= [0
        1];
 x0  = [1 ;
        1];
+epsilon = 0.01; % Bracketing
 % -------------------      Cost Function         --------------------------
 %  A control problem includes a cost functional that is a function of state
 %  and control variables.In optimal control theory, the following objective
@@ -43,8 +43,8 @@ x0  = [1 ;
 % control problem. The LQR problem is stated as follows.
 % Minimize the quadratic continuous-time cost functional
 % J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ 0.5 * int(x(t)Q(t)x(t) + u(t)R(t)u(t))dt
-% where Q(t) and H are symmetric positive semi-definite n � n matrices,
-% R(t) is a symmetric positive definite m�m matrix.
+% where Q(t) and H are symmetric positive semi-definite n * n matrices,
+% R(t) is a symmetric positive definite m*m matrix.
 % Note that the LQR cost functional can be thought of physically as
 % attempting to minimize the control energy (measured as a quadratic form).
 % Following is a brief description of the cost function's input arguments:
@@ -77,12 +77,13 @@ U		= zeros(N+1, 1);
 U_prev  = U; 
 t_u		= 0:dt:tf;
 % -------------------      Execution Options         ----------------------
-plot_flag	= 1;
+plot_flag	= 0;
 
 %==========================================================================
 %  Optimization Loop
 %==========================================================================
 tol				= 1e-8;
+tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
 max_count		= 200;
 counter			= 0;
@@ -99,7 +100,7 @@ while (norm_gradient > tol && counter < max_count)
     % In this section, gradient is computed using the quasi-analytical formulation as follows:
     
     tic
-    plot_flag	= 1;
+    plot_flag	= 0;
     if counter == 1
         dJdu      = gradient(U);
         dJdu_prev = dJdu;
@@ -112,7 +113,7 @@ while (norm_gradient > tol && counter < max_count)
     fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm_gradient)
     fprintf('Elapsed time = %1.4f sec\n', toc)
     	%figure(300)
-    	hold on
+    	%hold on
     	%plot(t_u, dJdu);
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -190,6 +191,10 @@ while (norm_gradient > tol && counter < max_count)
     B_BFGS = B_BFGS + d * d' / (d' * g) * (1 + g' * B_BFGS * g / (d' * g)) - ...
         B_BFGS * g * d' / (d' * g) - d * g' * B_BFGS /  (d' * g);
     end
+    figure(200)
+    hold on
+    plot(time_x, x_global)
+	drawnow()
     Search_Dir = -B_BFGS * dJdu;
     
     
@@ -197,6 +202,11 @@ while (norm_gradient > tol && counter < max_count)
   
     %======================================================================
     % Line Search
+    % Bracketing
+    %======================================================================
+    % In this section, Bracket is  found using golden number(1.618)
+    [lower, middle, upper, cost_lowe, cost_middle, cost_upper] = ...
+        bracketing(U, Search_Dir, epsilon);
     %======================================================================
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -236,7 +246,50 @@ while (norm_gradient > tol && counter < max_count)
     %----------------------------------------------------------------------
     % -------------------      Golden Section         ---------------------
     % This algorithm must be written by the student.
-    
+    % cuase we use golden number in bracketing a = a b = x_1 c = b
+    % a is lower and b is upper
+    % initial condition from bracketing
+    goldnum = .618;
+    a = lower;
+    f_1 = cost_middle;
+    %f_b = f_c;
+    u_1 = middle;
+    b   = upper;
+    d   = (b - a) * goldnum;
+    u_2 = a + d;
+    U_2 = U + u_2 * Search_Dir;
+    f_2 = norm(gradient(U_2), 2);
+    while abs(a - b) > tol_lambda
+        if f_1 > f_2
+            % new a
+            a   = u_1;
+            %f_a = f_1;
+            % new x_1
+            u_1 = u_2;
+            f_1 = f_2;
+            % new x_2
+            d   = (b - a) * goldnum;
+            u_2 = a + d;
+            U_2 = U + u_2 * Search_Dir;
+            f_2 = norm(gradient(U_2), 2);
+        elseif f_2 > f_1
+            % new b
+            b = u_2;
+            %f_b = f_2;
+            % new x_2
+            u_2 = u_1;
+            f_2 = f_1;
+            % new x_1
+            d   = (b - a) * goldnum;
+            u_1 = b - d;
+            U_1 = U + u_1 * Search_Dir;
+            f_1 = norm(gradient(U_1), 2);
+        else
+            a = (u_1 + u_2) / 2;
+            b = a;
+        end
+    end
+    lambda = (u_1 + u_2) / 2;
     
     
   
@@ -279,13 +332,13 @@ end
 % J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ 0.5 * int(x(t)Q(t)x(t) + u(t)R(t)u(t))dt 
 % The integral term can be converted to a differential equation as follows:
 % xdot3 =  0.5 * x(t)Q(t)x(t) + 0.5* u(t)R(t)u(t)
-function d = diff_equ_x_J(t, XX)
-global A B U_arr t_u Q R
-X = XX(1:2);
-u = interp1(t_u, U_arr, t, 'pchip');
-d = A*X + B*u;
-d(3) = 0.5*X'*Q*X + 0.5*R*u^2;
-end
+% function d = diff_equ_x_J(t, XX)
+% global A B U_arr t_u Q R
+% X = XX(1:2);
+% u = interp1(t_u, U_arr, t, 'pchip');
+% d = A*X + B*u;
+% d(3) = 0.5*X'*Q*X + 0.5*R*u^2;
+% end
 
 %==========================================================================
 % This function computs costate differential equations, that is expressed as:
@@ -362,4 +415,49 @@ end
 % J = x(end, 3) + 0.5*xend'*H*xend;
 % end
 %==========================================================================
-
+%======================================================================
+% Bracketing
+%======================================================================
+% In this section, Bracket is  found using golden number(1.618)
+function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
+    a =       0;
+    b = epsilon;
+    X_a = X + a * search_dir;
+    X_b = X + b * search_dir;
+    f_a = norm(gradient(X_a), 2);
+    f_b = norm(gradient(X_b), 2);
+    if f_a < f_b
+        search_dir = -search_dir;
+        X_a = X + a * search_dir;
+        X_b = X + b * search_dir;
+        f_a = gradient(X_a);
+        f_b = gradient(X_b);
+        if abs(f_a - f_b) > 0.01
+            disp('change epsilon number');
+            return;
+        else
+            a   = 0;
+            b   = 0;
+            c   = 0;
+            f_a = 0;
+            f_b = 0;
+            f_c = 0;
+            return;
+        end
+    end
+    gamma = 1.618; % golden number
+    c = b + gamma * (b - a);
+    X_c = X + c * search_dir;
+    f_c = norm(gradient(X_c), 2);
+    while f_b > f_c
+        a = b;
+        b = c;
+        c = b + gamma * (b - a);
+        X_a = X_b;
+        X_b = X_c;
+        X_c = X + c * search_dir;
+        f_b = norm(gradient(X_b), 2);
+        f_c = norm(gradient(X_c), 2);
+    end
+    f_a = norm(gradient(X_a));
+end
