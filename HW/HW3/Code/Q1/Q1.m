@@ -6,9 +6,15 @@ li_tol = 1e-3; % linear serach
 dJ = gradient(X)';
 dJ_prev = gradient(X_prev)';
 epsilon = 0.01;
+counter = 0;
+counter = counter + 1;
 % BFGS + Golden Section
 %{
-while abs(dJ) > gradient_tol
+while norm(dJ, 2) > gradient_tol
+    counter = counter + 1;
+    tic
+	fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
+    fprintf('Elapsed time = %1.8f sec\n', toc)
     if isequal(X, X_prev)
         B = eye(2);
         search_dir = -B * dJ;
@@ -33,7 +39,11 @@ end
 %}
 % BFGS + Quadratic Interpolation
 %{
-while abs(dJ) > gradient_tol
+while norm(dJ, 2) > gradient_tol
+    counter = counter + 1;
+    tic
+	fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
+    fprintf('Elapsed time = %1.8f sec\n', toc)
     if isequal(X, X_prev)
         B = eye(2);
         search_dir = -B * dJ;
@@ -60,7 +70,11 @@ end
 %}
 % Steepest Descent + Quadratic Interpolation
 
-while abs(dJ) > gradient_tol
+while norm(dJ, 2) > gradient_tol
+    counter = counter + 1;
+    tic
+	fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
+    fprintf('Elapsed time = %1.8f sec\n', toc)
     search_dir = steepest_decsent(dJ);
     [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
     if ~(a == 0 && b == 0 && c == 0)
@@ -73,6 +87,10 @@ end
 % Steepest Descent + Golden Section
 %{
 while abs(dJ) > gradient_tol
+    counter = counter + 1;
+    tic
+	fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
+    fprintf('Elapsed time = %1.8f sec\n', toc)
     search_dir = steepest_decsent(dJ);
     [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
     if ~(a == 0 && b == 0 && c == 0)
