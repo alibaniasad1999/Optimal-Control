@@ -139,9 +139,9 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
             disp('change epsilon number');
             return;
         else
-            a = 0;
-            b = 0;
-            c = 0;
+            a   = 0;
+            b   = 0;
+            c   = 0;
             f_a = 0;
             f_b = 0;
             f_c = 0;
