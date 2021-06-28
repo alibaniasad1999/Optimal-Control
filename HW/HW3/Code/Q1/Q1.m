@@ -168,51 +168,51 @@ end
 %----------------------------------------------------------------------
 %----------------------------------------------------------------------
 % ---------------     Quadratic Interpolation         -----------------
-function lambda_tilda = quadratic_interpolation(A, B, C, search_dir,...
+function lambda_tilda = quadratic_interpolation(A_QI, B_QI, C_QI, search_dir,...
     X, tol)
-	X_a = X + A * search_dir;
-    X_b = X + B * search_dir;
-    X_c = X + C * search_dir;
+	X_a = X + A_QI * search_dir;
+    X_b = X + B_QI * search_dir;
+    X_c = X + C_QI * search_dir;
     f_a = cost(X_a);
     f_b = cost(X_b);
     f_c = cost(X_c);
     % three equation and three unknown %
-    a = (f_a * B * C * (C - B) + f_b * C * A * (A - C) + f_c * A * B * (B - A))...
-        /((A - B) * (B - C) * (C - A));
-    b = (f_a * (B^2 - C^2) + f_b * (C^2 - A^2) + f_c * (A^2 - B^2))...
-        /((A - B) * (B - C) * (C - A));
-    c = -(f_a * (B - C) + f_b * (C - A) + f_c * (A - B))...
-        /((A - B) * (B - C) * (C - A));
+    a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
+        /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+    b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
+        /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+    c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
+        /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
     lambda_tilda = -b / (2 * c);
     % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
     h = a + b * lambda_tilda + c * lambda_tilda^2;
     X_lambda = X + lambda_tilda * search_dir;
     f_lambda_tilda = cost(X_lambda);
     while abs((h - f_lambda_tilda) / f_lambda_tilda) >= tol
-        if lambda_tilda > B && f_lambda_tilda < f_b
-            A = B;
-            B = lambda_tilda;
-        elseif lambda_tilda > B && f_lambda_tilda > f_b
-            C = lambda_tilda;
-        elseif lambda_tilda < B && f_lambda_tilda < f_b
-            C = B;
-            B = lambda_tilda;
+        if lambda_tilda > B_QI && f_lambda_tilda < f_b
+            A_QI = B_QI;
+            B_QI = lambda_tilda;
+        elseif lambda_tilda > B_QI && f_lambda_tilda > f_b
+            C_QI = lambda_tilda;
+        elseif lambda_tilda < B_QI && f_lambda_tilda < f_b
+            C_QI = B_QI;
+            B_QI = lambda_tilda;
         else
-            A = lambda_tilda;
+            A_QI = lambda_tilda;
         end
-        X_a = X + A * search_dir;
-        X_b = X + B * search_dir;
-        X_c = X + C * search_dir;
+        X_a = X + A_QI * search_dir;
+        X_b = X + B_QI * search_dir;
+        X_c = X + C_QI * search_dir;
         f_a = cost(X_a);
         f_b = cost(X_b);
         f_c = cost(X_c);
         % three equation and three unknown %
-        a = (f_a * B * C * (C - B) + f_b * C * A * (A - C) + f_c * A * B * (B - A))...
-            /((A - B) * (B - C) * (C - A));
-        b = (f_a * (B^2 - C^2) + f_b * (C^2 - A^2) + f_c * (A^2 - B^2))...
-            /((A - B) * (B - C) * (C - A));
-        c = -(f_a * (B - C) + f_b * (C - A) + f_c * (A - B))...
-            /((A - B) * (B - C) * (C - A));
+        a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
+            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+        b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
+            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+        c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
+            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
         lambda_tilda = -b / (2 * c);
         % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
         h = a + b * lambda_tilda + c * lambda_tilda^2;

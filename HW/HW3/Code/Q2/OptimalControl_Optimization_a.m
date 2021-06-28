@@ -205,14 +205,14 @@ while (norm_gradient > tol && counter < max_count)
     % Bracketing
     %======================================================================
     % In this section, Bracket is  found using golden number(1.618)
-    [lower, middle, upper, cost_lowe, cost_middle, cost_upper] = ...
+    [lower, middle, upper, cost_lower, cost_middle, cost_upper] = ...
         bracketing(U, Search_Dir, epsilon);
     %======================================================================
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     % -------------------      fixed step length         ------------------
-    lambda	= 1e-2/dt;
+%     lambda	= 1e-2/dt;
     
     % test the lambda function
 %     	lambda_arr=0:1e-3/dt:4e-1/dt;
@@ -236,11 +236,59 @@ while (norm_gradient > tol && counter < max_count)
     %----------------------------------------------------------------------
     % ---------------     Quadratic Interpolation         -----------------
     % This algorithm must be written by the student.
-    
-    
-    
-  
-    
+    A_QI = lower;
+    B_QI = middle;
+    C_QI = upper;
+%     U_a = U + A_QI * search_dir;
+%     U_b = U + B_QI * search_dir;
+%     U_c = U + C_QI * search_dir;
+    f_a = cost_lower;
+    f_b = cost_middle;
+    f_c = cost_upper;
+    % three equation and three unknown %
+    a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
+        /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+    b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
+        /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+    c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
+        /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+    lambda_tilda = -b / (2 * c);
+    % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
+    h = a + b * lambda_tilda + c * lambda_tilda^2;
+    U_lambda = U + lambda_tilda * Search_Dir;
+    f_lambda_tilda = norm(gradient(U_lambda), 2);
+    while abs((h - f_lambda_tilda) / f_lambda_tilda) >= tol_lambda
+        if lambda_tilda > B_QI && f_lambda_tilda < f_b
+            A_QI = B_QI;
+            B_QI = lambda_tilda;
+        elseif lambda_tilda > B_QI && f_lambda_tilda > f_b
+            C_QI = lambda_tilda;
+        elseif lambda_tilda < B_QI && f_lambda_tilda < f_b
+            C_QI = B_QI;
+            B_QI = lambda_tilda;
+        else
+            A_QI = lambda_tilda;
+        end
+        U_a = U + A_QI * Search_Dir;
+        U_b = U + B_QI * Search_Dir;
+        U_c = U + C_QI * Search_Dir;
+        f_a = norm(gradient(U_a), 2);
+        f_b = norm(gradient(U_b), 2);
+        f_c = norm(gradient(U_c), 2);
+        % three equation and three unknown %
+        a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
+            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+        b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
+            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+        c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
+            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+        lambda_tilda = -b / (2 * c);
+        % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
+        h = a + b * lambda_tilda + c * lambda_tilda^2;
+        U_lambda = U + lambda_tilda * Search_Dir;
+        f_lambda_tilda = norm(gradient(U_lambda), 2);
+    end
+    lambda = lambda_tilda;
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -249,51 +297,47 @@ while (norm_gradient > tol && counter < max_count)
     % cuase we use golden number in bracketing a = a b = x_1 c = b
     % a is lower and b is upper
     % initial condition from bracketing
-    goldnum = .618;
-    a = lower;
-    f_1 = cost_middle;
-    %f_b = f_c;
-    u_1 = middle;
-    b   = upper;
-    d   = (b - a) * goldnum;
-    u_2 = a + d;
-    U_2 = U + u_2 * Search_Dir;
-    f_2 = norm(gradient(U_2), 2);
-    while abs(a - b) > tol_lambda
-        if f_1 > f_2
-            % new a
-            a   = u_1;
-            %f_a = f_1;
-            % new x_1
-            u_1 = u_2;
-            f_1 = f_2;
-            % new x_2
-            d   = (b - a) * goldnum;
-            u_2 = a + d;
-            U_2 = U + u_2 * Search_Dir;
-            f_2 = norm(gradient(U_2), 2);
-        elseif f_2 > f_1
-            % new b
-            b = u_2;
-            %f_b = f_2;
-            % new x_2
-            u_2 = u_1;
-            f_2 = f_1;
-            % new x_1
-            d   = (b - a) * goldnum;
-            u_1 = b - d;
-            U_1 = U + u_1 * Search_Dir;
-            f_1 = norm(gradient(U_1), 2);
-        else
-            a = (u_1 + u_2) / 2;
-            b = a;
-        end
-    end
-    lambda = (u_1 + u_2) / 2;
-    
-    
-  
-    
+%     goldnum = .618;
+%     a = lower;
+%     f_1 = cost_middle;
+%     %f_b = f_c;
+%     u_1 = middle;
+%     b   = upper;
+%     d   = (b - a) * goldnum;
+%     u_2 = a + d;
+%     U_2 = U + u_2 * Search_Dir;
+%     f_2 = norm(gradient(U_2), 2);
+%     while abs(a - b) > tol_lambda
+%         if f_1 > f_2
+%             % new a
+%             a   = u_1;
+%             %f_a = f_1;
+%             % new x_1
+%             u_1 = u_2;
+%             f_1 = f_2;
+%             % new x_2
+%             d   = (b - a) * goldnum;
+%             u_2 = a + d;
+%             U_2 = U + u_2 * Search_Dir;
+%             f_2 = norm(gradient(U_2), 2);
+%         elseif f_2 > f_1
+%             % new b
+%             b = u_2;
+%             %f_b = f_2;
+%             % new x_2
+%             u_2 = u_1;
+%             f_2 = f_1;
+%             % new x_1
+%             d   = (b - a) * goldnum;
+%             u_1 = b - d;
+%             U_1 = U + u_1 * Search_Dir;
+%             f_1 = norm(gradient(U_1), 2);
+%         else
+%             a = (u_1 + u_2) / 2;
+%             b = a;
+%         end
+%     end
+%     lambda = (u_1 + u_2) / 2;
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
