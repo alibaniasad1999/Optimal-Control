@@ -82,7 +82,7 @@ plot_flag	= 0;
 %==========================================================================
 %  Optimization Loop
 %==========================================================================
-tol				= 1e-8;
+tol				= 1e-4;
 tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
 max_count		= 200;
@@ -215,13 +215,13 @@ while (norm_gradient > tol && counter < max_count)
 %     lambda	= 1e-2/dt;
     
     % test the lambda function
-    	lambda_arr=0:1e-3/dt:4e-1/dt;
-        f = zeros(1);
-    	for i=1:length(lambda_arr)
-    		f(i) = cost(lambda_arr(i), U, Search_Dir);
-    	end
-    	figure
-    	plot(lambda_arr, f)
+%     	lambda_arr=0:1e-3/dt:4e-1/dt;
+%         f = zeros(1);
+%     	for i=1:length(lambda_arr)
+%     		f(i) = cost(lambda_arr(i), U, Search_Dir);
+%     	end
+%     	figure
+%     	plot(lambda_arr, f)
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -236,59 +236,59 @@ while (norm_gradient > tol && counter < max_count)
     %----------------------------------------------------------------------
     % ---------------     Quadratic Interpolation         -----------------
     % This algorithm must be written by the student.
-    A_QI = lower;
-    B_QI = middle;
-    C_QI = upper;
-%     U_a = U + A_QI * search_dir;
-%     U_b = U + B_QI * search_dir;
-%     U_c = U + C_QI * search_dir;
-    f_a = cost_lower;
-    f_b = cost_middle;
-    f_c = cost_upper;
-    % three equation and three unknown %
-    a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
-        /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-    b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
-        /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-    c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
-        /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-    lambda_tilda = -b / (2 * c);
-    % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
-    h = a + b * lambda_tilda + c * lambda_tilda^2;
-    U_lambda = U + lambda_tilda * Search_Dir;
-    f_lambda_tilda = norm(gradient(U_lambda), 2);
-    while abs((h - f_lambda_tilda) / f_lambda_tilda) >= tol_lambda
-        if lambda_tilda > B_QI && f_lambda_tilda < f_b
-            A_QI = B_QI;
-            B_QI = lambda_tilda;
-        elseif lambda_tilda > B_QI && f_lambda_tilda > f_b
-            C_QI = lambda_tilda;
-        elseif lambda_tilda < B_QI && f_lambda_tilda < f_b
-            C_QI = B_QI;
-            B_QI = lambda_tilda;
-        else
-            A_QI = lambda_tilda;
-        end
-        U_a = U + A_QI * Search_Dir;
-        U_b = U + B_QI * Search_Dir;
-        U_c = U + C_QI * Search_Dir;
-        f_a = norm(gradient(U_a), 2);
-        f_b = norm(gradient(U_b), 2);
-        f_c = norm(gradient(U_c), 2);
-        % three equation and three unknown %
-        a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
-            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-        b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
-            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-        c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
-            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-        lambda_tilda = -b / (2 * c);
-        % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
-        h = a + b * lambda_tilda + c * lambda_tilda^2;
-        U_lambda = U + lambda_tilda * Search_Dir;
-        f_lambda_tilda = norm(gradient(U_lambda), 2);
-    end
-    lambda = lambda_tilda;
+%     A_QI = lower;
+%     B_QI = middle;
+%     C_QI = upper;
+% %     U_a = U + A_QI * search_dir;
+% %     U_b = U + B_QI * search_dir;
+% %     U_c = U + C_QI * search_dir;
+%     f_a = cost_lower;
+%     f_b = cost_middle;
+%     f_c = cost_upper;
+%     % three equation and three unknown %
+%     a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
+%         /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+%     b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
+%         /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+%     c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
+%         /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+%     lambda_tilda = -b / (2 * c);
+%     % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
+%     h = a + b * lambda_tilda + c * lambda_tilda^2;
+% %     U_lambda = U + lambda_tilda * Search_Dir;
+%     f_lambda_tilda = cost(lambda_tilda, U, Search_Dir);
+%     while abs((h - f_lambda_tilda) / f_lambda_tilda) >= tol_lambda
+%         if lambda_tilda > B_QI && f_lambda_tilda < f_b
+%             A_QI = B_QI;
+%             B_QI = lambda_tilda;
+%         elseif lambda_tilda > B_QI && f_lambda_tilda > f_b
+%             C_QI = lambda_tilda;
+%         elseif lambda_tilda < B_QI && f_lambda_tilda < f_b
+%             C_QI = B_QI;
+%             B_QI = lambda_tilda;
+%         else
+%             A_QI = lambda_tilda;
+%         end
+% %         U_a = U + A_QI * Search_Dir;
+% %         U_b = U + B_QI * Search_Dir;
+% %         U_c = U + C_QI * Search_Dir;
+%         f_a = cost(A_QI, U, Search_Dir);
+%         f_b = cost(B_QI, U, Search_Dir);
+%         f_c = cost(C_QI, U, Search_Dir);
+%         % three equation and three unknown %
+%         a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
+%             /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+%         b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
+%             /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+%         c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
+%             /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+%         lambda_tilda = -b / (2 * c);
+%         % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
+%         h = a + b * lambda_tilda + c * lambda_tilda^2;
+% %         U_lambda = U + lambda_tilda * Search_Dir;
+%         f_lambda_tilda = cost(lambda_tilda, U, Search_Dir);
+%     end
+%     lambda = lambda_tilda;
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -297,47 +297,47 @@ while (norm_gradient > tol && counter < max_count)
     % cuase we use golden number in bracketing a = a b = x_1 c = b
     % a is lower and b is upper
     % initial condition from bracketing
-%     goldnum = .618;
-%     a = lower;
-%     f_1 = cost_middle;
-%     %f_b = f_c;
-%     u_1 = middle;
-%     b   = upper;
-%     d   = (b - a) * goldnum;
-%     u_2 = a + d;
-%     U_2 = U + u_2 * Search_Dir;
-%     f_2 = norm(gradient(U_2), 2);
-%     while abs(a - b) > tol_lambda
-%         if f_1 > f_2
-%             % new a
-%             a   = u_1;
-%             %f_a = f_1;
-%             % new x_1
-%             u_1 = u_2;
-%             f_1 = f_2;
-%             % new x_2
-%             d   = (b - a) * goldnum;
-%             u_2 = a + d;
-%             U_2 = U + u_2 * Search_Dir;
-%             f_2 = norm(gradient(U_2), 2);
-%         elseif f_2 > f_1
-%             % new b
-%             b = u_2;
-%             %f_b = f_2;
-%             % new x_2
-%             u_2 = u_1;
-%             f_2 = f_1;
-%             % new x_1
-%             d   = (b - a) * goldnum;
-%             u_1 = b - d;
-%             U_1 = U + u_1 * Search_Dir;
-%             f_1 = norm(gradient(U_1), 2);
-%         else
-%             a = (u_1 + u_2) / 2;
-%             b = a;
-%         end
-%     end
-%     lambda = (u_1 + u_2) / 2;
+    goldnum = .618;
+    a = lower;
+    f_1 = cost_middle;
+    %f_b = f_c;
+    u_1 = middle;
+    b   = upper;
+    d   = (b - a) * goldnum;
+    u_2 = a + d;
+    %U_2 = U + u_2 * Search_Dir;
+    f_2 = cost(u_2, U, Search_Dir);
+    while abs(a - b) > tol_lambda
+        if f_1 > f_2
+            % new a
+            a   = u_1;
+            %f_a = f_1;
+            % new x_1
+            u_1 = u_2;
+            f_1 = f_2;
+            % new x_2
+            d   = (b - a) * goldnum;
+            u_2 = a + d;
+            %U_2 = U + u_2 * Search_Dir;
+            f_2 = cost(u_2, U, Search_Dir);
+        elseif f_2 > f_1
+            % new b
+            b = u_2;
+            %f_b = f_2;
+            % new x_2
+            u_2 = u_1;
+            f_2 = f_1;
+            % new x_1
+            d   = (b - a) * goldnum;
+            u_1 = b - d;
+            %U_1 = U + u_1 * Search_Dir;
+            f_1 = cost(u_1, U, Search_Dir);
+        else
+            a = (u_1 + u_2) / 2;
+            b = a;
+        end
+    end
+    lambda = (u_1 + u_2) / 2;
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -466,16 +466,14 @@ end
 function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
     a =       0;
     b = epsilon;
-    X_a = X + a * search_dir;
-    X_b = X + b * search_dir;
-    f_a = norm(gradient(X_a), 2);
-    f_b = norm(gradient(X_b), 2);
+    %X_a = X + a * search_dir;
+    %X_b = X + b * search_dir;
+    f_a = cost(a, X, search_dir);
+    f_b = cost(b, X, search_dir);
     if f_a < f_b
         search_dir = -search_dir;
-        X_a = X + a * search_dir;
-        X_b = X + b * search_dir;
-        f_a = gradient(X_a);
-        f_b = gradient(X_b);
+        f_a = cost(a, X, search_dir);
+        f_b = cost(b, X, search_dir);
         if abs(f_a - f_b) > 0.01
             disp('change epsilon number');
             return;
@@ -491,17 +489,17 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
     end
     gamma = 1.618; % golden number
     c = b + gamma * (b - a);
-    X_c = X + c * search_dir;
-    f_c = norm(gradient(X_c), 2);
+    %X_c = X + c * search_dir;
+    f_c = cost(c, X, search_dir);
     while f_b > f_c
         a = b;
         b = c;
         c = b + gamma * (b - a);
-        X_a = X_b;
-        X_b = X_c;
-        X_c = X + c * search_dir;
-        f_b = norm(gradient(X_b), 2);
-        f_c = norm(gradient(X_c), 2);
+        %X_a = X_b;
+        %X_b = X_c;
+        %X_c = X + c * search_dir;
+        f_b = cost(b, X, search_dir);
+        f_c = cost(c, X, search_dir);
     end
-    f_a = norm(gradient(X_a));
+    f_a = cost(a, X, search_dir);
 end
