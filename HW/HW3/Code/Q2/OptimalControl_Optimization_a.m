@@ -215,13 +215,13 @@ while (norm_gradient > tol && counter < max_count)
 %     lambda	= 1e-2/dt;
     
     % test the lambda function
-%     	lambda_arr=0:1e-3/dt:4e-1/dt;
-%         f = zeros(1);
-%     	for i=1:length(lambda_arr)
-%     		f(i) = cost(lambda_arr(i), U, Search_Dir);
-%     	end
-%     	figure
-%     	plot(lambda_arr, f)
+    	lambda_arr=0:1e-3/dt:4e-1/dt;
+        f = zeros(1);
+    	for i=1:length(lambda_arr)
+    		f(i) = cost(lambda_arr(i), U, Search_Dir);
+    	end
+    	figure
+    	plot(lambda_arr, f)
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -376,13 +376,13 @@ end
 % J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ 0.5 * int(x(t)Q(t)x(t) + u(t)R(t)u(t))dt 
 % The integral term can be converted to a differential equation as follows:
 % xdot3 =  0.5 * x(t)Q(t)x(t) + 0.5* u(t)R(t)u(t)
-% function d = diff_equ_x_J(t, XX)
-% global A B U_arr t_u Q R
-% X = XX(1:2);
-% u = interp1(t_u, U_arr, t, 'pchip');
-% d = A*X + B*u;
-% d(3) = 0.5*X'*Q*X + 0.5*R*u^2;
-% end
+function d = diff_equ_x_J(t, XX)
+global A B U_arr t_u Q R
+X = XX(1:2);
+u = interp1(t_u, U_arr, t, 'pchip');
+d = A*X + B*u;
+d(3) = 0.5*X'*Q*X + 0.5*R*u^2;
+end
 
 %==========================================================================
 % This function computs costate differential equations, that is expressed as:
@@ -447,17 +447,17 @@ end
 % xdot3 =  0.5 * x(t)Q(t)x(t) + 0.5* u(t)R(t)u(t)
 % Therfore, the quadratic  cost functional can be expressed as follows:
 % J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ xdot3
-% function J = cost(lambda, u, S)
-% global x0 H tf
-% global U_arr
-% options = odeset('AbsTol', [1e-6 1e-6 1e-6], 'RelTol', 1e-8);
-% 
-% U_arr = u + lambda*S;
-% %xx0 = [x0;0]; % zero is for cost function integral
-% [~, x] = ode45(@diff_equ_x_J, [0 tf], [x0;0], options);
-% xend = x(end, 1:2)';
-% J = x(end, 3) + 0.5*xend'*H*xend;
-% end
+function J = cost(lambda, u, S)
+    global x0 H tf
+    global U_arr
+    options = odeset('AbsTol', [1e-6 1e-6 1e-6], 'RelTol', 1e-8);
+
+    U_arr = u + lambda*S;
+    %xx0 = [x0;0]; % zero is for cost function integral
+    [~, x] = ode45(@diff_equ_x_J, [0 tf], [x0;0], options);
+    xend = x(end, 1:2)';
+    J = x(end, 3) + 0.5*xend'*H*xend;
+end
 %==========================================================================
 %======================================================================
 % Bracketing
