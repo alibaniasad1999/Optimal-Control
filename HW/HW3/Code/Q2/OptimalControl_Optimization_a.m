@@ -14,7 +14,7 @@
 function OptimalControl_Optimization_a()
 clc
 
-global tf t_u R Q H A B x0 dt plot_flag time_x x_global
+global tf t_u R Q H A B x0 dt plot_flag
 % ------------------        Dynamic System Modeling       -----------------
 % Dynamic System Modeling is an approach to understanding the behaviour of
 % systems. A linear control system can be written as:xdot=Ax+Bu and y=Cx;
@@ -87,8 +87,12 @@ tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
 max_count		= 200;
 counter			= 0;
+choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
+    ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
+    , 'BFGS + Golden Section');
 while (norm_gradient > tol && counter < max_count)
     counter = counter + 1;
+    
     %
     %======================================================================
     % Gradient
@@ -100,7 +104,7 @@ while (norm_gradient > tol && counter < max_count)
     % In this section, gradient is computed using the quasi-analytical formulation as follows:
     
     tic
-    plot_flag	= 0;
+    plot_flag	= 1;
     if counter == 1
         dJdu      = gradient(U);
         dJdu_prev = dJdu;
@@ -112,9 +116,9 @@ while (norm_gradient > tol && counter < max_count)
     norm_gradient	= norm(dJdu, 2);
     fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm_gradient)
     fprintf('Elapsed time = %1.4f sec\n', toc)
-    	%figure(300)
-    	%hold on
-    	%plot(t_u, dJdu);
+%     	figure(300)
+%     	hold on
+%     	plot(t_u, dJdu);
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -142,7 +146,9 @@ while (norm_gradient > tol && counter < max_count)
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     % --------------      Steepest Decsent(Cauchy)         ----------------
-%     Search_Dir = - dJdu;
+    if choice == 1 || choice == 2
+        Search_Dir = - dJdu;
+    end
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -183,23 +189,21 @@ while (norm_gradient > tol && counter < max_count)
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     % ------------------------      BFGS          -------------------------
-    d =  U   - U_prev   ;
-    g = dJdu - dJdu_prev;
-    if counter == 1
-        B_BFGS = eye(N+1);
-    else
-    B_BFGS = B_BFGS + d * d' / (d' * g) * (1 + g' * B_BFGS * g / (d' * g)) - ...
-        B_BFGS * g * d' / (d' * g) - d * g' * B_BFGS /  (d' * g);
-    end
-    figure(200)
-    hold on
-    plot(time_x, x_global)
-	drawnow()
+    if choice == 3 || choice == 4
+        d =  U   - U_prev   ;
+        g = dJdu - dJdu_prev;
+        if counter == 1
+            B_BFGS = eye(N+1);
+        else
+            B_BFGS = B_BFGS + d * d' / (d' * g) * (1 + g' * B_BFGS * g / (d' * g)) - ...
+                B_BFGS * g * d' / (d' * g) - d * g' * B_BFGS /  (d' * g);
+        end
+%     figure(200)
+%     hold on
+%     plot(time_x, x_global)
+% 	drawnow()
     Search_Dir = -B_BFGS * dJdu;
-    
-    
-    
-  
+    end
     %======================================================================
     % Line Search
     % Bracketing
@@ -235,109 +239,112 @@ while (norm_gradient > tol && counter < max_count)
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     % ---------------     Quadratic Interpolation         -----------------
-    % This algorithm must be written by the student.
-%     A_QI = lower;
-%     B_QI = middle;
-%     C_QI = upper;
-% %     U_a = U + A_QI * search_dir;
-% %     U_b = U + B_QI * search_dir;
-% %     U_c = U + C_QI * search_dir;
-%     f_a = cost_lower;
-%     f_b = cost_middle;
-%     f_c = cost_upper;
-%     % three equation and three unknown %
-%     a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
-%         /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-%     b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
-%         /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-%     c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
-%         /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-%     lambda_tilda = -b / (2 * c);
-%     % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
-%     h = a + b * lambda_tilda + c * lambda_tilda^2;
-% %     U_lambda = U + lambda_tilda * Search_Dir;
-%     f_lambda_tilda = cost(lambda_tilda, U, Search_Dir);
-%     while abs((h - f_lambda_tilda) / f_lambda_tilda) >= tol_lambda
-%         if lambda_tilda > B_QI && f_lambda_tilda < f_b
-%             A_QI = B_QI;
-%             B_QI = lambda_tilda;
-%         elseif lambda_tilda > B_QI && f_lambda_tilda > f_b
-%             C_QI = lambda_tilda;
-%         elseif lambda_tilda < B_QI && f_lambda_tilda < f_b
-%             C_QI = B_QI;
-%             B_QI = lambda_tilda;
-%         else
-%             A_QI = lambda_tilda;
-%         end
-% %         U_a = U + A_QI * Search_Dir;
-% %         U_b = U + B_QI * Search_Dir;
-% %         U_c = U + C_QI * Search_Dir;
-%         f_a = cost(A_QI, U, Search_Dir);
-%         f_b = cost(B_QI, U, Search_Dir);
-%         f_c = cost(C_QI, U, Search_Dir);
-%         % three equation and three unknown %
-%         a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
-%             /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-%         b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
-%             /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-%         c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
-%             /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
-%         lambda_tilda = -b / (2 * c);
-%         % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
-%         h = a + b * lambda_tilda + c * lambda_tilda^2;
-% %         U_lambda = U + lambda_tilda * Search_Dir;
-%         f_lambda_tilda = cost(lambda_tilda, U, Search_Dir);
-%     end
-%     lambda = lambda_tilda;
+    if choice == 1 || choice == 3
+        A_QI = lower;
+        B_QI = middle;
+        C_QI = upper;
+        %     U_a = U + A_QI * search_dir;
+        %     U_b = U + B_QI * search_dir;
+        %     U_c = U + C_QI * search_dir;
+        f_a = cost_lower;
+        f_b = cost_middle;
+        f_c = cost_upper;
+        % three equation and three unknown %
+        a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
+            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+        b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
+            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+        c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
+            /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+        lambda_tilda = -b / (2 * c);
+        % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
+        h = a + b * lambda_tilda + c * lambda_tilda^2;
+        %     U_lambda = U + lambda_tilda * Search_Dir;
+        f_lambda_tilda = cost(lambda_tilda, U, Search_Dir);
+        while abs((h - f_lambda_tilda) / f_lambda_tilda) >= tol_lambda
+            if lambda_tilda > B_QI && f_lambda_tilda < f_b
+                A_QI = B_QI;
+                B_QI = lambda_tilda;
+            elseif lambda_tilda > B_QI && f_lambda_tilda > f_b
+                C_QI = lambda_tilda;
+            elseif lambda_tilda < B_QI && f_lambda_tilda < f_b
+                C_QI = B_QI;
+                B_QI = lambda_tilda;
+            else
+                A_QI = lambda_tilda;
+            end
+            %         U_a = U + A_QI * Search_Dir;
+            %         U_b = U + B_QI * Search_Dir;
+            %         U_c = U + C_QI * Search_Dir;
+            f_a = cost(A_QI, U, Search_Dir);
+            f_b = cost(B_QI, U, Search_Dir);
+            f_c = cost(C_QI, U, Search_Dir);
+            % three equation and three unknown %
+            a = (f_a * B_QI * C_QI * (C_QI - B_QI) + f_b * C_QI * A_QI * (A_QI - C_QI) + f_c * A_QI * B_QI * (B_QI - A_QI))...
+                /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+            b = (f_a * (B_QI^2 - C_QI^2) + f_b * (C_QI^2 - A_QI^2) + f_c * (A_QI^2 - B_QI^2))...
+                /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+            c = -(f_a * (B_QI - C_QI) + f_b * (C_QI - A_QI) + f_c * (A_QI - B_QI))...
+                /((A_QI - B_QI) * (B_QI - C_QI) * (C_QI - A_QI));
+            lambda_tilda = -b / (2 * c);
+            % Quadratic function h(lambda) = a + b * lambda + c * lambda^2
+            h = a + b * lambda_tilda + c * lambda_tilda^2;
+            %         U_lambda = U + lambda_tilda * Search_Dir;
+            f_lambda_tilda = cost(lambda_tilda, U, Search_Dir);
+        end
+        lambda = lambda_tilda;
+    end
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     % -------------------      Golden Section         ---------------------
-    % This algorithm must be written by the student.
     % cuase we use golden number in bracketing a = a b = x_1 c = b
     % a is lower and b is upper
     % initial condition from bracketing
-    goldnum = .618;
-    a = lower;
-    f_1 = cost_middle;
-    %f_b = f_c;
-    u_1 = middle;
-    b   = upper;
-    d   = (b - a) * goldnum;
-    u_2 = a + d;
-    %U_2 = U + u_2 * Search_Dir;
-    f_2 = cost(u_2, U, Search_Dir);
-    while abs(a - b) > tol_lambda
-        if f_1 > f_2
-            % new a
-            a   = u_1;
-            %f_a = f_1;
-            % new x_1
-            u_1 = u_2;
-            f_1 = f_2;
-            % new x_2
-            d   = (b - a) * goldnum;
-            u_2 = a + d;
-            %U_2 = U + u_2 * Search_Dir;
-            f_2 = cost(u_2, U, Search_Dir);
-        elseif f_2 > f_1
-            % new b
-            b = u_2;
-            %f_b = f_2;
-            % new x_2
-            u_2 = u_1;
-            f_2 = f_1;
-            % new x_1
-            d   = (b - a) * goldnum;
-            u_1 = b - d;
-            %U_1 = U + u_1 * Search_Dir;
-            f_1 = cost(u_1, U, Search_Dir);
-        else
-            a = (u_1 + u_2) / 2;
-            b = a;
+    if choice == 2 || choice == 4
+        
+        goldnum = .618;
+        a = lower;
+        f_1 = cost_middle;
+        %f_b = f_c;
+        u_1 = middle;
+        b   = upper;
+        d   = (b - a) * goldnum;
+        u_2 = a + d;
+        %U_2 = U + u_2 * Search_Dir;
+        f_2 = cost(u_2, U, Search_Dir);
+        while abs(a - b) > tol_lambda
+            if f_1 > f_2
+                % new a
+                a   = u_1;
+                %f_a = f_1;
+                % new x_1
+                u_1 = u_2;
+                f_1 = f_2;
+                % new x_2
+                d   = (b - a) * goldnum;
+                u_2 = a + d;
+                %U_2 = U + u_2 * Search_Dir;
+                f_2 = cost(u_2, U, Search_Dir);
+            elseif f_2 > f_1
+                % new b
+                b = u_2;
+                %f_b = f_2;
+                % new x_2
+                u_2 = u_1;
+                f_2 = f_1;
+                % new x_1
+                d   = (b - a) * goldnum;
+                u_1 = b - d;
+                %U_1 = U + u_1 * Search_Dir;
+                f_1 = cost(u_1, U, Search_Dir);
+            else
+                a = (u_1 + u_2) / 2;
+                b = a;
+            end
         end
+        lambda = (u_1 + u_2) / 2;
     end
-    lambda = (u_1 + u_2) / 2;
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -354,7 +361,16 @@ while (norm_gradient > tol && counter < max_count)
     U_prev = U;
     U	   = U + lambda * Search_Dir;
 end
-
+switch choice
+    case choice == 1
+        print(200, 'Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
+    case choice == 2
+        print(200, 'Steepest Descent + Golden Section','-dpng.png','-r300')
+    case choice == 3
+        print(200, 'BFGS + Quadratic Interpolation.png','-dpng','-r300')
+    otherwise
+        print(200, 'BFGS + Golden Section.png','-dpng','-r300')
+end
 end
 
 
@@ -419,6 +435,8 @@ if plot_flag==1
     figure(200)
     hold on
     plot(time_x, x_global)
+    xlabel('$Time_{\sec}$', 'interpreter', 'latex');
+    ylabel('$\vec{X}$', 'interpreter', 'latex');
 	drawnow()
 end
 n = length(time_x);
