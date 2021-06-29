@@ -362,11 +362,11 @@ while (norm_gradient > tol && counter < max_count)
     U	   = U + lambda * Search_Dir;
 end
 switch choice
-    case choice == 1
+    case 1
         print(200, 'Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
-    case choice == 2
-        print(200, 'Steepest Descent + Golden Section','-dpng.png','-r300')
-    case choice == 3
+    case 2
+        print(200, 'Steepest Descent + Golden Section.png','-dpng','-r300')
+    case 3
         print(200, 'BFGS + Quadratic Interpolation.png','-dpng','-r300')
     otherwise
         print(200, 'BFGS + Golden Section.png','-dpng','-r300')
