@@ -5,6 +5,7 @@
 
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
+*.png
 *.aux
 *.lof
 *.log
