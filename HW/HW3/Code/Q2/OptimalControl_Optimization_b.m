@@ -14,7 +14,7 @@
 function OptimalControl_Optimization_b()
 clc
 
-global tf t_u R Q H A B x0 dt plot_flag
+global tf t_u R Q H A B x0 dt plot_flag u_upper u_lower r_constrain
 % ------------------        Dynamic System Modeling       -----------------
 % Dynamic System Modeling is an approach to understanding the behaviour of
 % systems. A linear control system can be written as:xdot=Ax+Bu and y=Cx;
@@ -33,6 +33,9 @@ B	= [0
 x0  = [1 ;
        1];
 epsilon = 0.01; % Bracketing
+u_upper = 0.4;
+u_lower = -0.4;
+r_constrain = 0.01;
 % -------------------      Cost Function         --------------------------
 %  A control problem includes a cost functional that is a function of state
 %  and control variables.In optimal control theory, the following objective
@@ -92,6 +95,7 @@ choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
     , 'BFGS + Golden Section');
 while (norm_gradient > tol && counter < max_count)
     counter = counter + 1;
+    % change r for constrain
     
     %
     %======================================================================
@@ -106,11 +110,11 @@ while (norm_gradient > tol && counter < max_count)
     tic
     plot_flag	= 1;
     if counter == 1
-        dJdu      = gradient(U);
+        dJdu      = finite_gradient(U);
         dJdu_prev = dJdu;
     else
         dJdu_prev = dJdu;
-        dJdu = gradient(U);
+        dJdu = finite_gradient(U);
     end
 %     plot_flag	= 0;
     norm_gradient	= norm(dJdu, 2);
@@ -302,7 +306,6 @@ while (norm_gradient > tol && counter < max_count)
     % a is lower and b is upper
     % initial condition from bracketing
     if choice == 2 || choice == 4
-        
         goldnum = .618;
         a = lower;
         f_1 = cost_middle;
@@ -420,6 +423,7 @@ end
 % For the quadratic continuous-time cost functional,gradient of cost is 
 % expressed as follows: 
 % d(Hamiltonian)/du = R*u + p*B and dJ=(R*u + p*B)*dt
+%{
 function dj = gradient(u)
 global x0 H tf dt B R plot_flag
 options = odeset('AbsTol', 1e-6, 'RelTol', 1e-6);
@@ -454,7 +458,7 @@ p = interp1(time_p, p, t_u, 'pchip');
 Hu = R*u + p*B;
 dj = Hu*dt;
 end
-
+%}
 %==========================================================================
 % This function computs the cost. In optimal control theory, the cost 
 % function is expressed as follows:
@@ -467,7 +471,9 @@ end
 % J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ xdot3
 function J = cost(lambda, u, S)
     global x0 H tf
-    global U_arr
+    global U_arr 
+    % for constrain
+    global u_upper u_lower r_constrain
     options = odeset('AbsTol', [1e-6 1e-6 1e-6], 'RelTol', 1e-8);
 
     U_arr = u + lambda*S;
@@ -475,6 +481,7 @@ function J = cost(lambda, u, S)
     [~, x] = ode45(@diff_equ_x_J, [0 tf], [x0;0], options);
     xend = x(end, 1:2)';
     J = x(end, 3) + 0.5*xend'*H*xend;
+    J = cost_constarin(U_arr, J, u_upper, u_lower, r_constrain);
 end
 %==========================================================================
 %======================================================================
@@ -490,20 +497,20 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
     f_b = cost(b, X, search_dir);
     if f_a < f_b
         search_dir = -search_dir;
-        f_a = cost(a, X, search_dir);
+        %f_a = cost(a, X, search_dir);
         f_b = cost(b, X, search_dir);
-        if abs(f_a - f_b) > 0.01
-            disp('change epsilon number');
-            return;
-        else
-            a   = 0;
-            b   = 0;
-            c   = 0;
-            f_a = 0;
-            f_b = 0;
-            f_c = 0;
-            return;
-        end
+%         if abs(f_a - f_b) > 0.01
+%             disp('change epsilon number');
+%             gamma = 1.618;
+%             c   = b + gamma * (b - a);
+%             f_c = f_b;
+%             return;
+%         end
+    end
+    while f_a == f_b
+        epsilon = epsilon * 1.618;
+        a = b;
+        b = a + epsilon;
     end
     gamma = 1.618; % golden number
     c = b + gamma * (b - a);
@@ -522,20 +529,49 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
     f_a = cost(a, X, search_dir);
 end
 function cost_c = cost_constarin(U, cost, upper, lower, r)
-a = 0.5;
-c = 0.9;
+a = 0.4;
+c = 0.6;
 epsilon = -c * r^a;
 g1 = U - upper;
-g2 = -lower - U;
-if g1 <= epsilon
-    g1 = - 1 \ g1;
-else
-    g1 = (g1 - 2 * epsilon) / epsilon^2;
+g2 = lower - U;
+for i = 1:length(g1)
+    if g1(i) <= epsilon
+        g1(i) = - 1 \ g1(i);
+    else
+        g1(i) = (g1(i) - 2 * epsilon) / epsilon^2;
+    end
 end
-if g2 <= epsilon
-    g2 = - 1 \ g2;
-else
-    g2 = (g2 - 2 * epsilon) / epsilon^2;
+for i = 1:length(g2)
+    if g2(i) <= epsilon
+        g2(i) = - 1 \ g2(i);
+    else
+        g2(i) = (g2(i) - 2 * epsilon) / epsilon^2;
+    end
 end
-cost_c = cost + r * (g1 + g2); 
+cost_c = cost + r * (sum(g1) + sum(g2)); 
+end
+function dJdu = finite_gradient(U)
+global time_x x_global plot_flag
+N = length(U) - 1;
+Search_Dir = zeros(N+1,1);
+du = .01;
+f0 = cost(0, U, Search_Dir);
+dJdu = zeros(1);
+for i=1:N+1
+    Search_Dir(i) = 1;
+    f1 = cost(du, U, Search_Dir);
+    dJdu(i) = (f1-f0)/du;
+    Search_Dir(i) = 0;
+end
+%plot(t_u, dJdu, 'r.');
+%fprintf('Elapsed time = %1.4f sec\n', toc)
+dJdu = dJdu';
+if plot_flag == 1
+    figure(200)
+    hold on
+    plot(time_x, x_global)
+    xlabel('$Time_{\sec}$', 'interpreter', 'latex');
+    ylabel('$\vec{X}$', 'interpreter', 'latex');
+    drawnow()
+end
 end
