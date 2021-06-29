@@ -14,7 +14,7 @@
 function OptimalControl_Optimization_a()
 clc
 
-global tf t_u R Q H A B x0 dt plot_flag
+global tf t_u R Q H A B x0 dt plot_flag counter
 % ------------------        Dynamic System Modeling       -----------------
 % Dynamic System Modeling is an approach to understanding the behaviour of
 % systems. A linear control system can be written as:xdot=Ax+Bu and y=Cx;
@@ -82,7 +82,7 @@ plot_flag	= 0;
 %==========================================================================
 %  Optimization Loop
 %==========================================================================
-tol				= 1e-4;
+tol				= 1e-8;
 tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
 max_count		= 200;
@@ -482,6 +482,7 @@ end
 %======================================================================
 % In this section, Bracket is  found using golden number(1.618)
 function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
+global counter;
     a =       0;
     b = epsilon;
     %X_a = X + a * search_dir;
@@ -489,9 +490,15 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
     f_a = cost(a, X, search_dir);
     f_b = cost(b, X, search_dir);
     if f_a < f_b
+        if counter == 1
         search_dir = -search_dir;
         f_a = cost(a, X, search_dir);
         f_b = cost(b, X, search_dir);
+        else
+            epsilon = epsilon / 2;
+            b = epsilon;
+            f_b = cost(b, X, search_dir);
+        end
         if abs(f_a - f_b) > 0.01
             disp('change epsilon number');
             return;
