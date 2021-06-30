@@ -147,24 +147,25 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
     X_b = X + b * search_dir;
     f_a = cost(X_a);
     f_b = cost(X_b);
-    if f_a < f_b
-        search_dir = -search_dir;
-        X_a = X + a * search_dir;
-        X_b = X + b * search_dir;
-        f_a = cost(X_a);
+    xxx = zeros(1, 2);
+    counter = 1;
+    while f_a <= f_b
+        xxx(counter, 1) = epsilon;
+        xxx(counter, 2) = f_b;
+        counter = counter + 1;
+        epsilon = epsilon / 2;
+        b = epsilon;
+        X_b = X + b * -search_dir;
         f_b = cost(X_b);
-        if abs(f_a - f_b) > 0.01
-            disp('change epsilon number');
-            return;
-        else
-            a   = 0;
-            b   = 0;
-            c   = 0;
-            f_a = 0;
-            f_b = 0;
+        if counter == 100
+            break
+        end
+        if b == 0
+            c = 0;
             f_c = 0;
             return;
         end
+        
     end
     gamma = 1.618; % golden number
     c = b + gamma * (b - a);
