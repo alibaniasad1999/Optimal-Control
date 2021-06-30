@@ -11,9 +11,9 @@
 %==========================================================================
 % Main Routine
 %==========================================================================
-function OptimalControl_Optimization_a()
+function OptimalControl_Optimization_b()
 clc
-
+warning off;
 global tf t_u R Q H A B x0 dt plot_flag counter r_constrain
 % ------------------        Dynamic System Modeling       -----------------
 % Dynamic System Modeling is an approach to understanding the behaviour of
@@ -77,7 +77,7 @@ U		= zeros(N+1, 1);
 U_prev  = U; 
 t_u		= 0:dt:tf;
 % -------------------      Execution Options         ----------------------
-plot_flag	= 0;
+plot_flag	= 1;
 
 %==========================================================================
 %  Optimization Loop
@@ -87,6 +87,7 @@ tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
 max_count		= 200;
 counter			= 0;
+U_saver = zeros(200, N+1);
 choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
     , 'BFGS + Golden Section');
@@ -95,7 +96,7 @@ while (norm_gradient > tol && counter < max_count)
     if counter == 1
         r_constrain = 1;
     else
-        r_constrain = r_constrain * 0.9;
+        r_constrain = r_constrain * 1.3;
     end
     %======================================================================
     % Gradient
@@ -115,10 +116,8 @@ while (norm_gradient > tol && counter < max_count)
         dJdu_prev = dJdu;
         dJdu = gradient(U);
     end
+    U_saver(counter, :) = U;
 %     plot_flag	= 0;
-    norm_gradient	= norm(dJdu, 2);
-    fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm_gradient)
-    fprintf('Elapsed time = %1.4f sec\n', toc)
 %     	figure(300)
 %     	hold on
 %     	plot(t_u, dJdu);
@@ -361,9 +360,14 @@ while (norm_gradient > tol && counter < max_count)
     %======================================================================
     %next step
     %======================================================================
+    
+    norm_gradient	= norm(dJdu, 2);
+    fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm_gradient)
+    fprintf('Elapsed time = %1.4f sec\n', toc)
     U_prev = U;
     U	   = U + lambda * Search_Dir;
 end
+save U_2.mat U_saver;
 switch choice
     case 1
         print(200, 'Constrain Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
@@ -394,13 +398,19 @@ end
 % continuous-time cost functional is expressed as follows:
 % J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ 0.5 * int(x(t)Q(t)x(t) + u(t)R(t)u(t))dt 
 % The integral term can be converted to a differential equation as follows:
-% xdot3 =  0.5 * x(t)Q(t)x(t) + 0.5* u(t)R(t)u(t)
+% xdot3 =  0.5 * x(t)Q(t)x(t) + 0.5* u(t)R(t)u(t) + G(constrain)
 function d = diff_equ_x_J(t, XX)
 global A B U_arr t_u Q R
 X = XX(1:2);
 u = interp1(t_u, U_arr, t, 'pchip');
 d = A*X + B*u;
-d(3) = 0.5*X'*Q*X + 0.5*R*u^2;
+% G_cost = zeros(1);
+% for j = 1:length(u)
+%     [G_cost(j), ~] = G(u(j));
+% end
+[G1_cost, ~] = G1(u);
+[G2_cost, ~] = G2(u);
+d(3) = 0.5*X'*Q*X + 0.5*R*u^2 + G1_cost + G2_cost;
 end
 
 %==========================================================================
@@ -454,7 +464,15 @@ p = interp1(time_p, p, t_u, 'pchip');
 % n = length(time_p);
 % time_p = time_p(n:-1:1);
 % p = p(n:-1:1,:);
-Hu = R*u + p*B;
+dg1 = zeros(1);
+for i = 1:length(u)
+    [~, dg1(i)] = G1(u(i));
+end
+dg2 = zeros(1);
+for i = 1:length(u)
+    [~, dg2(i)] = G2(u(i));
+end
+Hu = R*u + p*B + dg1' + dg2'; % exterior and interior
 dj = Hu*dt;
 end
 
@@ -485,7 +503,7 @@ end
 %======================================================================
 % In this section, Bracket is  found using golden number(1.618)
 function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
-global counter;
+%global counter;
     a =       0;
     b = epsilon;
     %X_a = X + a * search_dir;
@@ -493,25 +511,19 @@ global counter;
     f_a = cost(a, X, search_dir);
     f_b = cost(b, X, search_dir);
     if f_a < f_b
-        if counter == 1
         search_dir = -search_dir;
-        f_a = cost(a, X, search_dir);
+        %f_a = cost(a, X, search_dir);
         f_b = cost(b, X, search_dir);
-        else
-            epsilon = epsilon / 2;
-            b = epsilon;
-            f_b = cost(b, X, search_dir);
+        if f_a < f_b
+            search_dir = -search_dir;
+            while f_a < f_b
+                epsilon = epsilon / 2;
+                b = epsilon;
+                f_b = cost(b, X, search_dir);
+            end
         end
-        if abs(f_a - f_b) > 0.01
+        if b == 0
             disp('change epsilon number');
-            return;
-        else
-            a   = 0;
-            b   = 0;
-            c   = 0;
-            f_a = 0;
-            f_b = 0;
-            f_c = 0;
             return;
         end
     end
@@ -519,7 +531,7 @@ global counter;
     c = b + gamma * (b - a);
     %X_c = X + c * search_dir;
     f_c = cost(c, X, search_dir);
-    while f_b > f_c
+    while f_b >= f_c
         a = b;
         b = c;
         c = b + gamma * (b - a);
@@ -531,7 +543,29 @@ global counter;
     end
     f_a = cost(a, X, search_dir);
 end
-function cost = G(u)
+function [cost, dg] = G1(u)
 global r_constrain
-
+G = u - 0.4;
+% c = 0.9 , a = 1/2
+epsilon = -0.9 * (r_constrain) ^ 0.5;
+if G <= epsilon 
+    cost = -1 / G;
+    dg = -1 / (u - 0.4)^2;
+else
+    cost = -1 / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
+    dg = -1 / epsilon * (-3 * u / epsilon + (2 * u - 0.8) / epsilon^2);
+end
+end
+function [cost, dg] = G2(u)
+global r_constrain
+G = -u - 0.4;
+% c = 0.9 , a = 1/2
+epsilon = -0.9 * (r_constrain) ^ 0.5;
+if G <= epsilon 
+    cost = -1 / G;
+    dg = -1 / (u - 0.4)^2;
+else
+    cost = -1 / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
+    dg = -1 / epsilon * (-3 * u / epsilon + (2 * u - 0.8) / epsilon^2);
+end
 end
