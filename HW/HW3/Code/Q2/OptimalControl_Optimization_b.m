@@ -85,18 +85,20 @@ plot_flag	= 1;
 tol				= 1e-4;
 tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
-max_count		= 200;
+max_count		= 256;
 counter			= 0;
-U_saver = zeros(200, N+1);
+U_saver = zeros(500, N+1);
 choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
     , 'BFGS + Golden Section');
 while (norm_gradient > tol && counter < max_count)
     counter = counter + 1;
     if counter == 1
-        r_constrain = 1;
+        r_constrain = .1;
     else
-        r_constrain = r_constrain * 1.3;
+        if r_constrain > 1e-6
+            r_constrain = r_constrain * 0.5;
+        end
     end
     %======================================================================
     % Gradient
@@ -129,7 +131,7 @@ while (norm_gradient > tol && counter < max_count)
 % %     
 %     	tic
 %     	Search_Dir = zeros(N+1,1);
-%     	du = 1;
+%     	du = 0.01;
 %     	f0 = cost(0, U, Search_Dir);
 %     	for i=1:N+1
 %     		Search_Dir(i) = 1;
@@ -364,10 +366,11 @@ while (norm_gradient > tol && counter < max_count)
     norm_gradient	= norm(dJdu, 2);
     fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm_gradient)
     fprintf('Elapsed time = %1.4f sec\n', toc)
+    fprintf('Iteration No. %3i\tSearch direction * lambda = %1.4e\n', counter, norm(dJdu - dJdu_prev, 2))
     U_prev = U;
     U	   = U + lambda * Search_Dir;
 end
-save U_2.mat U_saver;
+save U_3.mat U_saver;
 switch choice
     case 1
         print(200, 'Constrain Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
@@ -511,9 +514,9 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
     f_a = cost(a, X, search_dir);
     f_b = cost(b, X, search_dir);
     if f_a < f_b
-        search_dir = -search_dir;
+%         search_dir = -search_dir;
         %f_a = cost(a, X, search_dir);
-        f_b = cost(b, X, search_dir);
+%         f_b = cost(b, X, search_dir);
         if f_a < f_b
             search_dir = -search_dir;
             while f_a < f_b
@@ -549,11 +552,11 @@ G = u - 0.4;
 % c = 0.9 , a = 1/2
 epsilon = -0.9 * (r_constrain) ^ 0.5;
 if G <= epsilon 
-    cost = -1 / G;
-    dg = -1 / (u - 0.4)^2;
+    cost = -r_constrain / G;
+    dg = r_constrain / (u - 0.4)^2;
 else
-    cost = -1 / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
-    dg = -1 / epsilon * (-3 * u / epsilon + (2 * u - 0.8) / epsilon^2);
+    cost = -r_constrain / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
+    dg = -r_constrain / epsilon * (-3 / epsilon + (2 * u - 0.8) / epsilon^2);
 end
 end
 function [cost, dg] = G2(u)
@@ -562,10 +565,10 @@ G = -u - 0.4;
 % c = 0.9 , a = 1/2
 epsilon = -0.9 * (r_constrain) ^ 0.5;
 if G <= epsilon 
-    cost = -1 / G;
-    dg = -1 / (u - 0.4)^2;
+    cost = -r_constrain * 1 / G;
+    dg = -r_constrain * 1 / (u + 0.4)^2;
 else
-    cost = -1 / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
-    dg = -1 / epsilon * (-3 * u / epsilon + (2 * u - 0.8) / epsilon^2);
+    cost = -r_constrain  / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
+    dg = -r_constrain / epsilon * (3 / epsilon + (2 * u + 0.8) / epsilon^2);
 end
 end
