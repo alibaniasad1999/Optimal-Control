@@ -14,7 +14,7 @@
 function OptimalControl_Optimization_a()
 clc
 warning off;
-global tf t_u R Q H A B x0 dt plot_flag counter r_constrain
+global tf t_u H A B x0 dt plot_flag counter r_constrain
 % ------------------        Dynamic System Modeling       -----------------
 % Dynamic System Modeling is an approach to understanding the behaviour of
 % systems. A linear control system can be written as:xdot=Ax+Bu and y=Cx;
@@ -26,10 +26,10 @@ global tf t_u R Q H A B x0 dt plot_flag counter r_constrain
 % B    :  input matrix of the given system
 % x0   :  initial state vector
 
-A	= [0	1
-      -1 -0.1];
-B	= [0
-       1];
+A	= [-1	0
+        0  -2];
+B	= [1
+       2];
 x0  = [1 ;
        1];
 epsilon = 0.01; % Bracketing
@@ -55,10 +55,10 @@ epsilon = 0.01; % Bracketing
 % Q             :  the state weighting matrix
 % R             :  the control weighting matrix
 % tf            :  the final time
-H		= 10 * eye(2);
-Q		= 1  * eye(2);
-R		= 1;
-tf		= 3;
+H		= 100 * eye(2);
+%Q		= 1  * eye(2);
+%R		= 1;
+tf		= 2;
 % -------------------      Discretization         -------------------------
 % Numerical Solution of Optimal Control Problems by Direct Method by an
 % appropriate discretization of control and state variables.
@@ -73,7 +73,8 @@ tf		= 3;
 
 N		= 100;
 dt		= tf/N;
-U		= zeros(N+1, 1);
+U		= zeros(N+1+1, 1);
+U(end, 1) = 5;
 U_prev  = U; 
 t_u		= 0:dt:tf;
 % -------------------      Execution Options         ----------------------
@@ -87,7 +88,7 @@ tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
 max_count		= 256;
 counter			= 0;
-U_saver = zeros(500, N+1);
+U_saver = zeros(500, N+1+1);
 choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
     , 'BFGS + Golden Section');
@@ -392,8 +393,8 @@ end
 % Note: The initial condition is initial state.
 function d = diff_equ(t, X)
 global A B U_arr t_u
-u = interp1(t_u, U_arr, t, 'pchip');
-d = A*X + B*u;
+u = interp1(t_u, U_arr(1:101, :), t, 'pchip');
+d = (A*X + B*u) * U_arr(end, 1);
 end
 
 %==========================================================================
@@ -403,9 +404,9 @@ end
 % The integral term can be converted to a differential equation as follows:
 % xdot3 =  0.5 * x(t)Q(t)x(t) + 0.5* u(t)R(t)u(t) + G(constrain)
 function d = diff_equ_x_J(t, XX)
-global A B U_arr t_u Q R
+global A B U_arr t_u
 X = XX(1:2);
-u = interp1(t_u, U_arr, t, 'pchip');
+u = interp1(t_u, U_arr(1:end-1, 1), t, 'pchip');
 d = A*X + B*u;
 % G_cost = zeros(1);
 % for j = 1:length(u)
@@ -413,7 +414,9 @@ d = A*X + B*u;
 % end
 [G1_cost, ~] = G1(u);
 [G2_cost, ~] = G2(u);
-d(3) = 0.5*X'*Q*X + 0.5*R*u^2 + G1_cost + G2_cost;
+%d(3) = 0.5*X'*Q*X + 0.5*R*u^2 + G1_cost + G2_cost;
+% d(3) = U_arr(end, 1)*2 + G1_cost + G2_cost;
+d(3) = G1_cost + G2_cost;
 end
 
 %==========================================================================
@@ -424,10 +427,10 @@ end
 % Note: Since x(tf) is free, (dh(tf)/dx(tf))-p(tf)=0. Therefore, boundry  
 % condition of costate differential equations is as follows:
 % p(tf)= dh(tf)/dx(tf).
-function d = diff_equ_p(t, p)
-global A x_global Q time_x
-x = interp1(time_x, x_global, t, 'pchip');
-d = -A'*p - Q*x';
+function d = diff_equ_p(~, p)
+global A U_arr
+%x = interp1(time_x, x_global, t, 'pchip');
+d = -A'*p  * U_arr(end, 1);
 end
 
 %==========================================================================
@@ -437,7 +440,7 @@ end
 % expressed as follows: 
 % d(Hamiltonian)/du = R*u + p*B and dJ=(R*u + p*B)*dt
 function dj = gradient(u)
-global x0 H tf dt B R plot_flag
+global x0 H tf dt B plot_flag
 options = odeset('AbsTol', 1e-6, 'RelTol', 1e-6);
 global U_arr t_u time_x x_global
 U_arr = u;
@@ -468,14 +471,15 @@ p = interp1(time_p, p, t_u, 'pchip');
 % time_p = time_p(n:-1:1);
 % p = p(n:-1:1,:);
 dg1 = zeros(1);
-for i = 1:length(u)
+for i = 1:length(u(1:101, 1))
     [~, dg1(i)] = G1(u(i));
 end
 dg2 = zeros(1);
-for i = 1:length(u)
+for i = 1:length(u(1:101, 1))
     [~, dg2(i)] = G2(u(i));
 end
-Hu = R*u + p*B + dg1' + dg2'; % exterior and interior
+Hu = p*B*U_arr(end, 1) + dg1' + dg2'; % exterior and interior
+Hu = [Hu; 2 * U_arr(end, 1)]; % add time gradient 2t_f
 dj = Hu*dt;
 end
 
@@ -498,7 +502,7 @@ function J = cost(lambda, u, S)
     %xx0 = [x0;0]; % zero is for cost function integral
     [~, x] = ode45(@diff_equ_x_J, [0 tf], [x0;0], options);
     xend = x(end, 1:2)';
-    J = x(end, 3) + 0.5*xend'*H*xend;
+    J = U_arr(end, 1)^2 + x(end, 3) + 0.5*xend'*H*xend;
 end
 %==========================================================================
 %======================================================================
