@@ -11,10 +11,10 @@
 %==========================================================================
 % Main Routine
 %==========================================================================
-function OptimalControl_Optimization_b()
+function final_exam_part_a()
 clc
 warning off;
-global tf t_u R Q H A B x0 dt plot_flag counter r_constrain
+global tf t_u R Q H x0 dt plot_flag counter r_constrain
 % ------------------        Dynamic System Modeling       -----------------
 % Dynamic System Modeling is an approach to understanding the behaviour of
 % systems. A linear control system can be written as:xdot=Ax+Bu and y=Cx;
@@ -22,16 +22,8 @@ global tf t_u R Q H A B x0 dt plot_flag counter r_constrain
 % A,B and C are matrices with proper dimensions, either constant or
 % time-varying.
 % Following is a brief description of the system modeling's input arguments:
-% A    :  state matrix of the given system
-% B    :  input matrix of the given system
-% x0   :  initial state vector
-
-A	= [0	1
-      -1 -0.1];
-B	= [0
-       1];
-x0  = [1 ;
-       1];
+x0  = [2 ;
+       0];
 epsilon = 0.01; % Bracketing
 % -------------------      Cost Function         --------------------------
 %  A control problem includes a cost functional that is a function of state
@@ -56,10 +48,10 @@ epsilon = 0.01; % Bracketing
 % Q             :  the state weighting matrix
 % R             :  the control weighting matrix
 % tf            :  the final time
-H		= 10 * eye(2);
+H		= 5 * eye(2);
 Q		= 1  * eye(2);
 R		= 1;
-tf		= 3;
+tf		= 7;
 % -------------------      Discretization         -------------------------
 % Numerical Solution of Optimal Control Problems by Direct Method by an
 % appropriate discretization of control and state variables.
@@ -88,7 +80,7 @@ tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
 max_count		= 256;
 counter			= 0;
-U_saver = zeros(500, N+1);
+U_saver = zeros(256, N+1);
 choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
     , 'BFGS + Golden Section');
@@ -392,9 +384,12 @@ end
 % xdot=Ax+Bu
 % Note: The initial condition is initial state.
 function d = diff_equ(t, X)
-global A B U_arr t_u
+global U_arr t_u
 u = interp1(t_u, U_arr, t, 'pchip');
-d = A*X + B*u;
+x_1 = X(1);
+x_2 = X(2);
+d(1, 1) = x_2;
+d(2, 1) = -0.4 * x_1 - 0.4 * x_1^2 + u;
 end
 
 %==========================================================================
@@ -408,13 +403,14 @@ global A B U_arr t_u Q R
 X = XX(1:2);
 u = interp1(t_u, U_arr, t, 'pchip');
 d = A*X + B*u;
-% G_cost = zeros(1);
-% for j = 1:length(u)
-%     [G_cost(j), ~] = G(u(j));
-% end
+% u constrain
 [G1_cost, ~] = G1(u);
 [G2_cost, ~] = G2(u);
-d(3) = 0.5*X'*Q*X + 0.5*R*u^2 + G1_cost + G2_cost;
+% x dot constrain
+[xdot1_cost, ~] = G1(X(2, 1));
+[xdot2_cost, ~] = G2(X(2, 1));
+d(3) = 0.5*X'*Q*X + 0.5*R*u^2 + 0.5*G1_cost + 0.5*G2_cost + ...
+    0.5*xdot1_cost + 0.5*xdot2_cost;
 end
 
 %==========================================================================
