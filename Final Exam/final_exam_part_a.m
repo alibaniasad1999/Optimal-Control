@@ -48,7 +48,7 @@ epsilon = 0.01; % Bracketing
 % Q             :  the state weighting matrix
 % R             :  the control weighting matrix
 % tf            :  the final time
-H		= 5 * eye(2);
+H		= 10 * eye(2);
 Q		= 1  * eye(2);
 R		= 1;
 tf		= 7;
