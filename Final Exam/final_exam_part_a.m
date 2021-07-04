@@ -81,10 +81,10 @@ norm_gradient	= tol + 1;
 max_count		= 256;
 counter			= 0;
 U_saver = zeros(256, N+1);
-% choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
-%     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
-%     , 'BFGS + Golden Section');
-choice = 2;
+choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
+    ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
+    , 'BFGS + Golden Section');
+% choice = 2;
 while (norm_gradient > tol && counter < max_count)
     counter = counter + 1;
     if counter == 1
@@ -364,7 +364,7 @@ while (norm_gradient > tol && counter < max_count)
     U_prev = U;
     U	   = U + lambda * Search_Dir;
 end
-save U_3.mat U_saver;
+save control_law.mat U_saver;
 switch choice
     case 1
         print(200, 'Constrain Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
