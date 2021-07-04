@@ -42,7 +42,8 @@ epsilon = 0.01; % Bracketing
 % the previous section is the linear quadratic regulator(LQR) optimal
 % control problem. The LQR problem is stated as follows.
 % Minimize the quadratic continuous-time cost functional
-% J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ 0.5 * int(x(t)Q(t)x(t) + u(t)R(t)u(t))dt
+% J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ 0.5 * int(x(t)Q(t)x(t) +
+% u(t)R(t)u(t))dt + g(u) (constrain) + g(x)(constrain)
 % where Q(t) and H are symmetric positive semi-definite n * n matrices,
 % R(t) is a symmetric positive definite m*m matrix.
 % Note that the LQR cost functional can be thought of physically as
