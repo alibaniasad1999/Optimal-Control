@@ -5,7 +5,7 @@ x_2 =       -.5:0.5:.5;
 %x_2_inter = -1:.005:1; % for interpolation
 x_2_max =  0.5;
 x_2_min = -0.5;
-time = 0:1:4;
+time = 0:1:10;
 delta_t = 1;
 u = -.5:.5:.5;
 % contrl_law_matrix = zeros(length(x_1), length(x_2), length(time)-1);
@@ -124,9 +124,9 @@ else
     cost_ij = cost_array(i-1:i+1, j-1:j+1);
 end
 [xx, yy] = meshgrid(x_1_new, x_2_new);
-cost = interp2(x, y, cost_ij, xx', yy');
+cost = interp2(x, y, cost_ij, xx, yy);
 [~, i] = min(abs(x_1_i - x_1_new));
 [~, j] = min(abs(x_2_i - x_2_new));
-cost_ans = cost(i, j);
+cost_ans = cost(j, i); %cause of issue in intepolation
 end
 
