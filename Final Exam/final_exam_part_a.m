@@ -66,7 +66,7 @@ tf		= 7;
 
 N		= 100;
 dt		= tf/N;
-U		= zeros(N+1, 1);
+U		= ones(N+1, 1)*0.4;
 U_prev  = U; 
 t_u		= 0:dt:tf;
 % -------------------      Execution Options         ----------------------
@@ -81,16 +81,17 @@ norm_gradient	= tol + 1;
 max_count		= 256;
 counter			= 0;
 U_saver = zeros(256, N+1);
-choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
-    ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
-    , 'BFGS + Golden Section');
+% choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
+%     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
+%     , 'BFGS + Golden Section');
+choice = 2;
 while (norm_gradient > tol && counter < max_count)
     counter = counter + 1;
     if counter == 1
-        r_constrain = .1;
+        r_constrain = .9;
     else
-        if r_constrain > 1e-6
-            r_constrain = r_constrain * 0.5;
+        if r_constrain > 1e-2
+            r_constrain = r_constrain * 0.9;
         end
     end
     %======================================================================
@@ -389,7 +390,7 @@ u = interp1(t_u, U_arr, t, 'pchip');
 x_1 = X(1);
 x_2 = X(2);
 d(1, 1) = x_2;
-d(2, 1) = -0.4 * x_1 - 0.4 * x_1^2 + u;
+d(2, 1) = -0.4 * x_1 - 0.4 * x_2^2 + u;
 end
 
 %==========================================================================
@@ -399,10 +400,13 @@ end
 % The integral term can be converted to a differential equation as follows:
 % xdot3 =  0.5 * x(t)Q(t)x(t) + 0.5* u(t)R(t)u(t) + G(constrain)
 function d = diff_equ_x_J(t, XX)
-global A B U_arr t_u Q R
+global U_arr t_u Q R
 X = XX(1:2);
 u = interp1(t_u, U_arr, t, 'pchip');
-d = A*X + B*u;
+x_1 = X(1);
+x_2 = X(2);
+d(1, 1) = x_2;
+d(2, 1) = -0.4 * x_1 - 0.4 * x_2^2 + u;
 % u constrain
 [G1_cost, ~] = G1(u);
 [G2_cost, ~] = G2(u);
@@ -422,9 +426,16 @@ end
 % condition of costate differential equations is as follows:
 % p(tf)= dh(tf)/dx(tf).
 function d = diff_equ_p(t, p)
-global A x_global Q time_x
+global x_global time_x
 x = interp1(time_x, x_global, t, 'pchip');
-d = -A'*p - Q*x';
+x_1 = x(1);
+x_2 = x(2);
+p_1 = p(1);
+p_2 = p(2);
+[~, dx_21] = G1(x_2);
+[~, dx_22] = G2(x_2);
+d(1, 1) = -(x_1 + -0.4 * p_2 );
+d(2, 1) = -(x_2 + dx_21 + dx_22 + p_1 - 0.4 * p_2 * x_2);
 end
 
 %==========================================================================
@@ -545,27 +556,27 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
 end
 function [cost, dg] = G1(u)
 global r_constrain
-G = u - 0.4;
+G = u - 0.5;
 % c = 0.9 , a = 1/2
 epsilon = -0.9 * (r_constrain) ^ 0.5;
 if G <= epsilon 
     cost = -r_constrain / G;
-    dg = r_constrain / (u - 0.4)^2;
+    dg = r_constrain / (u - 0.5)^2;
 else
     cost = -r_constrain / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
-    dg = -r_constrain / epsilon * (-3 / epsilon + (2 * u - 0.8) / epsilon^2);
+    dg = -r_constrain / epsilon * (-3 / epsilon + (2 * u - 1.0) / epsilon^2);
 end
 end
 function [cost, dg] = G2(u)
 global r_constrain
-G = -u - 0.4;
+G = -u - 0.5;
 % c = 0.9 , a = 1/2
 epsilon = -0.9 * (r_constrain) ^ 0.5;
 if G <= epsilon 
     cost = -r_constrain * 1 / G;
-    dg = -r_constrain * 1 / (u + 0.4)^2;
+    dg = -r_constrain * 1 / (u + 0.5)^2;
 else
     cost = -r_constrain  / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
-    dg = -r_constrain / epsilon * (3 / epsilon + (2 * u + 0.8) / epsilon^2);
+    dg = -r_constrain / epsilon * (3 / epsilon + (2 * u + 1.0) / epsilon^2);
 end
 end
