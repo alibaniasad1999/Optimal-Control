@@ -35,7 +35,7 @@ for k = length(time)-1:-1:1
                 end
             end
             if ~check_valid
-                u_matrix(i, j, k) = .5;
+%                 u_matrix(i, j, k) = .5;
             end
             check_valid = false;
 %             fprintf('Elapsed time u = %1.4f sec\n', toc)
@@ -47,7 +47,7 @@ end
 toc
 contrl_law_matrix = u_matrix;
 X = zeros(2, length(time));
-x0 = [1.5; 0];
+x0 = [1; 0];
 X(:, 1) = x0;
 for i = 1:length(X)-1
     u_i = interpolation(X(1, i), X(2, i), x_1, x_2, u_matrix(:, :, i));
@@ -75,58 +75,60 @@ function cost_ans = interpolation(x_1_i, x_2_i, x_1_array,...
 [~, i] = min(abs(x_1_i - x_1_array));
 [~, j] = min(abs(x_2_i - x_2_array));
 if i == 1 && j == 1
-    x_1_new = linspace(x_1_array(i), x_1_array(i+2), length(x_1_array));
-    x_2_new = linspace(x_2_array(j), x_2_array(j+2), length(x_2_array));
+    x_1_new = linspace(x_1_array(i), x_1_array(i+2), 100);
+    x_2_new = linspace(x_2_array(j), x_2_array(j+2), 100);
     [x, y] = meshgrid(x_1_array(i:i+2), x_2_array(j:j+2));
     cost_ij = cost_array(i:i+2, j:j+2);
 elseif i == 1 && j ~= 1 && j ~= length(x_2_array)
-    x_1_new = linspace(x_1_array(i), x_1_array(i+2), length(x_1_array));
-    x_2_new = linspace(x_2_array(j-1), x_2_array(j+1), length(x_2_array));
+    x_1_new = linspace(x_1_array(i), x_1_array(i+2), 100);
+    x_2_new = linspace(x_2_array(j-1), x_2_array(j+1), 100);
     [x, y] = meshgrid(x_1_array(i:i+2), x_2_array(j-1:j+1));
     cost_ij = cost_array(i:i+2, j-1:j+1);
 elseif i == 1 && j == length(x_2_array)
-    x_1_new = linspace(x_1_array(i), x_1_array(i+2), length(x_1_array));
-    x_2_new = linspace(x_2_array(j-2), x_2_array(j), length(x_2_array));
+    x_1_new = linspace(x_1_array(i), x_1_array(i+2), 100);
+    x_2_new = linspace(x_2_array(j-2), x_2_array(j), 100);
     [x, y] = meshgrid(x_1_array(i:i+2), x_2_array(j-2:j));
     cost_ij = cost_array(i:i+2, j-2:j);
 elseif i == length(x_1_array) && j == 1
-    x_1_new = linspace(x_1_array(i-2), x_1_array(i), length(x_1_array));
-    x_2_new = linspace(x_2_array(j), x_2_array(j+2), length(x_2_array));
+    x_1_new = linspace(x_1_array(i-2), x_1_array(i), 100);
+    x_2_new = linspace(x_2_array(j), x_2_array(j+2), 100);
     [x, y] = meshgrid(x_1_array(i-2:i), x_2_array(j:j+2));
     cost_ij = cost_array(i-2:i, j:j+2);
 elseif i ~=1 && j == 1 && i ~= length(x_1_array)
-    x_1_new = linspace(x_1_array(i-1), x_1_array(i+1), length(x_1_array));
-    x_2_new = linspace(x_2_array(j), x_2_array(j+2), length(x_2_array));
+    x_1_new = linspace(x_1_array(i-1), x_1_array(i+1), 100);
+    x_2_new = linspace(x_2_array(j), x_2_array(j+2), 100);
     [x, y] = meshgrid(x_1_array(i-1:i+1), x_2_array(j:j+2));
     cost_ij = cost_array(i-1:i+1, j:j+2);
 elseif i ~= length(x_1_array) && j ~= length(x_2_array)
-    x_1_new = linspace(x_1_array(i-1), x_1_array(i+1), length(x_1_array));
-    x_2_new = linspace(x_2_array(j-1), x_2_array(j+1), length(x_2_array));
+    x_1_new = linspace(x_1_array(i-1), x_1_array(i+1), 100);
+    x_2_new = linspace(x_2_array(j-1), x_2_array(j+1), 100);
     [x, y] = meshgrid(x_1_array(i-1:i+1), x_2_array(j-1:j+1));
     cost_ij = cost_array(i-1:i+1, j-1:j+1);
 elseif i == length(x_1_array) && j == length(x_2_array)
-    x_1_new = linspace(x_1_array(i-2), x_1_array(i), length(x_1_array));
-    x_2_new = linspace(x_2_array(j-2), x_2_array(j), length(x_2_array));
+    x_1_new = linspace(x_1_array(i-2), x_1_array(i), 100);
+    x_2_new = linspace(x_2_array(j-2), x_2_array(j), 100);
     [x, y] = meshgrid(x_1_array(i-2:i), x_2_array(j-2:j));
     cost_ij = cost_array(i-2:i, j-2:j);
 elseif i == length(x_1_array) && j ~= length(x_2_array) && j ~= 1
-    x_1_new = linspace(x_1_array(i-2), x_1_array(i), length(x_1_array));
-    x_2_new = linspace(x_2_array(j-1), x_2_array(j+1), length(x_2_array));
+    x_1_new = linspace(x_1_array(i-2), x_1_array(i), 100);
+    x_2_new = linspace(x_2_array(j-1), x_2_array(j+1), 100);
     [x, y] = meshgrid(x_1_array(i-2:i), x_2_array(j-1:j+1));
     cost_ij = cost_array(i-2:i, j-1:j+1);
 elseif i ~= length(x_1_array) && j == length(x_2_array) && i ~= 1
-    x_1_new = linspace(x_1_array(i-1), x_1_array(i+1), length(x_1_array));
-    x_2_new = linspace(x_2_array(j-2), x_2_array(j), length(x_2_array));
+    x_1_new = linspace(x_1_array(i-1), x_1_array(i+1), 100);
+    x_2_new = linspace(x_2_array(j-2), x_2_array(j), 100);
     [x, y] = meshgrid(x_1_array(i-1:i+1), x_2_array(j-2:j));
     cost_ij = cost_array(i-1:i+1, j-2:j);
 else
     [x, y] = meshgrid(x_1_array(i-1:i+1), x_2_array(j-1:j+1));
     cost_ij = cost_array(i-1:i+1, j-1:j+1);
 end
+x_1_new = x_1_new';
+x_2_new = x_2_new';
 [xx, yy] = meshgrid(x_1_new, x_2_new);
 cost = interp2(x, y, cost_ij, xx, yy);
 [~, i] = min(abs(x_1_i - x_1_new));
 [~, j] = min(abs(x_2_i - x_2_new));
-cost_ans = cost(j, i); %cause of issue in intepolation
+cost_ans = cost(i, j); %cause of issue in intepolation
 end
 
