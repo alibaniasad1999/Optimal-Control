@@ -365,6 +365,9 @@ while (norm_gradient > tol && counter < max_count)
     fprintf('Iteration No. %3i\tSearch direction * lambda = %1.4e\n', counter, norm(dJdu - dJdu_prev, 2))
     U_prev = U;
     U	   = U + lambda * Search_Dir;
+    if norm(dJdu - dJdu_prev, 2) < 1e-8
+        break;
+    end
 end
 save control_law.mat U_saver;
 switch choice
