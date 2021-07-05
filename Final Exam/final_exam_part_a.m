@@ -14,7 +14,7 @@
 function final_exam_part_a()
 clc
 warning off;
-global tf t_u R Q H x0 dt plot_flag counter r_constrain
+global tf t_u B R Q H x0 dt plot_flag counter r_constrain
 % ------------------        Dynamic System Modeling       -----------------
 % Dynamic System Modeling is an approach to understanding the behaviour of
 % systems. A linear control system can be written as:xdot=Ax+Bu and y=Cx;
@@ -24,6 +24,8 @@ global tf t_u R Q H x0 dt plot_flag counter r_constrain
 % Following is a brief description of the system modeling's input arguments:
 x0  = [2 ;
        0];
+B = [0;
+     1];
 epsilon = 0.01; % Bracketing
 % -------------------      Cost Function         --------------------------
 %  A control problem includes a cost functional that is a function of state
