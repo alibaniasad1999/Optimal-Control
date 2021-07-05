@@ -1,13 +1,14 @@
 %%%%%%%%%% Exam question part b Dynamic programming %%%%%%%%%%
-x_1       = -1:1:3;
+%% Control Law
+x_1       =  -1:.2: 3;
 %x_1_inter = -1:.001:3; % for interpolation
-x_2 =       -.5:0.5:.5;
+x_2       = -.5:.1:.5;
 %x_2_inter = -1:.005:1; % for interpolation
 x_2_max =  0.5;
 x_2_min = -0.5;
-time = 0:1:10;
-delta_t = 1;
-u = -.5:.5:.5;
+delta_t = .05;
+time = 0:delta_t:7;
+u = -.5:.05:.5;
 % contrl_law_matrix = zeros(length(x_1), length(x_2), length(time)-1);
 cost_matrix = ones(length(x_1), length(x_2), length(time)-1) * inf;
 tic
@@ -35,22 +36,27 @@ for k = length(time)-1:-1:1
                 end
             end
             if ~check_valid
-%                 u_matrix(i, j, k) = .5;
+                u_matrix(i, j, k) = nan;
             end
             check_valid = false;
 %             fprintf('Elapsed time u = %1.4f sec\n', toc)
         end
-        fprintf('Elapsed time x dot = %1.4f sec\n', toc)
+%         fprintf('Elapsed time x dot = %1.4f sec\n', toc)
     end
-    fprintf('Elapsed time xxxxxxxxxxxxxxx = %1.4f sec\n', toc)
+    fprintf('Elapsed time in time %d second = %1.4f sec\n', time(k), toc)
 end
 toc
 contrl_law_matrix = u_matrix;
+%% Find Way
 X = zeros(2, length(time));
-x0 = [1; 0];
+x0 = [1.6; 0];
 X(:, 1) = x0;
 for i = 1:length(X)-1
     u_i = interpolation(X(1, i), X(2, i), x_1, x_2, u_matrix(:, :, i));
+    if isnan(u_i)
+        fprintf("*******************no valid solution*****************\n");
+        break;
+    end
 %     u_i = u_matrix(x_1_i, x_2_i, i);
     [X(1, i+1), X(2, i+1)] = state(X(1, i), X(2, i), u_i, delta_t);
 end
@@ -61,6 +67,11 @@ function j_cost = cost(x_1, x_2, delta_t, u)
 j_cost = (x_1^2 + x_2^2 + u^2) * delta_t;
 end
 function [x_1_new, x_2_new] = state(x_1, x_2, u, delta_t)
+% global u_ode
+% u_ode = u;
+% [~, x] = ode45(@diff_equ, [0; delta_t], [x_1; x_2]);
+% x_1_new = x(end, 1);
+% x_2_new = x(end, 2);
 x_1_new = x_2 * delta_t + x_1;
 x_2_new = (-0.4 * x_1_new - 0.2 * x_2 ^ 2 + u) * delta_t + x_2;
 end
@@ -131,4 +142,11 @@ cost = interp2(x, y, cost_ij, xx, yy);
 [~, j] = min(abs(x_2_i - x_2_new));
 cost_ans = cost(i, j); %cause of issue in intepolation
 end
-
+% function d = diff_equ(~, X)
+% global u_ode
+% u = u_ode;
+% x_1 = X(1);
+% x_2 = X(2);
+% d = [           x_2               ;...
+%     -0.4 * x_1 ^2 - 0.2 * x_2 + u];
+% end
