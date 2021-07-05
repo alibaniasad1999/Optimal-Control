@@ -11,8 +11,8 @@
 \usepackage{amsmath, amsthm}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\fancyhead[R]{\rightmark}
-\fancyhead[L]{Ali BaniAsad 96108378}
+\fancyhead[R]{\lr{96108378}}
+\fancyhead[L]{\lr{Ali BaniAsad}}
 \setlength{\headheight}{10pt}
 \setlength{\headsep}{0.2in}
 \usepackage{titling}
@@ -27,28 +27,83 @@
 \usepackage{xepersian}
 \settextfont{Yas}
 \usepackage{graphicx}
-\title{تعریف پروژه درس کنترل بهینه 1}
+\title{امتحان پایان‌ترم کنترل بهینه 1}
 \author{علی بنی اسد 96108378}
 
 \begin{document}
 	\maketitle
-	\section*{کنترل وضعیت استند چهارپره
-		\LTRfootnote{\lr{Quadcopter}}
-		 سه درجه آزادی 
-		با استفاده از روش کنترل کننده خطی مبتنی بر روش بازی دیفرانسیلی
-(\lr{LQDG\LTRfootnote{\lr{Linear Quadratic Differential Game}}})	
+	\section*{سوال اول}
+برای حل این سوال از کد ارسالی درس استفاده شده‌است ولی برای این سوال تغییراتی اعمال شده‌است که در ادامه به بررسی آن پرداخته می‌شود.
+
+
+سیستم به فرم زیر نوشته شده‌‌است که در کد با اتفاده از تابع  \lr{ode45} شبیه‌سازی می‌شود.
+$$
+a = \begin{bmatrix}
+	\dot{x_1}\\
+	\dot{x_2}
+\end{bmatrix} = \begin{bmatrix}
+x_2\\
+-0.4x_1^2 -0.2x_2^2
+\end{bmatrix} + \begin{bmatrix}
+0\\
+1
+\end{bmatrix}u
+$$
+برای افزودن قیود صورت سوال از توابع پنالتی به شکل 
+\lr{Quadratic Extended}
+استفاده شده‌است. این کار باعث عوض شدن ماتریس هملیتونین می‌شود.
+$$
+\mathcal{H} = \vec{P}^Ta(x, u, t) + x_1^2 + x_2^2 + u^2 + G(u) + G(x_2)
+$$
+با تغییر ماتریس همیلتونین مشتق آن نسبت به 
+$\vec{X}$
+ تغییر می‌کند که در کد لحاظ شده‌است.
+ $$\dot{\vec{P}} = -\dfrac{\partial \mathcal{H}}{\partial \vec{X}} = \begin{bmatrix}
+ 	-x_1 + 0.4p_2 \\
+ 	-x_2  - p_1 + 0.4 p_2x_2 - G(x_2)^{\prime}
+ \end{bmatrix}$$
+بر اساس روند بالا و موارد قبلی در کد گرادیان همیلتوین بر تلاش کنترلی بدست می‌آید سپس پنالتی تلاش کنرلی را نیز اضافه می‌کنیم.
+$$
+\dfrac{\partial \mathcal{H}}{\partial u} = Ru + PB + G(u)^{\prime}
+$$
+در بالا روش تحلیلی بدست آوردن گرادیان توضیح داده شد.
+تابع هزینه هم از انتگرال زیر بدست می‌آید.
+$$J = 10(x_{1_{(tf)}}^2 + x_{2_{(tf)}}^2) +\frac{1}{2}\int_0^7 x_1^2 + x_2^2 + u^2 + G(x_2) + G(u)$$
+در کد پیوست شده توانایی حل با چهار روش را دارد اگه از منو می‌توان روش را انتخاب کرد. نتایح چهار روش آورده شده‌است.
+\lr{\begin{itemize}
+		\item {Steepest Descent + Quadratic Interpolation}
+		\begin{figure}[H]
+			\caption{Steepest Descent + Quadratic Interpolation}
+			\centering
+			\includegraphics[width=11.5cm]{../Constrain Steepest Descent + Quadratic Interpolation.png}
+		\end{figure}
+		\item {Steepest Descent + Golden Section}
+\begin{figure}[H]
+	\caption{Steepest Descent + Golden Section}
+	\centering
+	\includegraphics[width=11.5cm]{../Constrain Steepest Descent + Golden Section.png}
+\end{figure}
+\begin{figure}[H]
+	\caption{BFGS + Quadratic Interpolation}
+	\centering
+	\includegraphics[width=11.5cm]{../Constrain BFGS + Quadratic Interpolation.png}
+\end{figure}
+\begin{figure}[H]
+	\caption{BFGS + Golden Section}
+	\centering
+	\includegraphics[width=11.5cm]{../Constrain BFGS + Golden Section.png}
+\end{figure}
+\end{itemize}
 }
-
-
-
-
-
-چهارپره یکی از انواع پرنده‌های بدون سرنشین عمودپرواز است. از ویژگی‌های بارز این پرنده‌ها می‌توان به کوپلینگ بین کانال‌های رول\LTRfootnote{Roll}، پیچ\LTRfootnote{Pitch} و یاو\LTRfootnote{Yaw} اشاره کرد. از این‌رو، با استفاده از یک مکانیزم ‌سه‌درجه‌آزادی آزمایشگاهی می‌توان نحوه کنترل همزمان زوایای رول، پیچ و یاو چهارپره را بررسی کرد. در این میان، نرم‌افزار‌ سیمولینک امکان ارتباط با حسگرها، کنترل‌کننده و فرمان به موتور را در یک محیط یکپارچه و به ‌صورت بلوک‌های گرافیکی به کاربر می‌دهد که سرعت درک و خطا‌یابی سیستم را دوچندان می‌کند.
-
-
-
-هدف از این پروژه کنترل استند سه درحه آزادی با استفاده از روش LQDG است. در فرضیات پروژه اغتشاش را به صورت یک بازی کن در نظر گرفته شده است که با سیستم همکاری ندارد. هر یک از یازیکنان(سیستم و اغتشاش) سعی در کم کردن تابع هزینه خود با فرض بدترین حرکت طرف مقابل دارند. اساس این روش بر بهینه سازی تابع هزینه سیستم‌های دیفرانسیلی مبنتی بر تعادل نش 
-\LTRfootnote{Nash Equilibrium}
-است.
+\section*{سوال دوم}
+در این قسمت با توجه به نقطه اولیه ممکن است جواب درستی وجود نداشته باشد برای این کار اگر از قید رد شد تابع هزینه به شدت افزایش می‌یابد که با اینکار می‌توان به جواب حدودی همراه با قید رسید. مزیت اینکار نسبت به عدم در نظر گرفتن حالت خارج از آن یا قرار دادن Inf برای آن این است که تابع interpolation عملکرد بهتری خواهد داشت و اگر شرایط اولیه مطلوب نبود برنامه دچار گمراهی نمی‌شود و بازهم بهترین  مسیر را انتخاب می‌کند ولی اگر شرایط اولیه درست باشد با توجه به تفاوت بسیار زیاد تابع هزینه‌ در شرایظ خارج از قید اصلا از قید خارج نمی‌شود.
+\lr{
+\begin{figure}[H]
+	\caption{Dynamic Programming result}
+	\centering
+	\includegraphics[width=11.5cm]{../DP.png}
+\end{figure}
+}
+گسسته سازی به صورت زیر انجام شد و کل برنامه در 8 ثانیه اجرا شد. البته با توجه به گسسته سازی محدود interpolation با ماتریس‌های نسبتا بزرگی انجام شده‌است و دقت کار را به شکل خوبی بالا می‌برد.
 \end{document}
 
