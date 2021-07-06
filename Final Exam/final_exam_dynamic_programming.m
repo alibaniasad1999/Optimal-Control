@@ -58,7 +58,7 @@ for i = 1:length(X)-1
     u_i = interpolation(X(1, i), X(2, i), x_1, x_2, u_matrix(:, :, i));
     [X(1, i+1), X(2, i+1)] = state(X(1, i), X(2, i), u_i, delta_t);
 end
-plot(time, X)
+plot(time, X , 'linewidth', 2)
 hold on
 xlabel('$Time_{\sec}$', 'interpreter', 'latex');
 ylabel('$\vec{X}$', 'interpreter', 'latex');
