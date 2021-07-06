@@ -43,7 +43,7 @@ a = \begin{bmatrix}
 	\dot{x_2}
 \end{bmatrix} = \begin{bmatrix}
 x_2\\
--0.4x_1^2 -0.2x_2^2
+-0.4x_1 -0.2x_2^2
 \end{bmatrix} + \begin{bmatrix}
 0\\
 1
@@ -160,11 +160,13 @@ $$J = 10(x_{1_{(t_f)}}^2 + x_{2_{(t_f)}}^2) +\frac{1}{2}\int_0^7 x_1^2 + x_2^2 +
 	\centering
 	\includegraphics[width=11cm]{../Constrain Steepest Descent + Golden Section.png}
 \end{figure}
+\item {BFGS + Quadratic Interpolation}
 \begin{figure}[H]
 	\caption{BFGS + Quadratic Interpolation}
 	\centering
 	\includegraphics[width=11cm]{../Constrain BFGS + Quadratic Interpolation.png}
 \end{figure}
+\item {BFGS + Golden Section}
 \begin{figure}[H]
 	\caption{BFGS + Golden Section}
 	\centering
@@ -182,7 +184,7 @@ a = \begin{bmatrix}
 	\dot{x_2}
 \end{bmatrix} = \begin{bmatrix}
 	x_2\\
-	-0.4x_1^2 -0.2x_2^2
+	-0.4x_1 -0.2x_2^2
 \end{bmatrix} + \begin{bmatrix}
 	0\\
 	1
@@ -194,7 +196,7 @@ $$
 	x_2(k+1)
 \end{bmatrix} = \begin{bmatrix}
 	x_2(k)\\
-	-0.4x_1(k)^2 -0.2x_2^2(k) + u(k)
+	-0.4x_1(k) -0.2x_2^2(k) + u(k)
 \end{bmatrix} \Delta t + \begin{bmatrix}
 x_1(k)\\
 x_2(k)
@@ -217,5 +219,5 @@ $$
 	\item {$\dot x =  -1:0.5:1$}
 \end{itemize}
 }
-حال با توجه به قانون کنترل بدست آمده می‌توان بدون انجام محاسبات زیاد قبلی خیلی سرعتر به جواب رسید.
+حال با توجه به قانون کنترل بدست آمده می‌توان بدون انجام محاسبات زیاد قبلی صرفا با تغییر شرایط اولیه خیلی سریع به جواب رسید.
 \end{document}
