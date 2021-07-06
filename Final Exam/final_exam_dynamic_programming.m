@@ -4,8 +4,8 @@ x_1       =  -1:1:3;
 %x_1_inter = -1:.001:3; % for interpolation
 x_2       = -1:.5:1;
 %x_2_inter = -1:.005:1; % for interpolation
-x_2_max =  0.50;
-x_2_min = -0.50;
+x_2_max =  0.52;
+x_2_min = -0.52;
 delta_t = .05;
 time = 0:delta_t:7;
 u = -.5:.5:.5;
@@ -20,7 +20,7 @@ for k = length(time)-1:-1:1
         for j = 1:length(x_2)
             for m = 1:length(u)
                 [x_1_new, x_2_new] = state(x_1(i), x_2(j), u(m), delta_t);
-                if x_2_new <= (x_2_min -0.02)
+                if x_2_new <= x_2_min
                     if k == length(time)-1
                         J_cost = 10 + cost(x_1_new, x_2_new, delta_t, u(m));
                         J_cost = J_cost + 5 * (x_1_new^2 + x_2_new^2);
@@ -56,6 +56,7 @@ control = zeros(length(X), 1);
 u_matrix = contrl_law_matrix;
 for i = 1:length(X)-1
     u_i = interpolation(X(1, i), X(2, i), x_1, x_2, u_matrix(:, :, i));
+    control(i) = u_i;
     [X(1, i+1), X(2, i+1)] = state(X(1, i), X(2, i), u_i, delta_t);
 end
 plot(time, X , 'linewidth', 2)
