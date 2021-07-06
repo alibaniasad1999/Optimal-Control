@@ -49,59 +49,162 @@ x_2\\
 1
 \end{bmatrix}u
 $$
-برای افزودن قیود صورت سوال از توابع پنالتی به شکل 
+برای افزودن قیود صورت سوال از توابع جریمه به شکل 
 \lr{Quadratic Extended}
 استفاده شده‌است. این کار باعث عوض شدن ماتریس هملیتونین می‌شود.
+
+\begin{align*}
+	g_1(x_2) &= x_2 - 0.5\\
+	g_1(u) &= u - 0.5\\
+	g_2(x_2) &= -x_2 - 0.5\\
+	g_2(u) &= -u - 0.5\\
+\end{align*}
+
+\newpage
+\begin{align*}
+	G_1(x_2) = &
+	\begin{cases}
+		-\dfrac{1}{g_1(x_2)}&  g_1(x_2) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(3 - \dfrac{3g_1(x_2)}{\epsilon} + \left(\dfrac{g_1(x_2)}{\epsilon}\right)^2\right) &  g_1(x_2) > \epsilon
+	\end{cases} \\
+	G_1^\prime(x_2) = &
+\begin{cases}
+	\dfrac{1}{(x_2 - 0.5)^2}&  g(x_2) \leq \epsilon \\[1em]
+	-\dfrac{1}{\epsilon}\left(-\dfrac{3}{\epsilon} + \dfrac{2x_2-1}{\epsilon^2} \right) &  g_1(x_2) > \epsilon
+\end{cases} 
+\end{align*}
+\begin{align*}
+	G_2(x_2) = &
+	\begin{cases}
+		-\dfrac{1}{g_2(x_2)}&  g_2(x_2) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(3 - \dfrac{3g_2(x_2)}{\epsilon} + \left(\dfrac{g_2(x_2)}{\epsilon}\right)^2\right) &  g_2(x_2) > \epsilon
+	\end{cases} \\
+	G_2^\prime(x_2) = &
+	\begin{cases}
+		\dfrac{1}{(x_2 + 0.5)^2}&  g(x_2) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(\dfrac{3}{\epsilon} + \dfrac{2x_2+1}{\epsilon^2} \right) &  g_2(x_2) > \epsilon
+	\end{cases} 
+\end{align*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{align*}
+	G_1(u) = &
+	\begin{cases}
+		-\dfrac{1}{g_1(u)}&  g_1(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(3 - \dfrac{3g_1(u)}{\epsilon} + \left(\dfrac{g_1(u)}{\epsilon}\right)^2\right) &  g_1(u) > \epsilon
+	\end{cases} \\
+	G_1^\prime(u) = &
+	\begin{cases}
+		\dfrac{1}{(u - 0.5)^2}&  g_1(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(-\dfrac{3}{\epsilon} + \dfrac{2u-1}{\epsilon^2} \right) &  g_1(u) > \epsilon
+	\end{cases} 
+\end{align*}
+\begin{align*}
+	G_2(x_2) = &
+	\begin{cases}
+		-\dfrac{1}{g_2(u)}&  g_2(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(3 - \dfrac{3g_2(u)}{\epsilon} + \left(\dfrac{g_2(u)}{\epsilon}\right)^2\right) &  g_2(u) > \epsilon
+	\end{cases} \\
+	G_2^\prime(u) = &
+	\begin{cases}
+		\dfrac{1}{(u + 0.5)^2}&  g_2(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(\dfrac{3}{\epsilon} + \dfrac{2u+1}{\epsilon^2} \right) &  g_2(u) > \epsilon
+	\end{cases} 
+\end{align*}
+
+
+
+توابع حریمه دارای ضریب نیز هستند که در هر دوره محاسبات به‌ روز می‌شود البته در کد حداقل ضریب  \lr{0.001} در نظر گرفته شده‌است که از این مقدار کوچکتر نشود.
 $$
-\mathcal{H} = \vec{P}^Ta(x, u, t) + x_1^2 + x_2^2 + u^2 + G(u) + G(x_2)
+\epsilon = -c\left(r_k\right)^2,\qquad a = 0.5,\qquad r_{k+1} = cr_k,\qquad c = 0.9,
+\qquad \min (r_k) = 0.001
+$$
+
+
+
+$$
+\mathcal{H} = \vec{P}^Ta(\vec{X}, u, t) + \frac12\left(x_1^2 + x_2^2 + u^2 + r_kG(u) + r_kG(x_2)\right)
 $$
 با تغییر ماتریس همیلتونین مشتق آن نسبت به 
 $\vec{X}$
  تغییر می‌کند که در کد لحاظ شده‌است.
  $$\dot{\vec{P}} = -\dfrac{\partial \mathcal{H}}{\partial \vec{X}} = \begin{bmatrix}
  	-x_1 + 0.4p_2 \\
- 	-x_2  - p_1 + 0.4 p_2x_2 - G(x_2)^{\prime}
+ 	-x_2  - p_1 + 0.4 p_2x_2 - \dfrac{r_k}{2}G^{\prime}(x_2)
  \end{bmatrix}$$
-بر اساس روند بالا و موارد قبلی در کد گرادیان همیلتوین بر تلاش کنترلی بدست می‌آید سپس پنالتی تلاش کنرلی را نیز اضافه می‌کنیم.
+ $$\begin{bmatrix}
+ 	\dot{p_1}\\
+ 	\dot{p_2}
+ \end{bmatrix} = \begin{bmatrix}
+	-x_1 + 0.4p_2 \\
+	  - p_1 + x_2(0.4 p_2-1) - \dfrac{r_k}{2}G^{\prime}(x_2)
+\end{bmatrix}$$
+بر اساس روند بالا و موارد قبلی که در کد پیاده سازی شده‌بود می‌توان مشتق همیلتونین نسبت به تلاش کنترلی($u$) بدست آورد سپس جریمه تلاش کنترلی را نیز اضافه می‌کنیم.
 $$
-\dfrac{\partial \mathcal{H}}{\partial u} = Ru + PB + G(u)^{\prime}
+\dfrac{\partial \mathcal{H}}{\partial u} = Ru + PB + r_kG^{\prime}(u)
 $$
 در بالا روش تحلیلی بدست آوردن گرادیان توضیح داده شد.
 تابع هزینه هم از انتگرال زیر بدست می‌آید.
-$$J = 10(x_{1_{(tf)}}^2 + x_{2_{(tf)}}^2) +\frac{1}{2}\int_0^7 x_1^2 + x_2^2 + u^2 + G(x_2) + G(u)$$
-در کد پیوست شده توانایی حل با چهار روش را دارد اگه از منو می‌توان روش را انتخاب کرد. نتایح چهار روش آورده شده‌است.
+$$J = 10(x_{1_{(t_f)}}^2 + x_{2_{(t_f)}}^2) +\frac{1}{2}\int_0^7 x_1^2 + x_2^2 + u^2 + r_kG(x_2) + r_kG(u)$$
+کد پیوست شده توانایی حل با چهار روش را دارد اگه از منو می‌توان روش را انتخاب کرد. نتایح چهار روش آورده شده‌است.
+\newpage
 \lr{\begin{itemize}
 		\item {Steepest Descent + Quadratic Interpolation}
 		\begin{figure}[H]
 			\caption{Steepest Descent + Quadratic Interpolation}
 			\centering
-			\includegraphics[width=11.5cm]{../Constrain Steepest Descent + Quadratic Interpolation.png}
+			\includegraphics[width=11cm]{../Constrain Steepest Descent + Quadratic Interpolation.png}
 		\end{figure}
 		\item {Steepest Descent + Golden Section}
 \begin{figure}[H]
 	\caption{Steepest Descent + Golden Section}
 	\centering
-	\includegraphics[width=11.5cm]{../Constrain Steepest Descent + Golden Section.png}
+	\includegraphics[width=11cm]{../Constrain Steepest Descent + Golden Section.png}
 \end{figure}
 \begin{figure}[H]
 	\caption{BFGS + Quadratic Interpolation}
 	\centering
-	\includegraphics[width=11.5cm]{../Constrain BFGS + Quadratic Interpolation.png}
+	\includegraphics[width=11cm]{../Constrain BFGS + Quadratic Interpolation.png}
 \end{figure}
 \begin{figure}[H]
 	\caption{BFGS + Golden Section}
 	\centering
-	\includegraphics[width=11.5cm]{../Constrain BFGS + Golden Section.png}
+	\includegraphics[width=11cm]{../Constrain BFGS + Golden Section.png}
 \end{figure}
 \end{itemize}
 }
 \section*{سوال دوم}
 در این قسمت با توجه به نقطه اولیه ممکن است جواب درستی وجود نداشته باشد برای این کار اگر از قید رد شد تابع هزینه به شدت افزایش می‌یابد که با اینکار می‌توان به جواب حدودی همراه با قید رسید. مزیت اینکار نسبت به عدم در نظر گرفتن حالت خارج از آن یا قرار دادن Inf برای آن این است که تابع interpolation عملکرد بهتری خواهد داشت و اگر شرایط اولیه مطلوب نبود برنامه دچار گمراهی نمی‌شود و بازهم بهترین  مسیر را انتخاب می‌کند ولی اگر شرایط اولیه درست باشد با توجه به تفاوت بسیار زیاد تابع هزینه‌ در شرایظ خارج از قید اصلا از قید خارج نمی‌شود.
+
+معدلات سیستم به فرم زیر نوشته شده‌است.
+$$
+a = \begin{bmatrix}
+	\dot{x_1}\\
+	\dot{x_2}
+\end{bmatrix} = \begin{bmatrix}
+	x_2\\
+	-0.4x_1^2 -0.2x_2^2
+\end{bmatrix} + \begin{bmatrix}
+	0\\
+	1
+\end{bmatrix}u
+$$
+$$
+\begin{bmatrix}
+	x_1(k+1)\\
+	x_2(k+1)
+\end{bmatrix} = \begin{bmatrix}
+	x_2(k)\\
+	-0.4x_1(k)^2 -0.2x_2^2(k) + u(k)
+\end{bmatrix} \Delta t + \begin{bmatrix}
+x_1(k)\\
+x_2(k)
+\end{bmatrix}
+$$
 \lr{
 \begin{figure}[H]
 	\caption{Dynamic Programming result}
 	\centering
-	\includegraphics[width=11.5cm]{../DP.png}
+	\includegraphics[width=12cm]{../DP.png}
 \end{figure}
 }
 گسسته سازی به صورت زیر انجام شد و کل برنامه در 8 ثانیه اجرا شد. البته با توجه به گسسته سازی محدود interpolation با ماتریس‌های نسبتا بزرگی انجام شده‌است و دقت کار را به شکل خوبی بالا می‌برد.
