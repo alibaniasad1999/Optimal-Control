@@ -1,105 +1,111 @@
 X_zero = [-1; 1];
 X      = X_zero; % current  X
 X_prev = X_zero; % previous X
-gradient_tol = 1e-8; 
+gradient_tol = 1e-7; 
 li_tol = 1e-3; % linear serach
 dJ = gradient(X)';
 dJ_prev = gradient(X_prev)';
 epsilon = 0.01;
 counter = 0;
 counter = counter + 1;
-% BFGS + Golden Section
-%{
-while norm(dJ, 2) > gradient_tol
-    counter = counter + 1;
+choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
+    ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
+    , 'BFGS + Golden Section');
+if choice == 4
+    % BFGS + Golden Section
     tic
-	fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
-    fprintf('Elapsed time = %1.8f sec\n', toc)
-    if isequal(X, X_prev)
-        B = eye(2);
-        search_dir = -B * dJ;
+    while norm(dJ, 2) > gradient_tol
+        counter = counter + 1;
+        fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
+        if isequal(X, X_prev)
+            B = eye(2);
+            search_dir = -B * dJ;
+            [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
+            lambda = golden_section(a, b, c, f_b, search_dir, X, li_tol);
+            X_prev = X;
+            X = X + lambda * search_dir;
+            dJ_prev = dJ;
+            dJ = gradient(X)';
+            continue
+        end
+        d =  X -  X_prev;
+        g = dJ - dJ_prev;
+        search_dir = BFGS(B, d, g, dJ);
         [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
         lambda = golden_section(a, b, c, f_b, search_dir, X, li_tol);
         X_prev = X;
         X = X + lambda * search_dir;
         dJ_prev = dJ;
         dJ = gradient(X)';
-        continue
     end
-    d =  X -  X_prev;
-    g = dJ - dJ_prev;
-    search_dir = BFGS(B, d, g, dJ);
-    [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
-    lambda = golden_section(a, b, c, f_b, search_dir, X, lr_tol);
-    X_prev = X;
-    X = X + lambda * search_dir;
-    dJ_prev = dJ;
-    dJ = gradient(X)';
-end
-%}
-% BFGS + Quadratic Interpolation
-%{
-while norm(dJ, 2) > gradient_tol
-    counter = counter + 1;
-    tic
-	fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
     fprintf('Elapsed time = %1.8f sec\n', toc)
-    if isequal(X, X_prev)
-        B = eye(2);
-        search_dir = -B * dJ;
+end
+if choice == 3
+    tic
+    % BFGS + Quadratic Interpolation
+    while norm(dJ, 2) > gradient_tol
+        counter = counter + 1;
+        fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
+        if isequal(X, X_prev)
+            B = eye(2);
+            search_dir = -B * dJ;
+            [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
+            lambda = quadratic_interpolation(a, b, c, search_dir, X, li_tol);
+            X_prev = X;
+            X = X + lambda * search_dir;
+            dJ_prev = dJ;
+            dJ = gradient(X)';
+            continue
+        end
+        d =  X -  X_prev;
+        g = dJ - dJ_prev;
+        search_dir = BFGS(B, d, g, dJ);
         [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
-        lambda = quadratic_interpolation(a, b, c, search_dir, X, li_tol);
+        if ~(a == 0 && b == 0 && c == 0)
+            lambda = golden_section(a, b, c, f_b, search_dir, X, li_tol);
+        end
         X_prev = X;
         X = X + lambda * search_dir;
         dJ_prev = dJ;
         dJ = gradient(X)';
-        continue
     end
-    d =  X -  X_prev;
-    g = dJ - dJ_prev;
-    search_dir = BFGS(B, d, g, dJ);
-    [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
-    if ~(a == 0 && b == 0 && c == 0)
-        lambda = golden_section(a, b, c, f_b, search_dir, X, li_tol);
-    end
-    X_prev = X;
-    X = X + lambda * search_dir;
-    dJ_prev = dJ;
-    dJ = gradient(X)';
-end
-%}
-% Steepest Descent + Quadratic Interpolation
-
-while norm(dJ, 2) > gradient_tol
-    counter = counter + 1;
-    tic
-	fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
     fprintf('Elapsed time = %1.8f sec\n', toc)
-    search_dir = steepest_decsent(dJ);
-    [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
-    if ~(a == 0 && b == 0 && c == 0)
-        lambda = quadratic_interpolation(a, b, c ,search_dir, X, li_tol);
-    end
-    X = X + lambda * search_dir;
-    dJ = gradient(X)';
 end
 
-% Steepest Descent + Golden Section
-%{
-while abs(dJ) > gradient_tol
-    counter = counter + 1;
+if choice == 1
     tic
-	fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
-    fprintf('Elapsed time = %1.8f sec\n', toc)
-    search_dir = steepest_decsent(dJ);
-    [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
-    if ~(a == 0 && b == 0 && c == 0)
-        lambda = golden_section(a, b, c, f_b, search_dir, X, li_tol);
+    % Steepest Descent + Quadratic Interpolation
+    while norm(dJ, 2) > gradient_tol
+        counter = counter + 1;
+        fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
+        
+        search_dir = steepest_decsent(dJ);
+        [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
+        if ~(a == 0 && b == 0 && c == 0)
+            lambda = quadratic_interpolation(a, b, c ,search_dir, X, li_tol);
+        end
+        X = X + lambda * search_dir;
+        dJ = gradient(X)';
     end
-    X = X + lambda * search_dir;
-    dJ = gradient(X)';
+    fprintf('Elapsed time = %1.8f sec\n', toc)
 end
-%}
+
+if choice == 2
+    tic
+    % Steepest Descent + Golden Section
+    while abs(dJ) > gradient_tol
+        counter = counter + 1;
+        fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm(dJ, 2))
+        search_dir = steepest_decsent(dJ);
+        [a, b, c, ~, f_b, ~] = bracketing(X, search_dir, epsilon);
+        if ~(a == 0 && b == 0 && c == 0)
+            lambda = golden_section(a, b, c, f_b, search_dir, X, li_tol);
+        end
+        X = X + lambda * search_dir;
+        dJ = gradient(X)';
+    end
+    fprintf('Elapsed time = %1.8f sec\n', toc)
+end
 %==========================================================================
 % FUNCTIONS
 %==========================================================================
