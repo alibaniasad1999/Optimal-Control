@@ -4,7 +4,7 @@ Y_1 = linspace(-1,   1, 100);
 [X_1,Y_1] = meshgrid(X_1, Y_1);
 Z_1 = Y_1 .* sin(X_1 + Y_1) - X_1 .* sin(X_1 - Y_1);
 figure1 = figure('Name','Contour','NumberTitle','off');
-contour(X_1, Y_1, Z_1, 100)
+contour(X_1, Y_1, Z_1, 200)
 xlabel('x')
 ylabel('y')
 hold on;

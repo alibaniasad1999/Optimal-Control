@@ -3,12 +3,12 @@ X_1 = linspace(-2, -1, 100);
 Y_1 = linspace(0,   1, 100);
 [X_1,Y_1] = meshgrid(X_1, Y_1);
 Z_1 = Y_1 .* sin(X_1 + Y_1) - X_1 .* sin(X_1 - Y_1);
-figure2 = figure('Name','Contour','NumberTitle','off');
-contour(X_1, Y_1, Z_1, 100)
+figure1 = figure('Name','Contour','NumberTitle','off');
+contour(X_1, Y_1, Z_1, 200)
 xlabel('x')
 ylabel('y')
 hold on;
-X_zero = [-1; -1];
+X_zero = [-1; 1];
 X      = X_zero; % current  X
 X_prev = X_zero; % previous X
 gradient_tol = 1e-7;
@@ -155,19 +155,19 @@ switch choice
     case 1
         fprintf('Steepest Descent + Quadratic Interpolation--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
             , gradient_iteration, cost_iteration);
-        print(figure1, '../../Figure/Q1/part a Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
+        print(figure1, '../../Figure/Q1/part b Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
     case 2
         fprintf('Steepest Descent + Golden Section--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
             , gradient_iteration, cost_iteration);
-        print(figure1, '../../Figure/Q1/part a Steepest Descent + Golden Section.png','-dpng','-r300')
+        print(figure1, '../../Figure/Q1/part b Steepest Descent + Golden Section.png','-dpng','-r300')
     case 3
         fprintf('BFGS + Quadratic Interpolation--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
             , gradient_iteration, cost_iteration);
-        print(figure1, '../../Figure/Q1/part a BFGS + Quadratic Interpolation.png','-dpng','-r300')
+        print(figure1, '../../Figure/Q1/part b BFGS + Quadratic Interpolation.png','-dpng','-r300')
     otherwise
         fprintf('BFGS + Golden Section--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
             , gradient_iteration, cost_iteration);
-        print(figure1, '../../Figure/Q1/part a BFGS + Golden Section.png','-dpng','-r300')
+        print(figure1, '../../Figure/Q1/part b BFGS + Golden Section.png','-dpng','-r300')
 end
 %==========================================================================
 % FUNCTIONS

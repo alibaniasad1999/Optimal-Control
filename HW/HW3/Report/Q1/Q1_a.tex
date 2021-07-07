@@ -1,1 +1,100 @@
 \subsection{part a}
+\subsubsection{figures}
+$$\vec X_0 = \begin{bmatrix}
+	-1\\1
+\end{bmatrix}$$
+Tolerance is:$10^{-7}$
+
+
+Answer is:
+ $$\vec X_{ans} = \begin{bmatrix}
+ 	-1.7556\\
+ 	0.3655
+ \end{bmatrix}$$
+\newpage
+\begin{itemize}
+	\item Steepest Descent
+	\begin{itemize}
+		\item Quadratic Interpolation
+		\begin{figure}[H]
+			\caption{Steepest Descent and Quadratic Interpolation}
+			\centering
+			\includegraphics[width=11.5cm]{../Figure/Q1/part a Steepest Descent + Quadratic Interpolation.png}
+		\end{figure}
+		\item Golden Section
+		\begin{figure}[H]
+			\caption{Steepest Descent and Golden Section}
+			\centering
+			\includegraphics[width=11.5cm]{../Figure/Q1/part a Steepest Descent + Golden Section.png}
+		\end{figure}
+	\end{itemize}
+	\item BFGS
+	\begin{itemize}
+		\item Quadratic Interpolation
+		\begin{figure}[H]
+			\caption{BFGS and Quadratic Interpolation}
+			\centering
+			\includegraphics[width=11.5cm]{../Figure/Q1/part a BFGS + Quadratic Interpolation.png}
+		\end{figure}
+		\item Golden Section
+			\begin{figure}[H]
+				\caption{BFGS and Golden Section}
+				\centering
+				\includegraphics[width=11.5cm]{../Figure/Q1/part a BFGS + Golden Section.png}
+		\end{figure}
+	\end{itemize}
+\end{itemize}
+\subsubsection{result}
+\begin{itemize}
+	\item Time
+\begin{table}[h]
+	\caption {Time compare between four methods} 
+	\begin{center}
+		\begin{tabular}{ |l|l|l|l| }
+			\hline
+			\multicolumn{2}{|c|}{Steepest Descent} &
+			\multicolumn{2}{|c|}{BFGS} \Tstrut\\
+			\hline
+			Quadratic Interpolation & Golden Section & Quadratic Interpolation &
+			Golden Section \Tstrut\\
+			\hline
+			$0.238\sec$ & $0.183\sec$ & $0.164\sec$ & $0.102\sec$\Tstrut\\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+	\item Number of Cost calculation
+\begin{table}[h]
+	\caption {Number of Cost calculation compare between four methods} 
+	\begin{center}
+		\begin{tabular}{ |l|l|l|l| }
+			\hline
+			\multicolumn{2}{|c|}{Steepest Descent} &
+			\multicolumn{2}{|c|}{BFGS} \Tstrut\\
+			\hline
+			Quadratic Interpolation & Golden Section & Quadratic Interpolation &
+			Golden Section \Tstrut\\
+			\hline
+			$360$ & $336$ & $242$ & $213$\Tstrut\\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+	\item Number of Gradient calculation
+\begin{table}[h]
+	\caption {Number of Gradient calculation compare between four methods} 
+	\begin{center}
+		\begin{tabular}{ |l|l|l|l| }
+			\hline
+			\multicolumn{2}{|c|}{Steepest Descent} &
+			\multicolumn{2}{|c|}{BFGS} \Tstrut\\
+			\hline
+			Quadratic Interpolation & Golden Section & Quadratic Interpolation &
+			Golden Section \Tstrut\\
+			\hline
+			$19$ & $13$ & $13$ & $9$\Tstrut\\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+\end{itemize}

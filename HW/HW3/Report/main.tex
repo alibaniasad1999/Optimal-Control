@@ -17,6 +17,8 @@
 \setlength{\headsep}{0.2in}
 \usepackage{titling}
 \usepackage{float}
+\newcommand\Tstrut{\rule{0pt}{2.6ex}}         % = `top' strut
+\newcommand\Bstrut{\rule[-0.9ex]{0pt}{0pt}}   % = `bottom' strut
 %----------------------------------------------------------------------------------------
 %	ASSIGNMENT INFORMATION
 %----------------------------------------------------------------------------------------
@@ -31,10 +33,14 @@
 \begin{document}
 	\maketitle
 	\section{Question 1}
+	\input{Q1/Q1_base}
 	\input{Q1/Q1_a}
+	\input{Q1/Q1_b}
 	\newpage
 	\tableofcontents
 	\newpage
 	\listoffigures
+	\newpage
+	\listoftables
 \end{document}
 
