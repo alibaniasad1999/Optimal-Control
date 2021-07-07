@@ -3,16 +3,19 @@ X_1 = linspace(-2, -1, 100);
 Y_1 = linspace(0,   1, 100);
 [X_1,Y_1] = meshgrid(X_1, Y_1);
 Z_1 = Y_1 .* sin(X_1 + Y_1) - X_1 .* sin(X_1 - Y_1);
-figure1 = figure('Name','Contour','NumberTitle','off');
+figure2 = figure('Name','Contour','NumberTitle','off');
 contour(X_1, Y_1, Z_1, 100)
 xlabel('x')
 ylabel('y')
 hold on;
-X_zero = [-1; 1];
+X_zero = [-1; -1];
 X      = X_zero; % current  X
 X_prev = X_zero; % previous X
 gradient_tol = 1e-7;
 li_tol = 1e-3; % linear serach
+global cost_iteration gradient_iteration
+cost_iteration = 0;
+gradient_iteration = 0;
 dJ = gradient(X)';
 dJ_prev = gradient(X_prev)';
 epsilon = 0.01;
@@ -147,26 +150,39 @@ if choice == 2
     end
     fprintf('Elapsed time = %1.8f sec\n', toc)
 end
+%%% printer %%%
 switch choice
     case 1
-        print(figure1, '../../Figure/Q1/part b Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
+        fprintf('Steepest Descent + Quadratic Interpolation gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(figure1, '../../Figure/Q1/part a Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
     case 2
-        print(figure1, '../../Figure/Q1/part b Steepest Descent + Golden Section.png','-dpng','-r300')
+        fprintf('Steepest Descent + Golden Section gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(figure1, '../../Figure/Q1/part a Steepest Descent + Golden Section.png','-dpng','-r300')
     case 3
-        print(figure1, '../../Figure/Q1/part b BFGS + Quadratic Interpolation.png','-dpng','-r300')
+        fprintf('BFGS + Quadratic Interpolation gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(figure1, '../../Figure/Q1/part a BFGS + Quadratic Interpolation.png','-dpng','-r300')
     otherwise
-        print(figure1, '../../Figure/Q1/part b BFGS + Golden Section.png','-dpng','-r300')
+        fprintf('BFGS + Golden Section gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(figure1, '../../Figure/Q1/part a BFGS + Golden Section.png','-dpng','-r300')
 end
 %==========================================================================
 % FUNCTIONS
 %==========================================================================
 % Cost function %
 function J = cost(X)
+global cost_iteration
+cost_iteration = cost_iteration + 1;
 x = X(1);
 y = X(2);
 J = y * sin(x + y) - x * sin(x - y);
 end
 function dJ = gradient(X)
+global gradient_iteration
+gradient_iteration = gradient_iteration + 1;
 x = X(1);
 y = X(2);
 % df/dx
@@ -204,11 +220,8 @@ X_a = X + a * search_dir;
 X_b = X + b * search_dir;
 f_a = cost(X_a);
 f_b = cost(X_b);
-xxx = zeros(1, 2);
 counter = 1;
 while f_a <= f_b
-    xxx(counter, 1) = epsilon;
-    xxx(counter, 2) = f_b;
     counter = counter + 1;
     epsilon = epsilon / 2;
     b = epsilon;

@@ -5,7 +5,6 @@ Y_1 = linspace(-1,   1, 100);
 Z_1 = Y_1 .* sin(X_1 + Y_1) - X_1 .* sin(X_1 - Y_1);
 figure2 = figure('Name','Contour','NumberTitle','off');
 contour(X_1, Y_1, Z_1, 100)
-%axis([-2 -1, 0 1])
 xlabel('x')
 ylabel('y')
 hold on;
@@ -14,6 +13,9 @@ X      = X_zero; % current  X
 X_prev = X_zero; % previous X
 gradient_tol = 1e-7;
 li_tol = 1e-3; % linear serach
+global cost_iteration gradient_iteration
+cost_iteration = 0;
+gradient_iteration = 0;
 dJ = gradient(X)';
 dJ_prev = gradient(X_prev)';
 epsilon = 0.01;
@@ -151,12 +153,20 @@ end
 %%% printer %%%
 switch choice
     case 1
+        fprintf('Steepest Descent + Quadratic Interpolation gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
         print(figure1, '../../Figure/Q1/part a Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
     case 2
+        fprintf('Steepest Descent + Golden Section gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
         print(figure1, '../../Figure/Q1/part a Steepest Descent + Golden Section.png','-dpng','-r300')
     case 3
+        fprintf('BFGS + Quadratic Interpolation gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
         print(figure1, '../../Figure/Q1/part a BFGS + Quadratic Interpolation.png','-dpng','-r300')
     otherwise
+        fprintf('BFGS + Golden Section gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
         print(figure1, '../../Figure/Q1/part a BFGS + Golden Section.png','-dpng','-r300')
 end
 %==========================================================================
@@ -164,11 +174,15 @@ end
 %==========================================================================
 % Cost function %
 function J = cost(X)
+global cost_iteration
+cost_iteration = cost_iteration + 1;
 x = X(1);
 y = X(2);
 J = y * sin(x + y) - x * sin(x - y);
 end
 function dJ = gradient(X)
+global gradient_iteration
+gradient_iteration = gradient_iteration + 1;
 x = X(1);
 y = X(2);
 % df/dx
