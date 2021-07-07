@@ -1,15 +1,14 @@
 %%% plot figure %%%
 X_1 = linspace(-2, -1, 100);
-Y_1 = linspace(-1,   1, 100);
+Y_1 = linspace(0,   1, 100);
 [X_1,Y_1] = meshgrid(X_1, Y_1);
 Z_1 = Y_1 .* sin(X_1 + Y_1) - X_1 .* sin(X_1 - Y_1);
-figure2 = figure('Name','Contour','NumberTitle','off');
+figure1 = figure('Name','Contour','NumberTitle','off');
 contour(X_1, Y_1, Z_1, 100)
-%axis([-2 -1, 0 1])
 xlabel('x')
 ylabel('y')
 hold on;
-X_zero = [-1; -1];
+X_zero = [-1; 1];
 X      = X_zero; % current  X
 X_prev = X_zero; % previous X
 gradient_tol = 1e-7;
@@ -148,16 +147,15 @@ if choice == 2
     end
     fprintf('Elapsed time = %1.8f sec\n', toc)
 end
-%%% printer %%%
 switch choice
     case 1
-        print(figure1, '../../Figure/Q1/part a Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
+        print(figure1, '../../Figure/Q1/part b Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
     case 2
-        print(figure1, '../../Figure/Q1/part a Steepest Descent + Golden Section.png','-dpng','-r300')
+        print(figure1, '../../Figure/Q1/part b Steepest Descent + Golden Section.png','-dpng','-r300')
     case 3
-        print(figure1, '../../Figure/Q1/part a BFGS + Quadratic Interpolation.png','-dpng','-r300')
+        print(figure1, '../../Figure/Q1/part b BFGS + Quadratic Interpolation.png','-dpng','-r300')
     otherwise
-        print(figure1, '../../Figure/Q1/part a BFGS + Golden Section.png','-dpng','-r300')
+        print(figure1, '../../Figure/Q1/part b BFGS + Golden Section.png','-dpng','-r300')
 end
 %==========================================================================
 % FUNCTIONS
@@ -206,8 +204,11 @@ X_a = X + a * search_dir;
 X_b = X + b * search_dir;
 f_a = cost(X_a);
 f_b = cost(X_b);
+xxx = zeros(1, 2);
 counter = 1;
 while f_a <= f_b
+    xxx(counter, 1) = epsilon;
+    xxx(counter, 2) = f_b;
     counter = counter + 1;
     epsilon = epsilon / 2;
     b = epsilon;
