@@ -58,7 +58,7 @@ epsilon = 0.01; % Bracketing
 H		= 100 * eye(2);
 %Q		= 1  * eye(2);
 %R		= 1;
-tf		= 2;
+tf		= 1;
 % -------------------      Discretization         -------------------------
 % Numerical Solution of Optimal Control Problems by Direct Method by an
 % appropriate discretization of control and state variables.
@@ -74,7 +74,7 @@ tf		= 2;
 N		= 100;
 dt		= tf/N;
 U		= zeros(N+1+1, 1);
-U(end, 1) = 5;
+U(end, 1) = 1.5;
 U_prev  = U; 
 t_u		= 0:dt:tf;
 % -------------------      Execution Options         ----------------------
@@ -86,9 +86,9 @@ plot_flag	= 1;
 tol				= 1e-4;
 tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
-max_count		= 256;
+max_count		= 100;
 counter			= 0;
-U_saver = zeros(500, N+1+1);
+U_saver = zeros(max_count, N+1+1);
 choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
     , 'BFGS + Golden Section');
@@ -97,8 +97,8 @@ while (norm_gradient > tol && counter < max_count)
     if counter == 1
         r_constrain = .1;
     else
-        if r_constrain > 1e-6
-            r_constrain = r_constrain * 0.5;
+        if r_constrain > 1e-3
+            r_constrain = r_constrain * 0.9;
         end
     end
     %======================================================================
@@ -198,7 +198,7 @@ while (norm_gradient > tol && counter < max_count)
         d =  U   - U_prev   ;
         g = dJdu - dJdu_prev;
         if counter == 1
-            B_BFGS = eye(N+1);
+            B_BFGS = eye(N+1+1);
         else
             B_BFGS = B_BFGS + d * d' / (d' * g) * (1 + g' * B_BFGS * g / (d' * g)) - ...
                 B_BFGS * g * d' / (d' * g) - d * g' * B_BFGS /  (d' * g);
@@ -371,16 +371,16 @@ while (norm_gradient > tol && counter < max_count)
     U_prev = U;
     U	   = U + lambda * Search_Dir;
 end
-save U_3.mat U_saver;
+save U.mat U_saver;
 switch choice
     case 1
-        print(200, 'Constrain Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
+        print(200, '../../Figure/Q3/Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
     case 2
-        print(200, 'Constrain Steepest Descent + Golden Section.png','-dpng','-r300')
+        print(200, '../../Figure/Q3/Steepest Descent + Golden Section.png','-dpng','-r300')
     case 3
-        print(200, 'Constrain BFGS + Quadratic Interpolation.png','-dpng','-r300')
+        print(200, '../../Figure/Q3/BFGS + Quadratic Interpolation.png','-dpng','-r300')
     otherwise
-        print(200, 'Constrain BFGS + Golden Section.png','-dpng','-r300')
+        print(200, '../../Figure/Q3/BFGS + Golden Section.png','-dpng','-r300')
 end
 end
 
@@ -407,14 +407,14 @@ function d = diff_equ_x_J(t, XX)
 global A B U_arr t_u
 X = XX(1:2);
 u = interp1(t_u, U_arr(1:end-1, 1), t, 'pchip');
-d = A*X + B*u;
+d = (A*X + B*u) * U_arr(end, 1);
 % G_cost = zeros(1);
 % for j = 1:length(u)
 %     [G_cost(j), ~] = G(u(j));
 % end
 [G1_cost, ~] = G1(u);
 [G2_cost, ~] = G2(u);
-%d(3) = 0.5*X'*Q*X + 0.5*R*u^2 + G1_cost + G2_cost;
+% d(3) = 0.5*X'*Q*X + 0.5*R*u^2 + G1_cost + G2_cost;
 % d(3) = U_arr(end, 1)*2 + G1_cost + G2_cost;
 d(3) = G1_cost + G2_cost;
 end
@@ -432,6 +432,16 @@ global A U_arr
 %x = interp1(time_x, x_global, t, 'pchip');
 d = -A'*p  * U_arr(end, 1);
 end
+%%% dH/dt_f
+function d = diff_equ_p_tf(t, ~)
+global A B U_arr t_u p x_global time_x
+X = interp1(time_x, x_global, t, 'pchip');
+u = interp1(t_u, U_arr(1:end-1, 1), t, 'pchip');
+p_1 = interp1(t_u, p, t, 'pchip');
+[G1_cost, ~] = G1(u);
+[G2_cost, ~] = G2(u);
+d = p_1 * (A*X' + B*u)  + G1_cost + G2_cost;
+end
 
 %==========================================================================
 % This function computs gradient of the cost.
@@ -442,7 +452,7 @@ end
 function dj = gradient(u)
 global x0 H tf dt B plot_flag
 options = odeset('AbsTol', 1e-6, 'RelTol', 1e-6);
-global U_arr t_u time_x x_global
+global U_arr t_u time_x x_global p
 U_arr = u;
 % tic
 % [time_x, x_global] = ode45(@diff_equ, [0 tf], x0, options);
@@ -478,8 +488,9 @@ dg2 = zeros(1);
 for i = 1:length(u(1:101, 1))
     [~, dg2(i)] = G2(u(i));
 end
+[~, dhdtf] = ode45(@diff_equ_p_tf, [0 tf], 0, options);
 Hu = p*B*U_arr(end, 1) + dg1' + dg2'; % exterior and interior
-Hu = [Hu; 2 * U_arr(end, 1)]; % add time gradient 2t_f
+Hu = [Hu; dhdtf(end, 1)]; % add time gradient 2t_f
 dj = Hu*dt;
 end
 
@@ -552,27 +563,27 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
 end
 function [cost, dg] = G1(u)
 global r_constrain
-G = u - 0.4;
+G = u - 1;
 % c = 0.9 , a = 1/2
 epsilon = -0.9 * (r_constrain) ^ 0.5;
 if G <= epsilon 
     cost = -r_constrain / G;
-    dg = r_constrain / (u - 0.4)^2;
+    dg = r_constrain / (u - 1)^2;
 else
     cost = -r_constrain / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
-    dg = -r_constrain / epsilon * (-3 / epsilon + (2 * u - 0.8) / epsilon^2);
+    dg = -r_constrain / epsilon * (-3 / epsilon + (2 * u - 2) / epsilon^2);
 end
 end
 function [cost, dg] = G2(u)
 global r_constrain
-G = -u - 0.4;
+G = -u - 1;
 % c = 0.9 , a = 1/2
 epsilon = -0.9 * (r_constrain) ^ 0.5;
 if G <= epsilon 
     cost = -r_constrain * 1 / G;
-    dg = -r_constrain * 1 / (u + 0.4)^2;
+    dg = -r_constrain * 1 / (u + 1)^2;
 else
     cost = -r_constrain  / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
-    dg = -r_constrain / epsilon * (3 / epsilon + (2 * u + 0.8) / epsilon^2);
+    dg = -r_constrain / epsilon * (3 / epsilon + (2 * u + 2) / epsilon^2);
 end
 end
