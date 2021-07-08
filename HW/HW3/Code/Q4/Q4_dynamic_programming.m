@@ -4,7 +4,7 @@ x_1  =  -1.4:0.2:1.4;
 x_2  =  -1.4:0.2:1.4;
 delta_t = .05;
 time = 0:delta_t:5;
-u = -.8:.8:.8;
+u = -.8:.1:.8;
 % contrl_law_matrix = zeros(length(x_1), length(x_2), length(time)-1);
 cost_matrix = ones(length(x_1), length(x_2), length(time)-1) * inf;
 tic
@@ -32,7 +32,7 @@ for k = length(time)-1:-1:1
     fprintf('Estimated time at time %1.2f second = %1.4f sec\n', time(k), toc)
 end
 toc
-contrl_law_matrix = u_matrix;
+control_law_matrix = u_matrix;
 %% Find Way
 save control_law.mat control_law_matrix
 X = zeros(2, length(time));
@@ -60,8 +60,8 @@ x_2_new = (-0.4 * x_1 - 0.2 * x_2 ^ 2 + u) * delta_t + x_2;
 end
 function cost_ans = interpolation(x_1_i, x_2_i, x_1_array,...
     x_2_array, cost_array)
-x_1_new = linspace(x_1_array(1), x_1_array(end), 1000);
-x_2_new = linspace(x_2_array(1), x_2_array(end), 1000);
+x_1_new = linspace(x_1_array(1), x_1_array(end), 100);
+x_2_new = linspace(x_2_array(1), x_2_array(end), 100);
 [x, y] = meshgrid(x_1_array, x_2_array);
 cost_ij = cost_array();
 x_1_new = x_1_new';
