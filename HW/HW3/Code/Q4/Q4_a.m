@@ -11,10 +11,10 @@
 %==========================================================================
 % Main Routine
 %==========================================================================
-function OptimalControl_Optimization_a()
+function Q4_a()
 clc
 warning off;
-global tf t_u H A B x0 dt plot_flag counter r_constrain
+global tf t_u B R Q H x0 dt plot_flag counter r_constrain
 % ------------------        Dynamic System Modeling       -----------------
 % Dynamic System Modeling is an approach to understanding the behaviour of
 % systems. A linear control system can be written as:xdot=Ax+Bu and y=Cx;
@@ -22,16 +22,10 @@ global tf t_u H A B x0 dt plot_flag counter r_constrain
 % A,B and C are matrices with proper dimensions, either constant or
 % time-varying.
 % Following is a brief description of the system modeling's input arguments:
-% A    :  state matrix of the given system
-% B    :  input matrix of the given system
-% x0   :  initial state vector
-
-A	= [-1	0
-        0  -2];
-B	= [1
-       2];
 x0  = [1 ;
-       1];
+       0.2];
+B = [0;
+     1];
 epsilon = 0.01; % Bracketing
 % -------------------      Cost Function         --------------------------
 %  A control problem includes a cost functional that is a function of state
@@ -42,7 +36,8 @@ epsilon = 0.01; % Bracketing
 % the previous section is the linear quadratic regulator(LQR) optimal
 % control problem. The LQR problem is stated as follows.
 % Minimize the quadratic continuous-time cost functional
-% J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ 0.5 * int(x(t)Q(t)x(t) + u(t)R(t)u(t))dt
+% J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ 0.5 * int(x(t)Q(t)x(t) +
+% u(t)R(t)u(t))dt + g(u) (constrain) + g(x)(constrain)
 % where Q(t) and H are symmetric positive semi-definite n * n matrices,
 % R(t) is a symmetric positive definite m*m matrix.
 % Note that the LQR cost functional can be thought of physically as
@@ -55,10 +50,10 @@ epsilon = 0.01; % Bracketing
 % Q             :  the state weighting matrix
 % R             :  the control weighting matrix
 % tf            :  the final time
-H		= 100 * eye(2);
-%Q		= 1  * eye(2);
-%R		= 1;
-tf		= 1;
+H		= 10 * eye(2);
+Q		= 1  * eye(2);
+R		= 1;
+tf		= 5;
 % -------------------      Discretization         -------------------------
 % Numerical Solution of Optimal Control Problems by Direct Method by an
 % appropriate discretization of control and state variables.
@@ -73,8 +68,7 @@ tf		= 1;
 
 N		= 100;
 dt		= tf/N;
-U		= zeros(N+1+1, 1);
-U(end, 1) = 1.5;
+U		= ones(N+1, 1) * 0.2;
 U_prev  = U; 
 t_u		= 0:dt:tf;
 % -------------------      Execution Options         ----------------------
@@ -86,18 +80,20 @@ plot_flag	= 1;
 tol				= 1e-4;
 tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
-max_count		= 100;
+max_count		= 256;
 counter			= 0;
-U_saver = zeros(max_count, N+1+1);
+U_saver = zeros(256, N+1);
 choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
     , 'BFGS + Golden Section');
+% choice = 2;
+tic
 while (norm_gradient > tol && counter < max_count)
     counter = counter + 1;
     if counter == 1
-        r_constrain = .1;
+        r_constrain = .9;
     else
-        if r_constrain > 1e-3
+        if r_constrain > 1e-2
             r_constrain = r_constrain * 0.9;
         end
     end
@@ -110,7 +106,7 @@ while (norm_gradient > tol && counter < max_count)
     % -------------------      ODE45 in MATLAB         --------------------
     % In this section, gradient is computed using the quasi-analytical formulation as follows:
     
-    tic
+%     tic
     plot_flag	= 1;
     if counter == 1
         dJdu      = gradient(U);
@@ -198,7 +194,7 @@ while (norm_gradient > tol && counter < max_count)
         d =  U   - U_prev   ;
         g = dJdu - dJdu_prev;
         if counter == 1
-            B_BFGS = eye(N+1+1);
+            B_BFGS = eye(N+1);
         else
             B_BFGS = B_BFGS + d * d' / (d' * g) * (1 + g' * B_BFGS * g / (d' * g)) - ...
                 B_BFGS * g * d' / (d' * g) - d * g' * B_BFGS /  (d' * g);
@@ -366,21 +362,25 @@ while (norm_gradient > tol && counter < max_count)
     
     norm_gradient	= norm(dJdu, 2);
     fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm_gradient)
-    fprintf('Elapsed time = %1.4f sec\n', toc)
+%     fprintf('Elapsed time = %1.4f sec\n', toc)
     fprintf('Iteration No. %3i\tSearch direction * lambda = %1.4e\n', counter, norm(dJdu - dJdu_prev, 2))
     U_prev = U;
     U	   = U + lambda * Search_Dir;
+    if norm(dJdu - dJdu_prev, 2) < 1e-3 && counter > 1
+        break;
+    end
 end
-save U.mat U_saver;
+save control_law.mat U_saver;
+fprintf('Elapsed time = %1.4f sec\n', toc)
 switch choice
     case 1
-        print(200, '../../Figure/Q3/Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
+        print(200, '../../Figure/Q4/part a Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
     case 2
-        print(200, '../../Figure/Q3/Steepest Descent + Golden Section.png','-dpng','-r300')
+        print(200, '../../Figure/Q4/part a Steepest Descent + Golden Section.png','-dpng','-r300')
     case 3
-        print(200, '../../Figure/Q3/BFGS + Quadratic Interpolation.png','-dpng','-r300')
+        print(200, '../../Figure/Q4/part a BFGS + Quadratic Interpolation.png','-dpng','-r300')
     otherwise
-        print(200, '../../Figure/Q3/BFGS + Golden Section.png','-dpng','-r300')
+        print(200, '../../Figure/Q4/part a BFGS + Golden Section.png','-dpng','-r300')
 end
 end
 
@@ -392,9 +392,12 @@ end
 % xdot=Ax+Bu
 % Note: The initial condition is initial state.
 function d = diff_equ(t, X)
-global A B U_arr t_u
-u = interp1(t_u, U_arr(1:101, :), t, 'pchip');
-d = (A*X + B*u) * U_arr(end, 1);
+global U_arr t_u
+u = interp1(t_u, U_arr, t, 'pchip');
+x_1 = X(1);
+x_2 = X(2);
+d(1, 1) = x_2;
+d(2, 1) = -0.4 * x_1 - 0.4 * x_2^2 + u;
 end
 
 %==========================================================================
@@ -404,19 +407,17 @@ end
 % The integral term can be converted to a differential equation as follows:
 % xdot3 =  0.5 * x(t)Q(t)x(t) + 0.5* u(t)R(t)u(t) + G(constrain)
 function d = diff_equ_x_J(t, XX)
-global A B U_arr t_u
+global U_arr t_u Q R
 X = XX(1:2);
-u = interp1(t_u, U_arr(1:end-1, 1), t, 'pchip');
-d = (A*X + B*u) * U_arr(end, 1);
-% G_cost = zeros(1);
-% for j = 1:length(u)
-%     [G_cost(j), ~] = G(u(j));
-% end
+u = interp1(t_u, U_arr, t, 'pchip');
+x_1 = X(1);
+x_2 = X(2);
+d(1, 1) = x_2;
+d(2, 1) = -0.4 * x_1 - 0.4 * x_2^2 + u;
+% u constrain
 [G1_cost, ~] = G1(u);
 [G2_cost, ~] = G2(u);
-% d(3) = 0.5*X'*Q*X + 0.5*R*u^2 + G1_cost + G2_cost;
-% d(3) = U_arr(end, 1)*2 + G1_cost + G2_cost;
-d(3) = G1_cost + G2_cost;
+d(3) = 0.5*X'*Q*X + 0.5*R*u^2 + 0.5*G1_cost + 0.5*G2_cost;
 end
 
 %==========================================================================
@@ -427,20 +428,15 @@ end
 % Note: Since x(tf) is free, (dh(tf)/dx(tf))-p(tf)=0. Therefore, boundry  
 % condition of costate differential equations is as follows:
 % p(tf)= dh(tf)/dx(tf).
-function d = diff_equ_p(~, p)
-global A U_arr
-%x = interp1(time_x, x_global, t, 'pchip');
-d = -A'*p  * U_arr(end, 1);
-end
-%%% dH/dt_f
-function d = diff_equ_p_tf(t, ~)
-global A B U_arr t_u p x_global time_x
-X = interp1(time_x, x_global, t, 'pchip');
-u = interp1(t_u, U_arr(1:end-1, 1), t, 'pchip');
-p_1 = interp1(t_u, p, t, 'pchip');
-[G1_cost, ~] = G1(u);
-[G2_cost, ~] = G2(u);
-d = p_1 * (A*X' + B*u)  + G1_cost + G2_cost;
+function d = diff_equ_p(t, p)
+global x_global time_x
+x = interp1(time_x, x_global, t, 'pchip');
+x_1 = x(1);
+x_2 = x(2);
+p_1 = p(1);
+p_2 = p(2);
+d(1, 1) = -(x_1 + -0.4 * p_2 );
+d(2, 1) = -(x_2 + p_1 - 0.4 * p_2 * x_2);
 end
 
 %==========================================================================
@@ -450,9 +446,9 @@ end
 % expressed as follows: 
 % d(Hamiltonian)/du = R*u + p*B and dJ=(R*u + p*B)*dt
 function dj = gradient(u)
-global x0 H tf dt B plot_flag
+global x0 H tf dt B R plot_flag
 options = odeset('AbsTol', 1e-6, 'RelTol', 1e-6);
-global U_arr t_u time_x x_global p
+global U_arr t_u time_x x_global
 U_arr = u;
 % tic
 % [time_x, x_global] = ode45(@diff_equ, [0 tf], x0, options);
@@ -481,16 +477,14 @@ p = interp1(time_p, p, t_u, 'pchip');
 % time_p = time_p(n:-1:1);
 % p = p(n:-1:1,:);
 dg1 = zeros(1);
-for i = 1:length(u(1:101, 1))
+for i = 1:length(u)
     [~, dg1(i)] = G1(u(i));
 end
 dg2 = zeros(1);
-for i = 1:length(u(1:101, 1))
+for i = 1:length(u)
     [~, dg2(i)] = G2(u(i));
 end
-[~, dhdtf] = ode45(@diff_equ_p_tf, [0 tf], 0, options);
-Hu = p*B*U_arr(end, 1) + dg1' + dg2'; % exterior and interior
-Hu = [Hu; dhdtf(end, 1)]; % add time gradient 2t_f
+Hu = R*u + p*B + dg1' + dg2'; % exterior and interior
 dj = Hu*dt;
 end
 
@@ -513,7 +507,7 @@ function J = cost(lambda, u, S)
     %xx0 = [x0;0]; % zero is for cost function integral
     [~, x] = ode45(@diff_equ_x_J, [0 tf], [x0;0], options);
     xend = x(end, 1:2)';
-    J = U_arr(end, 1)^2 + x(end, 3) + 0.5*xend'*H*xend;
+    J = x(end, 3) + 0.5*xend'*H*xend;
 end
 %==========================================================================
 %======================================================================
@@ -563,27 +557,27 @@ function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
 end
 function [cost, dg] = G1(u)
 global r_constrain
-G = u - 1;
+G = u - 0.8;
 % c = 0.9 , a = 1/2
 epsilon = -0.9 * (r_constrain) ^ 0.5;
 if G <= epsilon 
     cost = -r_constrain / G;
-    dg = r_constrain / (u - 1)^2;
+    dg = r_constrain / (u - 0.8)^2;
 else
     cost = -r_constrain / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
-    dg = -r_constrain / epsilon * (-3 / epsilon + (2 * u - 2) / epsilon^2);
+    dg = -r_constrain / epsilon * (-3 / epsilon + (2 * u - 1.6) / epsilon^2);
 end
 end
 function [cost, dg] = G2(u)
 global r_constrain
-G = -u - 1;
+G = -u - 0.8;
 % c = 0.9 , a = 1/2
 epsilon = -0.9 * (r_constrain) ^ 0.5;
 if G <= epsilon 
     cost = -r_constrain * 1 / G;
-    dg = -r_constrain * 1 / (u + 1)^2;
+    dg = -r_constrain * 1 / (u + 0.8)^2;
 else
     cost = -r_constrain  / epsilon * (3 - 3 * G / epsilon + (G / epsilon)^2);
-    dg = -r_constrain / epsilon * (3 / epsilon + (2 * u + 2) / epsilon^2);
+    dg = -r_constrain / epsilon * (3 / epsilon + (2 * u + 1.6) / epsilon^2);
 end
 end
