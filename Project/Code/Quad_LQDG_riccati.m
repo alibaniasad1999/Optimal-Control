@@ -30,10 +30,10 @@ k0	= reshape(K0,n^2,1);
 global t_K K_arr
 [t_K,K_arr] = ode45(@diff_eq_Riccati,[tf,0],k0);
 x0	= [0 ;
-       0 ;
-       0 ;
-       0 ;
        1 ;
+       0 ;
+       0 ;
+       0 ;
        0];
 [t,x] = ode45(@diff_eq_states,[0,tf],x0);
 % x(:, 1:3) = wrapToPi(x(:, 1:3));
@@ -45,7 +45,7 @@ legend('$\phi$', '$\theta$', '$\psi$','$p$','$q$','$r$',...
 function d = diff_eq_Riccati(~,k)
 global A B Q R_inv n gamma_inv
 K	= reshape(k,n,n);
-Kdot	= -K*A - A'*K - Q + K*B*(R_inv - gamma_inv)*B'*K;
+Kdot	= -K*A - A'*K - Q + K*B*R_inv*B'*K - K*B*gamma_inv*B'*K;
 d	= reshape(Kdot,n^2,1);
 end
 
