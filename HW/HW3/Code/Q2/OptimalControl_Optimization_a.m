@@ -77,8 +77,9 @@ U		= zeros(N+1, 1);
 U_prev  = U; 
 t_u		= 0:dt:tf;
 % -------------------      Execution Options         ----------------------
-plot_flag	= 0;
-
+global cost_iteration gradient_iteration
+cost_iteration = 0;
+gradient_iteration = 0;
 %==========================================================================
 %  Optimization Loop
 %==========================================================================
@@ -90,6 +91,7 @@ counter			= 0;
 choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
     , 'BFGS + Golden Section');
+tic
 while (norm_gradient > tol && counter < max_count)
     counter = counter + 1;
     
@@ -103,7 +105,7 @@ while (norm_gradient > tol && counter < max_count)
     % -------------------      ODE45 in MATLAB         --------------------
     % In this section, gradient is computed using the quasi-analytical formulation as follows:
     
-    tic
+%     tic
     plot_flag	= 1;
     if counter == 1
         dJdu      = gradient(U);
@@ -115,7 +117,7 @@ while (norm_gradient > tol && counter < max_count)
 %     plot_flag	= 0;
     norm_gradient	= norm(dJdu, 2);
     fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm_gradient)
-    fprintf('Elapsed time = %1.4f sec\n', toc)
+%     fprintf('Elapsed time = %1.4f sec\n', toc)
 %     	figure(300)
 %     	hold on
 %     	plot(t_u, dJdu);
@@ -361,15 +363,24 @@ while (norm_gradient > tol && counter < max_count)
     U_prev = U;
     U	   = U + lambda * Search_Dir;
 end
+fprintf('Elapsed time = %1.4f sec\n', toc)
 switch choice
     case 1
-        print(200, 'Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
+        fprintf('Steepest Descent + Quadratic Interpolation--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(200, '../../Figure/Q2/part a Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
     case 2
-        print(200, 'Steepest Descent + Golden Section.png','-dpng','-r300')
+        fprintf('Steepest Descent + Golden Section--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(200, '../../Figure/Q2/part a Steepest Descent + Golden Section.png','-dpng','-r300')
     case 3
-        print(200, 'BFGS + Quadratic Interpolation.png','-dpng','-r300')
+        fprintf('BFGS + Quadratic Interpolation--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(200, '../../Figure/Q2/part a BFGS + Quadratic Interpolation.png','-dpng','-r300')
     otherwise
-        print(200, 'BFGS + Golden Section.png','-dpng','-r300')
+        fprintf('BFGS + Golden Section--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(200, '../../Figure/Q2/part a BFGS + Golden Section.png','-dpng','-r300')
 end
 end
 
@@ -423,7 +434,8 @@ end
 function dj = gradient(u)
 global x0 H tf dt B R plot_flag
 options = odeset('AbsTol', 1e-6, 'RelTol', 1e-6);
-global U_arr t_u time_x x_global
+global U_arr t_u time_x x_global gradient_iteration
+gradient_iteration = gradient_iteration + 1;
 U_arr = u;
 % tic
 % [time_x, x_global] = ode45(@diff_equ, [0 tf], x0, options);
@@ -466,15 +478,17 @@ end
 % Therfore, the quadratic  cost functional can be expressed as follows:
 % J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ xdot3
 function J = cost(lambda, u, S)
-    global x0 H tf
-    global U_arr
-    options = odeset('AbsTol', [1e-6 1e-6 1e-6], 'RelTol', 1e-8);
+global x0 H tf
+global U_arr
+global cost_iteration
+cost_iteration = cost_iteration + 1;
+options = odeset('AbsTol', [1e-6 1e-6 1e-6], 'RelTol', 1e-8);
 
-    U_arr = u + lambda*S;
-    %xx0 = [x0;0]; % zero is for cost function integral
-    [~, x] = ode45(@diff_equ_x_J, [0 tf], [x0;0], options);
-    xend = x(end, 1:2)';
-    J = x(end, 3) + 0.5*xend'*H*xend;
+U_arr = u + lambda*S;
+%xx0 = [x0;0]; % zero is for cost function integral
+[~, x] = ode45(@diff_equ_x_J, [0 tf], [x0;0], options);
+xend = x(end, 1:2)';
+J = x(end, 3) + 0.5*xend'*H*xend;
 end
 %==========================================================================
 %======================================================================
@@ -483,48 +497,48 @@ end
 % In this section, Bracket is  found using golden number(1.618)
 function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
 global counter;
-    a =       0;
-    b = epsilon;
-    %X_a = X + a * search_dir;
-    %X_b = X + b * search_dir;
-    f_a = cost(a, X, search_dir);
-    f_b = cost(b, X, search_dir);
-    if f_a < f_b
-        if counter == 1
+a =       0;
+b = epsilon;
+%X_a = X + a * search_dir;
+%X_b = X + b * search_dir;
+f_a = cost(a, X, search_dir);
+f_b = cost(b, X, search_dir);
+if f_a < f_b
+    if counter == 1
         search_dir = -search_dir;
         f_a = cost(a, X, search_dir);
         f_b = cost(b, X, search_dir);
-        else
-            epsilon = epsilon / 2;
-            b = epsilon;
-            f_b = cost(b, X, search_dir);
-        end
-        if abs(f_a - f_b) > 0.01
-            disp('change epsilon number');
-            return;
-        else
-            a   = 0;
-            b   = 0;
-            c   = 0;
-            f_a = 0;
-            f_b = 0;
-            f_c = 0;
-            return;
-        end
-    end
-    gamma = 1.618; % golden number
-    c = b + gamma * (b - a);
-    %X_c = X + c * search_dir;
-    f_c = cost(c, X, search_dir);
-    while f_b > f_c
-        a = b;
-        b = c;
-        c = b + gamma * (b - a);
-        %X_a = X_b;
-        %X_b = X_c;
-        %X_c = X + c * search_dir;
+    else
+        epsilon = epsilon / 2;
+        b = epsilon;
         f_b = cost(b, X, search_dir);
-        f_c = cost(c, X, search_dir);
     end
-    f_a = cost(a, X, search_dir);
+    if abs(f_a - f_b) > 0.01
+        disp('change epsilon number');
+        return;
+    else
+        a   = 0;
+        b   = 0;
+        c   = 0;
+        f_a = 0;
+        f_b = 0;
+        f_c = 0;
+        return;
+    end
+end
+gamma = 1.618; % golden number
+c = b + gamma * (b - a);
+%X_c = X + c * search_dir;
+f_c = cost(c, X, search_dir);
+while f_b > f_c
+    a = b;
+    b = c;
+    c = b + gamma * (b - a);
+    %X_a = X_b;
+    %X_b = X_c;
+    %X_c = X + c * search_dir;
+    f_b = cost(b, X, search_dir);
+    f_c = cost(c, X, search_dir);
+end
+f_a = cost(a, X, search_dir);
 end

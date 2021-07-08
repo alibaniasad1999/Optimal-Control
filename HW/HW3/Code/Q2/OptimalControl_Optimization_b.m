@@ -27,11 +27,11 @@ global tf t_u R Q H A B x0 dt plot_flag counter r_constrain
 % x0   :  initial state vector
 
 A	= [0	1
-      -1 -0.1];
+    -1 -0.1];
 B	= [0
-       1];
+    1];
 x0  = [1 ;
-       1];
+    1];
 epsilon = 0.01; % Bracketing
 % -------------------      Cost Function         --------------------------
 %  A control problem includes a cost functional that is a function of state
@@ -75,11 +75,12 @@ tf		= 3;
 N		= 100;
 dt		= tf/N;
 U		= zeros(N+1, 1);
-U_prev  = U; 
+U_prev  = U;
 t_u		= 0:dt:tf;
 % -------------------      Execution Options         ----------------------
-plot_flag	= 1;
-
+global cost_iteration gradient_iteration
+cost_iteration = 0;
+gradient_iteration = 0;
 %==========================================================================
 %  Optimization Loop
 %==========================================================================
@@ -92,6 +93,7 @@ U_saver = zeros(500, N+1);
 choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...
     , 'BFGS + Golden Section');
+tic
 while (norm_gradient > tol && counter < max_count)
     counter = counter + 1;
     if counter == 1
@@ -110,7 +112,7 @@ while (norm_gradient > tol && counter < max_count)
     % -------------------      ODE45 in MATLAB         --------------------
     % In this section, gradient is computed using the quasi-analytical formulation as follows:
     
-    tic
+%     tic
     plot_flag	= 1;
     if counter == 1
         dJdu      = gradient(U);
@@ -120,33 +122,33 @@ while (norm_gradient > tol && counter < max_count)
         dJdu = gradient(U);
     end
     U_saver(counter, :) = U;
-%     plot_flag	= 0;
-%     	figure(300)
-%     	hold on
-%     	plot(t_u, dJdu);
+    %     plot_flag	= 0;
+    %     	figure(300)
+    %     	hold on
+    %     	plot(t_u, dJdu);
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     % -------------------      Finite Difference         ------------------
     % In this section,gradient is computed using finite difference as follows:
-% %     
-%     	tic
-%     	Search_Dir = zeros(N+1,1);
-%     	du = 0.01;
-%     	f0 = cost(0, U, Search_Dir);
-%     	for i=1:N+1
-%     		Search_Dir(i) = 1;
-%     		f1 = cost(du, U, Search_Dir);
-%     		dJdu(i) = (f1-f0)/du;
-%     		Search_Dir(i) = 0;
-%     	end
-%     	plot(t_u, dJdu, 'r.');
-%     	fprintf('Elapsed time = %1.4f sec\n', toc)
-%     
+    % %
+    %     	tic
+    %     	Search_Dir = zeros(N+1,1);
+    %     	du = 0.01;
+    %     	f0 = cost(0, U, Search_Dir);
+    %     	for i=1:N+1
+    %     		Search_Dir(i) = 1;
+    %     		f1 = cost(du, U, Search_Dir);
+    %     		dJdu(i) = (f1-f0)/du;
+    %     		Search_Dir(i) = 0;
+    %     	end
+    %     	plot(t_u, dJdu, 'r.');
+    %     	fprintf('Elapsed time = %1.4f sec\n', toc)
+    %
     %======================================================================
     % Search Direction
     %======================================================================
-    % In this section, search direction is  found using gradient as follows: 
+    % In this section, search direction is  found using gradient as follows:
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -169,9 +171,9 @@ while (norm_gradient > tol && counter < max_count)
     % ----------------      Quasi-Newton (Rank1-Update)        ------------
     % This algorithm must be written by the student.
     
-     
-     
-     
+    
+    
+    
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -203,11 +205,11 @@ while (norm_gradient > tol && counter < max_count)
             B_BFGS = B_BFGS + d * d' / (d' * g) * (1 + g' * B_BFGS * g / (d' * g)) - ...
                 B_BFGS * g * d' / (d' * g) - d * g' * B_BFGS /  (d' * g);
         end
-%     figure(200)
-%     hold on
-%     plot(time_x, x_global)
-% 	drawnow()
-    Search_Dir = -B_BFGS * dJdu;
+        %     figure(200)
+        %     hold on
+        %     plot(time_x, x_global)
+        % 	drawnow()
+        Search_Dir = -B_BFGS * dJdu;
     end
     %======================================================================
     % Line Search
@@ -221,16 +223,16 @@ while (norm_gradient > tol && counter < max_count)
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     % -------------------      fixed step length         ------------------
-%     lambda	= 1e-2/dt;
+    %     lambda	= 1e-2/dt;
     
     % test the lambda function
-%     	lambda_arr=0:1e-3/dt:4e-1/dt;
-%         f = zeros(1);
-%     	for i=1:length(lambda_arr)
-%     		f(i) = cost(lambda_arr(i), U, Search_Dir);
-%     	end
-%     	figure
-%     	plot(lambda_arr, f)
+    %     	lambda_arr=0:1e-3/dt:4e-1/dt;
+    %         f = zeros(1);
+    %     	for i=1:length(lambda_arr)
+    %     		f(i) = cost(lambda_arr(i), U, Search_Dir);
+    %     	end
+    %     	figure
+    %     	plot(lambda_arr, f)
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -239,7 +241,7 @@ while (norm_gradient > tol && counter < max_count)
     
     
     
-  
+    
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
     %----------------------------------------------------------------------
@@ -358,7 +360,7 @@ while (norm_gradient > tol && counter < max_count)
     
     
     
-  
+    
     
     %======================================================================
     %next step
@@ -366,21 +368,40 @@ while (norm_gradient > tol && counter < max_count)
     
     norm_gradient	= norm(dJdu, 2);
     fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm_gradient)
-    fprintf('Elapsed time = %1.4f sec\n', toc)
-    fprintf('Iteration No. %3i\tSearch direction * lambda = %1.4e\n', counter, norm(dJdu - dJdu_prev, 2))
+    %     fprintf('Elapsed time = %1.4f sec\n', toc)
+    fprintf('Search direction * lambda = %1.4e\n', norm(Search_Dir * lambda, 2))
     U_prev = U;
     U	   = U + lambda * Search_Dir;
+    if norm(Search_Dir * lambda, 2) < 1e-16
+        break;
+    end
 end
-save U_3.mat U_saver;
+fprintf('Elapsed time = %1.4f sec\n', toc)
+figure(400);
+plot(t_u, U);
+xlabel('$Time_{\sec}$', 'interpreter', 'latex');
+ylabel('$u$', 'interpreter', 'latex');
 switch choice
     case 1
-        print(200, 'Constrain Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
+        fprintf('Steepest Descent + Quadratic Interpolation--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(200, '../../Figure/Q2/part b Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
+        print(400, '../../Figure/Q2/part b control Steepest Descent + Quadratic Interpolation.png','-dpng','-r300')
     case 2
-        print(200, 'Constrain Steepest Descent + Golden Section.png','-dpng','-r300')
+        fprintf('Steepest Descent + Golden Section--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(200, '../../Figure/Q2/part b Steepest Descent + Golden Section.png','-dpng','-r300')
+        print(400, '../../Figure/Q2/part b control Steepest Descent + Golden Section.png','-dpng','-r300')
     case 3
-        print(200, 'Constrain BFGS + Quadratic Interpolation.png','-dpng','-r300')
+        fprintf('BFGS + Quadratic Interpolation--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(200, '../../Figure/Q2/part b BFGS + Quadratic Interpolation.png','-dpng','-r300')
+        print(400, '../../Figure/Q2/part b control BFGS + Quadratic Interpolation.png','-dpng','-r300')
     otherwise
-        print(200, 'Constrain BFGS + Golden Section.png','-dpng','-r300')
+        fprintf('BFGS + Golden Section--> gradient iteration = %.0f, cost_iteration = %.0f\n'...
+            , gradient_iteration, cost_iteration);
+        print(200, '../../Figure/Q2/part b BFGS + Golden Section.png','-dpng','-r300')
+        print(400, '../../Figure/Q2/part b control BFGS + Golden Section.png','-dpng','-r300')
 end
 end
 
@@ -398,9 +419,9 @@ d = A*X + B*u;
 end
 
 %==========================================================================
-% This function computs cost differential equations.The quadratic 
+% This function computs cost differential equations.The quadratic
 % continuous-time cost functional is expressed as follows:
-% J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ 0.5 * int(x(t)Q(t)x(t) + u(t)R(t)u(t))dt 
+% J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ 0.5 * int(x(t)Q(t)x(t) + u(t)R(t)u(t))dt
 % The integral term can be converted to a differential equation as follows:
 % xdot3 =  0.5 * x(t)Q(t)x(t) + 0.5* u(t)R(t)u(t) + G(constrain)
 function d = diff_equ_x_J(t, XX)
@@ -422,7 +443,7 @@ end
 % pdot=-(d(Hamiltonian)/d(x))
 % For the quadratic continuous-time cost functional, pdot is computed
 % as :pdot =-A*p-Q*x
-% Note: Since x(tf) is free, (dh(tf)/dx(tf))-p(tf)=0. Therefore, boundry  
+% Note: Since x(tf) is free, (dh(tf)/dx(tf))-p(tf)=0. Therefore, boundry
 % condition of costate differential equations is as follows:
 % p(tf)= dh(tf)/dx(tf).
 function d = diff_equ_p(t, p)
@@ -433,14 +454,15 @@ end
 
 %==========================================================================
 % This function computs gradient of the cost.
-% dJ=(d(Hamiltonian)/du)*dt; 
-% For the quadratic continuous-time cost functional,gradient of cost is 
-% expressed as follows: 
+% dJ=(d(Hamiltonian)/du)*dt;
+% For the quadratic continuous-time cost functional,gradient of cost is
+% expressed as follows:
 % d(Hamiltonian)/du = R*u + p*B and dJ=(R*u + p*B)*dt
 function dj = gradient(u)
 global x0 H tf dt B R plot_flag
 options = odeset('AbsTol', 1e-6, 'RelTol', 1e-6);
-global U_arr t_u time_x x_global
+global U_arr t_u time_x x_global gradient_iteration
+gradient_iteration = gradient_iteration + 1;
 U_arr = u;
 % tic
 % [time_x, x_global] = ode45(@diff_equ, [0 tf], x0, options);
@@ -454,7 +476,7 @@ if plot_flag==1
     plot(time_x, x_global)
     xlabel('$Time_{\sec}$', 'interpreter', 'latex');
     ylabel('$\vec{X}$', 'interpreter', 'latex');
-	drawnow()
+    drawnow()
 end
 n = length(time_x);
 p_tf = H*x_global(n,:)';
@@ -481,7 +503,7 @@ dj = Hu*dt;
 end
 
 %==========================================================================
-% This function computs the cost. In optimal control theory, the cost 
+% This function computs the cost. In optimal control theory, the cost
 % function is expressed as follows:
 % J(u, x(t), t) =h(x(tf),tf)+int(g(x(t),u(t),t)dt
 % The quadratic continuous-time cost functional is expressed as follows:
@@ -491,15 +513,16 @@ end
 % Therfore, the quadratic  cost functional can be expressed as follows:
 % J(u, x(t), t) = 0.5 * x(tf) H x(tf)+ xdot3
 function J = cost(lambda, u, S)
-    global x0 H tf
-    global U_arr
-    options = odeset('AbsTol', [1e-6 1e-6 1e-6], 'RelTol', 1e-8);
-
-    U_arr = u + lambda*S;
-    %xx0 = [x0;0]; % zero is for cost function integral
-    [~, x] = ode45(@diff_equ_x_J, [0 tf], [x0;0], options);
-    xend = x(end, 1:2)';
-    J = x(end, 3) + 0.5*xend'*H*xend;
+global x0 H tf
+global U_arr
+options = odeset('AbsTol', [1e-6 1e-6 1e-6], 'RelTol', 1e-8);
+global cost_iteration
+cost_iteration = cost_iteration + 1;
+U_arr = u + lambda*S;
+%xx0 = [x0;0]; % zero is for cost function integral
+[~, x] = ode45(@diff_equ_x_J, [0 tf], [x0;0], options);
+xend = x(end, 1:2)';
+J = x(end, 3) + 0.5*xend'*H*xend;
 end
 %==========================================================================
 %======================================================================
@@ -508,51 +531,51 @@ end
 % In this section, Bracket is  found using golden number(1.618)
 function [a, b, c, f_a, f_b, f_c] = bracketing(X, search_dir, epsilon)
 %global counter;
-    a =       0;
-    b = epsilon;
-    %X_a = X + a * search_dir;
-    %X_b = X + b * search_dir;
-    f_a = cost(a, X, search_dir);
-    f_b = cost(b, X, search_dir);
+a =       0;
+b = epsilon;
+%X_a = X + a * search_dir;
+%X_b = X + b * search_dir;
+f_a = cost(a, X, search_dir);
+f_b = cost(b, X, search_dir);
+if f_a < f_b
+    %         search_dir = -search_dir;
+    %f_a = cost(a, X, search_dir);
+    %         f_b = cost(b, X, search_dir);
     if f_a < f_b
-%         search_dir = -search_dir;
-        %f_a = cost(a, X, search_dir);
-%         f_b = cost(b, X, search_dir);
-        if f_a < f_b
-            search_dir = -search_dir;
-            while f_a < f_b
-                epsilon = epsilon / 2;
-                b = epsilon;
-                f_b = cost(b, X, search_dir);
-            end
-        end
-        if b == 0
-            disp('change epsilon number');
-            return;
+        search_dir = -search_dir;
+        while f_a < f_b
+            epsilon = epsilon / 2;
+            b = epsilon;
+            f_b = cost(b, X, search_dir);
         end
     end
-    gamma = 1.618; % golden number
+    if b == 0
+        disp('change epsilon number');
+        return;
+    end
+end
+gamma = 1.618; % golden number
+c = b + gamma * (b - a);
+%X_c = X + c * search_dir;
+f_c = cost(c, X, search_dir);
+while f_b >= f_c
+    a = b;
+    b = c;
     c = b + gamma * (b - a);
+    %X_a = X_b;
+    %X_b = X_c;
     %X_c = X + c * search_dir;
+    f_b = cost(b, X, search_dir);
     f_c = cost(c, X, search_dir);
-    while f_b >= f_c
-        a = b;
-        b = c;
-        c = b + gamma * (b - a);
-        %X_a = X_b;
-        %X_b = X_c;
-        %X_c = X + c * search_dir;
-        f_b = cost(b, X, search_dir);
-        f_c = cost(c, X, search_dir);
-    end
-    f_a = cost(a, X, search_dir);
+end
+f_a = cost(a, X, search_dir);
 end
 function [cost, dg] = G1(u)
 global r_constrain
 G = u - 0.4;
 % c = 0.9 , a = 1/2
 epsilon = -0.9 * (r_constrain) ^ 0.5;
-if G <= epsilon 
+if G <= epsilon
     cost = -r_constrain / G;
     dg = r_constrain / (u - 0.4)^2;
 else
@@ -565,7 +588,7 @@ global r_constrain
 G = -u - 0.4;
 % c = 0.9 , a = 1/2
 epsilon = -0.9 * (r_constrain) ^ 0.5;
-if G <= epsilon 
+if G <= epsilon
     cost = -r_constrain * 1 / G;
     dg = -r_constrain * 1 / (u + 0.4)^2;
 else
