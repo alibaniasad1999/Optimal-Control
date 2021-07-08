@@ -86,7 +86,7 @@ gradient_iteration = 0;
 tol				= 1e-4;
 tol_lambda      = 1e-2;
 norm_gradient	= tol + 1;
-max_count		= 200;
+max_count		= 4;
 counter			= 0;
 choice = menu('Choose Method','Steepest Descent + Quadratic Interpolation'...
     ,'Steepest Descent + Golden Section', 'BFGS + Quadratic Interpolation'...

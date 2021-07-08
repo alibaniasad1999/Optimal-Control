@@ -40,7 +40,7 @@ Tolerance is: $10^{-4}$
 	\begin{table}[h]
 		\caption {Time compare between four methods} 
 		\begin{center}
-			\begin{tabular}{ |l|l|l|l| }
+			\begin{tabular}{ |c|c|c|c| }
 				\hline
 				\multicolumn{2}{|c|}{Steepest Descent} &
 				\multicolumn{2}{|c|}{BFGS} \Tstrut\\
@@ -57,7 +57,7 @@ Tolerance is: $10^{-4}$
 	\begin{table}[h]
 		\caption {Number of Cost calculation compare between four methods} 
 		\begin{center}
-			\begin{tabular}{ |l|l|l|l| }
+			\begin{tabular}{ |c|c|c|c| }
 				\hline
 				\multicolumn{2}{|c|}{Steepest Descent} &
 				\multicolumn{2}{|c|}{BFGS} \Tstrut\\
@@ -74,7 +74,7 @@ Tolerance is: $10^{-4}$
 	\begin{table}[h]
 		\caption {Number of Gradient calculation compare between four methods} 
 		\begin{center}
-			\begin{tabular}{ |l|l|l|l| }
+			\begin{tabular}{ |c|c|c|c| }
 				\hline
 				\multicolumn{2}{|c|}{Steepest Descent} &
 				\multicolumn{2}{|c|}{BFGS} \Tstrut\\
@@ -88,3 +88,23 @@ Tolerance is: $10^{-4}$
 		\end{center}
 	\end{table}
 \end{itemize}
+\subsubsection{Four iteration for BFGS and Quadratic interpolation}
+		\begin{figure}[H]
+	\caption{BFGS and Quadratic Interpolation with four iteration}
+	\centering
+	\includegraphics[width=11.5cm]{../Figure/Q2/part a_2 BFGS + Quadratic Interpolation.png}
+\end{figure}
+	\begin{table}[H]
+	\caption {four iteration and gradient tolerance compare} 
+	\begin{center}
+		\begin{tabular}{ c|c|c|c| }
+			\cline{2 - 4}
+			 &Time & Number of Cost calculation & Number of Gradient calculation\Tstrut\\
+			 \hline
+			 \multicolumn{1}{ |c|  } {Four iteration} & $3.905_{\sec}$ & $273$ & $11$ \Tstrut\\
+			\hline
+			\multicolumn{1}{ |c|  }{Gradient tolerance} & $1.586_{\sec}$ & $100$ & $4$ \Tstrut\\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{table}
