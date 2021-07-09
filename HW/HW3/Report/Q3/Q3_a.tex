@@ -1,3 +1,58 @@
+\subsection{Direct Optimization}
+Time is free so we have a new unknowns. we use $t_f$ as a new state and change some parameter that will describe here.
+$$J = t_f^2, \qquad 0\leq t\leq t_f,\qquad \tau = \dfrac{t}{t_f}, \qquad 0\leq\tau\leq 1$$
+$$
+\vec{a}_N(\vec{x}(t),\vec{u}(t),t_f, t) = t_f\vec{a}(\vec{x}(t),\vec{u}(t), t)
+$$
+$$
+g_N(\vec{x}(t),\vec{u}(t),t_f, t) = t_fg(\vec{x}(t),\vec{u}(t), t)
+$$
+$$
+\mathcal{H} = g_N(\vec{x}(t),\vec{u}(t),t_f, t) + P^T\vec{a}_N(\vec{x}(t),\vec{u}(t),t_f, t) 
+$$
+\begin{align*}
+	G_1(u) = &
+	\begin{cases}
+		-\dfrac{1}{g_1(u)}&  g_1(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(3 - \dfrac{3g_1(u)}{\epsilon} + \left(\dfrac{g_1(u)}{\epsilon}\right)^2\right) &  g_1(u) > \epsilon
+	\end{cases} \\
+	G_1^\prime(u) = &
+	\begin{cases}
+		\dfrac{1}{(u - )^2}&  g_1(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(-\dfrac{3}{\epsilon} + \dfrac{2u-2}{\epsilon^2} \right) &  g_1(u) > \epsilon
+	\end{cases} 
+\end{align*}
+\begin{align*}
+	G_2(x_2) = &
+	\begin{cases}
+		-\dfrac{1}{g_2(u)}&  g_2(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(3 - \dfrac{3g_2(u)}{\epsilon} + \left(\dfrac{g_2(u)}{\epsilon}\right)^2\right) &  g_2(u) > \epsilon
+	\end{cases} \\
+	G_2^\prime(u) = &
+	\begin{cases}
+		\dfrac{1}{(u + 1)^2}&  g_2(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(\dfrac{3}{\epsilon} + \dfrac{2u+2}{\epsilon^2} \right) &  g_2(u) > \epsilon
+	\end{cases} 
+\end{align*}
+$$
+g_N(\vec{x}(t),\vec{u}(t),t_f, t) = t_f^2 + r_kG(u)
+$$
+$$
+\dfrac{\partial J}{\partial t_f} = \dfrac{\partial h}{\partial t_f} + \int_{0}^{1}
+\dfrac{\partial \mathcal{H}}{\partial t_f}
+$$
+$$
+\dfrac{\partial J}{\partial \vec{X}} = 
+\begin{bmatrix}
+	\left.\dfrac{\mathcal{H}}{\partial u}\right\vert_{\tau_0}\\
+	\left.\dfrac{\mathcal{H}}{\partial u}\right\vert_{\tau_1}\\
+	\left.\dfrac{\mathcal{H}}{\partial u}\right\vert_{\tau_2}\\
+	\vdots\\
+	\left.\dfrac{\mathcal{H}}{\partial u}\right\vert_{\tau_f}\\[20pt]
+	\dfrac{\partial h}{\partial t_f} + \int_{0}^{1}
+	\dfrac{\partial \mathcal{H}}{\partial t_f}\\
+\end{bmatrix}
+$$
 \begin{itemize}
 	\item Steepest Descent
 	\begin{itemize}

@@ -1,0 +1,19 @@
+\subsection{Shooting method}
+Final time is free so:
+$$
+\vec{F} = \begin{bmatrix}
+	x_1(t_f) - x_{1_f}\\
+	x_2(t_f) - x_{2_f}\\
+	\left.(\mathcal{H} - h_t)\right\vert_{t_f}
+\end{bmatrix}
+$$
+$$
+\vec{y}_{k+1} = \vec{y}_k - \left.\dfrac{\partial \vec{F}}{\partial \vec{y}}
+\right\vert_{\vec{y}_k}
+\vec{F}(\vec{y}_k)
+$$
+\begin{figure}[H]
+	\caption{Shooting method}
+	\centering
+	\includegraphics[width=11.5cm]{../Figure/Q3/Shooting.png}
+\end{figure}

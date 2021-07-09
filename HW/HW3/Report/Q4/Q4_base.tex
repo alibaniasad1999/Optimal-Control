@@ -1,0 +1,57 @@
+$$
+a = \begin{bmatrix}
+	\dot{x_1}\\
+	\dot{x_2}
+\end{bmatrix} = \begin{bmatrix}
+	x_2\\
+	-0.4x_1 -0.2x_2^2
+\end{bmatrix} + \begin{bmatrix}
+	0\\
+	1
+\end{bmatrix}u
+$$
+\begin{align*}
+	G_1(u) = &
+	\begin{cases}
+		-\dfrac{1}{g_1(u)}&  g_1(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(3 - \dfrac{3g_1(u)}{\epsilon} + \left(\dfrac{g_1(u)}{\epsilon}\right)^2\right) &  g_1(u) > \epsilon
+	\end{cases} \\
+	G_1^\prime(u) = &
+	\begin{cases}
+		\dfrac{1}{(u - 0.8)^2}&  g_1(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(-\dfrac{3}{\epsilon} + \dfrac{2u-1.6}{\epsilon^2} \right) &  g_1(u) > \epsilon
+	\end{cases} 
+\end{align*}
+\begin{align*}
+	G_2(x_2) = &
+	\begin{cases}
+		-\dfrac{1}{g_2(u)}&  g_2(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(3 - \dfrac{3g_2(u)}{\epsilon} + \left(\dfrac{g_2(u)}{\epsilon}\right)^2\right) &  g_2(u) > \epsilon
+	\end{cases} \\
+	G_2^\prime(u) = &
+	\begin{cases}
+		\dfrac{1}{(u + 0.8)^2}&  g_2(u) \leq \epsilon \\[1em]
+		-\dfrac{1}{\epsilon}\left(\dfrac{3}{\epsilon} + \dfrac{2u+1.6}{\epsilon^2} \right) &  g_2(u) > \epsilon
+	\end{cases} 
+\end{align*}
+$$
+\epsilon = -c\left(r_k\right)^2,\qquad a = 0.5,\qquad r_{k+1} = cr_k,\qquad c = 0.9,
+\qquad \min (r_k) = 0.001
+$$
+
+
+
+$$
+\mathcal{H} = \vec{P}^Ta(\vec{X}, u, t) + \frac12\left(x_1^2 + x_2^2 + u^2 + r_kG(u) \right)
+$$
+ $$\dot{\vec{P}} = -\dfrac{\partial \mathcal{H}}{\partial \vec{X}} = \begin{bmatrix}
+	-x_1 + 0.4p_2 \\
+	-x_2  - p_1 + 0.4 p_2x_2 
+\end{bmatrix}$$
+$$\begin{bmatrix}
+	\dot{p_1}\\
+	\dot{p_2}
+\end{bmatrix} = \begin{bmatrix}
+	-x_1 + 0.4p_2 \\
+	x_2(0.4 p_2-1)  - p_1
+\end{bmatrix}$$

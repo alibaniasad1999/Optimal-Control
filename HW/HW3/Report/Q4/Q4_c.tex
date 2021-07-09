@@ -1,0 +1,31 @@
+\subsection{part c}
+$$
+a = \begin{bmatrix}
+	\dot{x_1}\\
+	\dot{x_2}
+\end{bmatrix} = \begin{bmatrix}
+	x_2\\
+	-0.4x_1 -0.2x_2^2
+\end{bmatrix} + \begin{bmatrix}
+	0\\
+	1
+\end{bmatrix}u
+$$
+$$
+\begin{bmatrix}
+	x_1(k+1)\\
+	x_2(k+1)
+\end{bmatrix} = \begin{bmatrix}
+	x_2(k)\\
+	-0.4x_1(k) -0.2x_2^2(k) + u(k)
+\end{bmatrix} \Delta t + \begin{bmatrix}
+	x_1(k)\\
+	x_2(k)
+\end{bmatrix}
+$$
+In MATLAB Code Control will save in mat file and we can use for another initial condition very fast without so much processing.
+\begin{figure}[H]
+	\caption{Dynamic Programming}
+	\centering
+	\includegraphics[width=11.5cm]{../Figure/Q4/DP.png}
+\end{figure}

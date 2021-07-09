@@ -58,15 +58,17 @@ H		= 10*eye(2);
 Q		= 1*eye(2);
 R		= 1;
 inv_R   = inv(R);
-tf		= 5;
+tf		= .5;
+figure;
+hold on;
 %==========================================================================
 %  Simple shooting loop
 %==========================================================================
-tol			= 1e-8;
+tol			= 1e-1;
 norm_F      = tol + 1;
 max_count	= 100;
 counter		= 0;
-p0	= [0.03 -0.2]';
+p0	= [-4 0]';
 options = odeset('AbsTol', 1e-6, 'RelTol', 1e-6);
 while (norm_F > tol && counter < max_count)
 	counter		= counter + 1;
@@ -80,7 +82,6 @@ while (norm_F > tol && counter < max_count)
 % 	F	= pf - H*xf;
 	F	= xf - [0;0];
 	norm_F	= norm(F,2);
-	
 	%======================================================================
 	% computing the dF/dy      y = p(0)
 	%======================================================================
@@ -95,9 +96,15 @@ while (norm_F > tol && counter < max_count)
 		F2	= xf - [3;-1];
 		phi(:,i)	= (F2-F)/dp;
 		p0(i)	= p0(i) - dp;
-	end
+    end
+    u = -inv_R*B'*z(:,3:4)';
+    plot(time_x,[z])
+    
+    hold on
+    legend('x1','x2','p1','p2','u')
 % 	p0		= p0 - inv(phi)*F;
 	p0		= p0 - phi\F;
+    counter
 end
 figure;
 u = -inv_R*B'*z(:,3:4)';
@@ -120,7 +127,7 @@ X	= Z(1:2);
 x_1 = X(1);
 x_2 = X(2);
 d(1, 1) = x_2;
-d(2, 1) = -0.4 * x_1 - 0.4 * x_2^2;
+d(2, 1) = -0.4 * x_1 - 0.2 * x_2^2;
 P	= Z(3:4);
 d	= d - B*inv_R*B'*P;
 %d(3:4)	= -Q*X - A'*P;
