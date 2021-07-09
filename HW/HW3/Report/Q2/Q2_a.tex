@@ -1,5 +1,38 @@
 \subsection{part a}
-Tolerance is: $10^{-4}$
+Gradient tolerance is: $10^{-4}$
+\subsubsection{System}
+\subsection{System}
+$$
+\ddot{x}(t) = -x(t) - 0.1\dot{x}(t) + u
+$$
+$$
+\begin{bmatrix}
+	\dot{x}_1\\
+	\dot{x}_2
+\end{bmatrix} = \begin{bmatrix}
+	-1 & 0\\
+	0 & -0.1
+\end{bmatrix}\begin{bmatrix}
+	{x}_1\\
+	{x}_2
+\end{bmatrix} +\begin{bmatrix}
+	0\\1
+\end{bmatrix}u
+$$
+$$
+A = \begin{bmatrix}
+	-1 & 0\\
+	0 & -0.1
+\end{bmatrix}, \quad B = \begin{bmatrix}
+	0\\1
+\end{bmatrix}, \qquad Q = \begin{bmatrix}
+1 & 0\\
+0 & 1
+\end{bmatrix}, \qquad R = 1, \qquad H = \begin{bmatrix}
+1 & 0\\
+0 & 1
+\end{bmatrix},
+$$
 \subsubsection{figures}
 \newpage
 \begin{itemize}
