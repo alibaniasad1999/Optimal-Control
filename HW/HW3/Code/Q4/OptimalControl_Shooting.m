@@ -30,7 +30,7 @@ global tf R Q H B x0 inv_R
 % x0   :  initial state vector
 
 B	= [0
-	   1];
+    1];
 x0		= [1 .2]';
 % -------------------      Cost Function         --------------------------
 %  A control problem includes a cost functional that is a function of state
@@ -58,7 +58,7 @@ H		= 10*eye(2);
 Q		= 1*eye(2);
 R		= 1;
 inv_R   = inv(R);
-tf		= .5;
+tf		= 5;
 figure;
 hold on;
 %==========================================================================
@@ -68,49 +68,45 @@ tol			= 1e-1;
 norm_F      = tol + 1;
 max_count	= 100;
 counter		= 0;
-p0	= [-4 0]';
+p0	= [-1.4 0.2]';
 options = odeset('AbsTol', 1e-6, 'RelTol', 1e-6);
 while (norm_F > tol && counter < max_count)
-	counter		= counter + 1;
-	%======================================================================
-	% computing the F
-	%======================================================================
-	z0 = [x0;p0];
-	[time_x, z] = ode45(@diff_equ, [0 tf], [z0], options);
-	xf	= z(end,1:2)';
-	pf	= z(end,3:4)';
-% 	F	= pf - H*xf;
-	F	= xf - [0;0];
-	norm_F	= norm(F,2);
-	%======================================================================
-	% computing the dF/dy      y = p(0)
-	%======================================================================
-	dp	= 0.00001;
-	for i=1:2
-		p0(i)	= p0(i) + dp;
-		z0		= [x0;p0];
-		[time_x, z] = ode45(@diff_equ, [0 tf], [z0], options);
-		xf	= z(end,1:2)';
-		pf	= z(end,3:4)';
-		% 	F2	= pf - H*xf;
-		F2	= xf - [3;-1];
-		phi(:,i)	= (F2-F)/dp;
-		p0(i)	= p0(i) - dp;
+    counter		= counter + 1;
+    %======================================================================
+    % computing the F
+    %======================================================================
+    z0 = [x0;p0];
+    [time_x, z] = ode45(@diff_equ, [0 tf], z0, options);
+    xf	= z(end,1:2)';
+%     pf	= z(end,3:4)';
+    % 	F	= pf - H*xf;
+    F	= (xf - [0;0])*1000;
+    norm_F	= norm(F,2);
+    %======================================================================
+    % computing the dF/dy      y = p(0)
+    %======================================================================
+    dp	= 0.0001;
+    phi = zeros(2);
+    for i=1:2
+        p0(i)	= p0(i) + dp;
+        z0		= [x0;p0];
+        [time_x, z] = ode45(@diff_equ, [0 tf], z0, options);
+        xf	= z(end,1:2)';
+%         pf	= z(end,3:4)';
+        % 	F2	= pf - H*xf;
+        F2	= (xf - [0;0])* 1000;
+        phi(:,i)	= (F2-F)/dp;
+        p0(i)	= p0(i) - dp;
     end
-    u = -inv_R*B'*z(:,3:4)';
-    plot(time_x,[z])
-    
-    hold on
-    legend('x1','x2','p1','p2','u')
-% 	p0		= p0 - inv(phi)*F;
-	p0		= p0 - phi\F;
-    counter
+    %     u = -inv_R*B'*z(:,3:4)';
+    % 	p0		= p0 - inv(phi)*F;
+    p0		= p0 + phi\F;
+    %     counter
 end
-figure;
 u = -inv_R*B'*z(:,3:4)';
 plot(time_x,[z,u'])
 legend('x1','x2','p1','p2','u')
-counter
+% counter
 
 end
 
