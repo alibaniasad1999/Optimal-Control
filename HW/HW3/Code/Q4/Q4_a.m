@@ -366,7 +366,10 @@ while (norm_gradient > tol && counter < max_count)
     fprintf('Search direction * lambda = %1.4e\n', norm(dJdu - dJdu_prev, 2))
     U_prev = U;
     U	   = U + lambda * Search_Dir;
-    if norm(dJdu - dJdu_prev, 2) < 1e-3 && counter > 1
+    if lambda == inf
+        break
+    end
+    if norm(dJdu - dJdu_prev, 2) < 1e-3 && counter > 1 
         break;
     end
 end
@@ -413,7 +416,7 @@ u = interp1(t_u, U_arr, t, 'pchip');
 x_1 = X(1);
 x_2 = X(2);
 d(1, 1) = x_2;
-d(2, 1) = -0.4 * x_1 - 0.4 * x_2^2 + u;
+d(2, 1) = -0.4 * x_1 - 0.2 * x_2^2 + u;
 % u constrain
 [G1_cost, ~] = G1(u);
 [G2_cost, ~] = G2(u);
