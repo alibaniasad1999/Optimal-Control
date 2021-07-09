@@ -363,7 +363,7 @@ while (norm_gradient > tol && counter < max_count)
     norm_gradient	= norm(dJdu, 2);
     fprintf('Iteration No. %3i\tGradient Norm = %1.4e\n', counter, norm_gradient)
 %     fprintf('Elapsed time = %1.4f sec\n', toc)
-    fprintf('Iteration No. %3i\tSearch direction * lambda = %1.4e\n', counter, norm(dJdu - dJdu_prev, 2))
+    fprintf('Search direction * lambda = %1.4e\n', norm(dJdu - dJdu_prev, 2))
     U_prev = U;
     U	   = U + lambda * Search_Dir;
     if norm(dJdu - dJdu_prev, 2) < 1e-3 && counter > 1
