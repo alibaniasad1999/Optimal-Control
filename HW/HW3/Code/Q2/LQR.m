@@ -48,7 +48,7 @@ plot(t,u)
 xlabel('$Time_{\sec}$', 'interpreter', 'latex');
 ylabel('$u$', 'interpreter', 'latex');
 print(101, '../../Figure/Q2/LQR.png','-dpng','-r300')
-print(102, '../../Figure/Q2/conrtol LQR.png','-dpng','-r300')
+print(102, '../../Figure/Q2/control LQR.png','-dpng','-r300')
 
 
 %
