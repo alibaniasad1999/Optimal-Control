@@ -27,6 +27,7 @@ end
 x = X(1:6);
 [A, B] = Quadcopter_system(x, u);
 x(1:3) = wrapToPi(x(1:3));
+t
 try
     [~, k1, ~] = icare(A, B, Q, R);
     d = (A - B * k1) * x;
