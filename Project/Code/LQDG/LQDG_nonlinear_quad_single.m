@@ -95,7 +95,6 @@ d = A * x + B * u;
 end
 %%%%%%%%%%%% Quadcopter system %%%%%%%%%%%%
 function [A, B] = Quadcopter_system(X, omega)
-QuadConstants;
 %X      = zeros(6, 1);
 %u      = ones(4, 1) * 2000^2;
 % omega  = sqrt(u);
