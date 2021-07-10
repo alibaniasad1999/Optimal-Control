@@ -1,9 +1,9 @@
 %%%%%%%%%%%% Quadcopter system %%%%%%%%%%%%
-function [A, B] = Quadcopter_system(X, u)
+function [A, B] = Quadcopter_system(X, omega)
 QuadConstants;
 %X      = zeros(6, 1);
 %u      = ones(4, 1) * 2000^2;
-omega  = sqrt(u);
+% omega  = sqrt(u);
 omega1 = omega(1);
 omega2 = omega(2);
 omega3 = omega(3);
@@ -76,18 +76,32 @@ B31    = 0;
 B32    = 0;
 B33    = 0;
 B34    = 0;
-B41    = A4 * x5 / (2 * omega1);
-B42    = A3 - A4 * x5 / (2 * omega2);
-B43    = A4 * x5 / (2 * omega3);
-B44    = A3 - A4 * x5 / (2 * omega4);
-B51    = B3 + B4 * x4 / (2 * omega1);
-B52    = -B4 * x4 / (2 * omega2);
-B53    = -B3 + B4 * x4 / (2 * omega3);
-B54    = -B4 * x4 / (2 * omega4);
-B61    =  C2;
-B62    = -C2;
-B63    =  C2;
-B64    = -C2;
+%%% about omega^2 %%%
+% B41    = A4 * x5 / (2 * omega1);
+% B42    = A3 - A4 * x5 / (2 * omega2);
+% B43    = A4 * x5 / (2 * omega3);
+% B44    = A3 - A4 * x5 / (2 * omega4);
+% B51    = B3 + B4 * x4 / (2 * omega1);
+% B52    = -B4 * x4 / (2 * omega2);
+% B53    = -B3 + B4 * x4 / (2 * omega3);
+% B54    = -B4 * x4 / (2 * omega4);
+% B61    =  C2;
+% B62    = -C2;
+% B63    =  C2;
+% B64    = -C2;
+%%% about omega %%%
+B41    = A4 * x5;
+B42    = 2 * A3 * omega2 - A4 * x5;
+B43    = A4 * x5;
+B44    = -2 * A3 * omega4 - A4 * x5;
+B51    =  2 * B3 * omega1 + B4 * x4;
+B52    = -B4 * x4;
+B53    = -2 * B3 * omega3 + B4 * x4;
+B54    = -B4 * x4;
+B61    =   2 * C2 * omega1;
+B62    =  -2 * C2 * omega2;
+B63    =   2 * C2 * omega3;
+B64    =  -2 * C2 * omega4;
 %%%%%%%%%%%%%% Ax Bu %%%%%%%%%%%%%%
 A      = [A11 A12 A13 A14 A15 A16 ;
           A21 A22 A23 A24 A25 A26 ;
