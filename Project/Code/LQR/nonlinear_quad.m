@@ -10,7 +10,7 @@ x0	= [0 ;
     0 ;
     0];
 tic
-[t, x] = ode45(@diff_equ, [0, 10], x0);
+[t, x] = ode45(@diff_equ, [0, 7], x0);
 x(:, 1:3) = wrapToPi(x(:, 1:3));
 toc
 plot(t, x)
