@@ -8,12 +8,12 @@ R_inv     = R^-1;
 Gamma     = 2 * eye(4);
 Gamma_inv = Gamma^-1;
 R_n       = (R_inv - Gamma_inv)^-1;
-x0	= [0 ;
+x0	= [1 ;
        1 ;
-       0 ;
-       0 ;
-       0 ;
-       0];
+       1 ;
+       1 ;
+       1 ;
+       1];
 tic
 options = odeset('AbsTol', 1e-5, 'RelTol', 1e-5);
 time = 0;
