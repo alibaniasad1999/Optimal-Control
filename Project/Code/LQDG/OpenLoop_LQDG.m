@@ -1,18 +1,4 @@
 global A B Q n S1 S2 R1_inv
-% QuadConstants;
-% A = [0  0  0 1 0 0  ;
-%      0  0  0 0 1 0  ;
-%      0  0  0 0 0 1  ;
-%      A1 0  0 0 0 0  ;
-%      0  B1 0 0 0 0  ;
-%      0  0  0 0 0 0] ;
-% B = [0   0   0   0  ;
-%      0   0   0   0  ;
-%      0   0   0   0  ;
-%      0   A3  0  -A3 ;
-%      B3  0  -B3  0  ;
-%      C2 -C2  C2  C2];
-%  
 [A, B] = Quadcopter_system(zeros(6, 1), ones(4, 1) * 2000);
 Q      = 100*eye(6);
 R1     = eye(4);
@@ -41,6 +27,9 @@ figure(101)
 plot(t, x)
 legend('$\phi$', '$\theta$', '$\psi$','$p$','$q$','$r$',...
     'interpreter', 'latex') 
+xlabel('$Time_{(\sec)}$', 'interpreter', 'latex');
+ylabel('$System~State$', 'interpreter', 'latex');
+print('../../Figure/LQR/OpenLoopLQDG.png','-dpng','-r500')
 %% Functions %%
 function d = diff_eq_Riccati(~,p)
 global A Q n S1 S2
