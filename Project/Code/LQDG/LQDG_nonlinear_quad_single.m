@@ -54,7 +54,7 @@ B5 = (m2 * g * miu_k * r_y) / (m_tot * h_cg^2 + J_yy);
 C1 = (J_xx - J_yy) / (J_zz);
 C2 = (d) / (J_zz);
 C3 = (m3 * g * miu_k * r_z) / (J_zz);
-global R_n Q u
+global R_n Q u R R_inv
 Q         = 10 * eye(6);
 u = ones(4, 1) * 2000;
 R         = eye(4);
@@ -79,24 +79,22 @@ legend('$\phi$', '$\theta$', '$\psi$','$p$','$q$','$r$',...
     'interpreter', 'latex')
 print('../Figure/LQR/nonlininear.png','-dpng','-r500')
 function d = diff_equ(t, X)
-global u Q R_n
+global u Q R_n R_inv
 x = X(1:6);
 [A, B] = Quadcopter_system(x, u);
 x(1:3) = wrapToPi(x(1:3));
 t
 try
-    [~, k1, ~] = icare(A, B, Q, R_n);
-    d = (A - B * k1) * x;
-    u = -k1 * x;
+    [k, ~, ~] = icare(A, B, Q, R_n);
+    u = -R_inv*B'*k*x;
 catch
-    k1 = zeros(4, 6);
-    d = (A - B * k1) * x;
-    u = -k1 * x;
+    k = zeros(4, 6);
+    u = -R_inv*B'*k*x;
 end
+d = A * x + B * u;
 end
 %%%%%%%%%%%% Quadcopter system %%%%%%%%%%%%
 function [A, B] = Quadcopter_system(X, omega)
-QuadConstants;
 %X      = zeros(6, 1);
 %u      = ones(4, 1) * 2000^2;
 % omega  = sqrt(u);
