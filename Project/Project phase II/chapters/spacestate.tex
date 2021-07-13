@@ -1,0 +1,82 @@
+\section{استخراج فرم فضای حالت}
+به منظور استخراج فرم فضای حالت، متغیرهای حالت استند سه درجه آزادی چهارپره ب صورت زیر تعریف می‌شود:
+\begin{equation}
+	\begin{bmatrix}
+		x_1\\x_2\\x_3\\x_4\\x_5\\x_6\\
+	\end{bmatrix} = 
+\begin{bmatrix}
+	\phi\\ \theta \\ \psi \\ p\\ q\\ r
+\end{bmatrix}
+\end{equation}
+معادلات ارائه شده به فرم زیر برای فضای حالت بازنویسی شدند:
+\begin{equation}
+	\dot x_1 = x_4 + x_5\sin(x_1)\tan(x_2) + x_6\cos(x_1)\tan(x_2)
+\end{equation}
+\begin{equation}
+	\dot x_2 = x_5\cos(x_1)- x_6\sin(x_1)
+\end{equation}
+\begin{equation}
+	\dot x_3 = (x_5\sin(x_1) + x_6\cos(x_1))\sec(x_2)
+\end{equation}
+\begin{equation}
+	\dot x_4 = A_1\cos(x_2)\sin(x_1) + 
+	A_2x_5x_6 + A_3\left(\omega_2^2-\omega_4^2\right)+
+	A_4x_5\left(\omega_1-\omega_2+\omega_3-\omega_4\right)
+\end{equation}
+\begin{equation}
+	\dot x_5 = B_1\sin(x_2) + 
+	B_2x_4x_6 + B_3\left(\omega_1^2-\omega_3^2\right)+
+	B_4x_4\left(\omega_1-\omega_2+\omega_3-\omega_4\right)
+\end{equation}
+\begin{equation}
+	C_1x_4x_5 + 
+	C_2\left(\omega_1-\omega_2+\omega_3-\omega_4\right)
+\end{equation}
+ثابت‌های معادلات بالا  به صورت زیر تعریف می‌شوند:
+\begin{align*}
+	&A_1& =& \dfrac{h_{cg}gm_{tot}}{m_{tot}h_{cg}^2+J_{11}}
+	&A_2& =& \dfrac{2m_{tot}h_{cg}^2+J_{22}-J_{33}}{m_{tot}h_{cg}^2+J_{11}}\quad
+	&A_3& =& \dfrac{d_{cg}}{m_{tot}h_{cg}^2+J_{11}}
+	&A_4& = &\dfrac{J_R}{m_{tot}h_{cg}^2+J_{11}}\\
+	&B_1& =& \dfrac{h_{cg}gm_{tot}}{m_{tot}h_{cg}^2+J_{22}}
+	&B_2& =& \dfrac{-2m_{tot}h_{cg}^2-J_{11}+J_{33}}{m_{tot}h_{cg}^2+J_{22}}\quad
+	&B_3& =& \dfrac{d_{cg}}{m_{tot}h_{cg}^2+J_{22}}
+	&B_4& = &\dfrac{-J_R}{m_{tot}h_{cg}^2+J_{22}}
+\end{align*}
+\begin{align*}
+	C_1 =\dfrac{J_{11}-J_{22}}{J_{33}}\quad
+	C_2 =\dfrac{d}{J_{33}}
+\end{align*}
+به منظور شبیه‌سازی ، پارامترهای استند به صورت جدول 
+\ref{parameterstable}
+درنظر گرفته شده‌است که 
+مقدار پارامترهای استند آزمایشگاه است.
+\begin{table}[H]
+	\caption {پارامترهای شبیه‌سازی استند چهارپره\cite{norian}} 
+	\label{parameterstable}
+	\begin{center}
+		\begin{tabular}{ |c|c| }
+			\hline
+	پارامتر & مقدار پارامتر استند \\
+			\hline
+			$h_{cg}$ & $0.02$\\
+			\hline
+			$m_{tot}$ & $0.638$\\
+			\hline
+			$J_{11}$ & $0.02839$\\
+			\hline
+			$J_{22}$ & $0.03066$\\
+			\hline
+			$J_{33}$ & $0.0439$\\
+			\hline
+			$b$ & $3.13\times10^{-5}$\\
+			\hline
+			$d_{cg}$ & $0.2$\\
+			\hline
+			$d$ & $3.2\times10^{-6}$\\
+			\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+

@@ -1,0 +1,172 @@
+\section{گشتاور ناشی از نیروی تكیه‌گاه}
+همانطور که در شكل \ref{QuadAssum} مشاهده می‌شود، نیروی
+$f_d$
+که در نقطه‌ی 
+$D$
+از طرق اتصال کلی به چهارپره وارد می‌شود، باعث ایجاد گشتاوری حول مرکز ثقل چهارپره می‌شود. به منظور مدل‌سازی گشتاور ناشی از این نیرو حول نقطه
+$C$
+، لازم است ابتدا نیروی
+$f_d$
+استخراج شود. از انجایی که نقطه‌ی
+$D$
+منطبق بر مرکز ثقل چهارپره نیست؛ لذا معادله حرکت انتقالی برای نقطه اتصال
+$D$
+با استفاده از معادله انتقال یافته نیوتن (معادله گروبین) به صورت معادله زیر حاصل می‌شود
+\cite{zipfel2000modeling}
+:
+\begin{equation}\label{oprigintorque}
+	m_{tot} \left[D^Iv_D^I\right]^B = 
+	\left[\Sigma f\right]^B-m_{tot}\left\{
+	\left[\Omega^{BI}\right]^B
+	\left[\Omega^{BI}\right]^B
+	\left[s_{cd}\right]^B+
+	\left[D^I\Omega^{BI}\right]^B
+	\left[s_{cd}\right]^B
+	\right\}
+\end{equation}
+در رابطه
+\ref{oprigintorque}، 
+$m_{tot}$
+مجموع جرم چهارپره و 
+$\left[D^Iv_D^I\right]^B$
+مشتق دورانی سرعت نقطه
+$D$
+نسبت به قاب اینرسی در دستگاه مختصات بدنی است. همچنین
+$\left[\Sigma f\right]^B$
+بیان‌کننده برآیند نیروهای وارده بر نقطه‌ی
+$D$
+و
+$\left[D^I\Omega^{BI}\right]^B$
+ماتریس پادمتقارن بردار سرعت زاوی‌های چهارپره نسبت به قاب اینرسی در دستگاه مختصات بدنی است. همچنین
+$\left[D^I\Omega^{BI}\right]^B$
+نشان‌دهنده مشتق دورانی سرعت زاوی‌های چهارپره نسبت به قاب اینرسی و 
+$\left[s_{cd}\right]^B$
+بردار واصل از نقطه‌ی
+$D$
+به نقطه
+$C$
+با انتقال قاب بدنی به قاب اینرسی، معادله 
+\ref{oprigintorque}
+به صورت زیر حاصل می‌شود:
+\begin{equation}
+\begin{split}\label{newoprigintorque}
+	&m_{tot} \left[D^Bv_D^I\right]^B +
+	m_{tot}\left[\Omega^{BI}\right]^B
+	\left[v_D^{I}\right]^B = \\
+	&\left[\Sigma f\right]^B-m_{tot}\left\{2
+	\left[\Omega^{BI}\right]^B
+	\left[\Omega^{BI}\right]^B
+	\left[s_{cd}\right]^B+
+	\left[D^I\Omega^{BI}\right]^B
+	\left[s_{cd}\right]^B
+	\right\}
+\end{split}
+\end{equation}
+همچنین به دلیل اینكه سرعت محل اتصال چهارپره(نقطه
+$D$)
+صفر است؛ دو عبارت سمت چپ معادله
+\ref{newoprigintorque} 
+هر دو صفر هستند. در نتیجه معادله به صورت زیر ساده می‌شود.
+\begin{equation}\label{newnewoprigintorque}
+	\left[\Sigma f\right]^B - 
+	m_{tot}\left\{2
+	\left[\Omega^{BI}\right]^B
+	\left[\Omega^{BI}\right]^B
+	\left[s_{cd}\right]^B+
+	\left[\dfrac{d\Omega^{BI}}{dt}\right]^B
+	\left[s_{cd}\right]^B
+	\right\}
+\end{equation}
+عبارت 
+$\left[\Sigma f\right]^B$
+بیانگر مجموع نیروهای وارد بر چهارپره است که به صورت معادله زیر بیان می‌شود:
+\begin{equation}\label{sigmaF}
+	\left[\Sigma f\right]^B = \left[f_D\right]^B+\left[f_T\right]^B+
+	\left[f_G\right]^B
+\end{equation}
+در رابطه 
+\ref{sigmaF}، بردار 
+$\left[f_D\right]^B$
+مقدار نیروی اعمال‌ شده توسط اتصال کلی در نقطه‌ی
+$D$
+است. همچنین  بردار 
+$\left[f_T\right]^B$
+بیانگر مدموع نیروی تراست پرهها در دستگاه مختصات بدنی است که از رابطه زیر حاصل می‌شود:
+\begin{equation}\label{trustmatrix}
+	\left[f_G\right]^B = \begin{bmatrix}
+		0\\0\\
+		T_1+T_2+T_3+T_4
+	\end{bmatrix}
+\end{equation}
+مقدار نیروی اعمال‌ شده توسط اتصال کلی در نقطه‌ی
+$D$
+است. همچنین  بردار 
+$\left[f_G\right]^B$
+بیانگر نیروی وزن چهارپره در دستگاه مختصات بدنی است که از رابطه زیر حاصل می‌شود:
+\begin{equation}\label{fg}
+	\left[f_G\right]^B = \left[C\right]^{BL}
+	\left[f_G\right]^L
+\end{equation}
+در رابطه
+\ref{fg}،
+ماتریس انتقال از دستگاه مختصات تراز محلی
+$(L)$
+ به دستگاه مختصات بدنی است. با جایگذاری روابط
+\ref{newnewoprigintorque}،
+\ref{sigmaF}،
+\ref{trustmatrix}و
+\ref{fg}
+عبارت زیر برای نیروی تكیه‌گاهی حاصل می‌شود.
+\begin{equation}\label{originnew}
+	\left[f_D\right]^B = 
+	-\left[f_G\right]^B-
+	\left[f_T\right]^B+
+	m_{tot}\left\{2
+	\left[\Omega^{BI}\right]^B
+	\left[\Omega^{BI}\right]^B
+	\left[s_{cd}\right]^B+
+	\left[\dfrac{d\Omega^{BI}}{dt}\right]^B
+	\left[s_{cd}\right]^B
+	\right\}
+\end{equation}
+سپس از حاصل‌ضرب نیروی تكیه‌گاه مدل‌ شده در معادله
+\ref{originnew}
+ در بردار محل اثر آن، گشتاور ایجاد شده
+توسط نیروی اتصال کلی به صورت معادله زیر حاصل می‌شود:
+\begin{equation}\label{universaltor}
+	\left[m_d\right]^B = \left[s_{DC}\right]^B\left(
+	-\left[f_G\right]^B
+	-\left[f_T\right]^B
+	m_{tot}\left\{2
+	\left[\Omega^{BI}\right]^B
+	\left[\Omega^{BI}\right]^B
+	\left[s_{cd}\right]^B
+	\right\}
+	\right)
+\end{equation}
+در رابطه
+\ref{universaltor}
+بردار 
+$\left[s_{DC}\right]^B$
+بیانگر فاصله‌ی نقطه‌ی 
+$D$
+از مرکز ثقل چهارپره 
+$(h_{cg})$
+است که به صورت زیر بیان می‌شود:
+\begin{equation}
+	\left[s_{DC}\right]^B = \begin{bmatrix}
+		0\\0\\h_{cg}
+	\end{bmatrix}
+\end{equation}
+ درنتیجه با جمع گشتاورهای ناشی از نیروهای آیرودینامیک پره‌ها از معادله 
+ \ref{finaltorque}
+ و گشتاور ناشی 
+از نیروی تكیه‌گاه از معادله 
+\ref{universaltor}، گشتاور خارجی کلی اعمالی به چهارپره به صورت معادله زیر حاصل 
+می‌شود:
+\begin{equation}\label{finalm}
+	\left[m_B\right]^B = 
+	\left[m_A\right]^B+
+	\left[m_D\right]^B
+\end{equation}
+

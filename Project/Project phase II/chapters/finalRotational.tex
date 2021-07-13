@@ -1,0 +1,107 @@
+\section{ استخراج معادله نهایی دينامیک دورانی}
+در این بخش، گشتاورهای خارجی چهارپره و تكانه زاوی‌های کلی پره‌ها در معادله دیفرانسیل اویلر 
+جایگذاری شده و شكل نهایی معادله دیفرانسیل استند چهارپره حاصل می‌شود. با جایگذاری مقدار 
+گشتاورهای اعمالی به چهارپره از معادله
+\ref{finalm}
+در معادله 
+\ref{torque}
+رابطه موردنیاز برای مدل‌سازی
+دینامیک دورانی استند بهصورت معادله زیر حاصل می‌شود:
+\begin{equation}\label{demifinalrotation}
+	\begin{split}
+		\left[\dfrac{d\omega^{BI}}{dt}\right]^B = 
+		\left(\left[J\right]^B\right)^{-1}\Bigg(
+		-&\left[\Omega^{BI}\right]\times\left(
+		\left[J\right]^B\left[\omega^{BI}\right]^B
+		+\left[I_R\right]^B\right) + \\
+		&\left[m_A\right]^B+\left[s_{DC}\right]^B
+		\bigg(-\left[G\right]^B
+		-\left[T\right]^B+ \\
+		&m_{tot}\Bigl\{2
+		\left[\Omega^{BI}\right]^B
+		\left[\Omega^{BI}\right]^B
+		\left[s_{cd}\right]^B+
+		\left[\dfrac{d\Omega^{BI}}{dt}\right]^B
+		\left[s_{cd}\right]^B
+		\Bigr\}\bigg)\Bigg)
+	\end{split}
+\end{equation}
+در رابطه
+\ref{demifinalrotation}،
+عبارت
+$\left[\dfrac{d\Omega^{BI}}{dt}\right]^B$
+بیانگر ماتریس پادمتقارن بردار مشتق سرعت‌ زاویه‌ای بدنی
+$\left[\dfrac{d\omega^{BI}}{dt}\right]^B$
+است. جمله آخر در معادله فوق را می‌توان به صورت زیر بازنویسی کرد:
+\begin{equation}\label{sc}
+	m_{tot}\left[s_{DC}\right]^R
+	\left[\dfrac{d\Omega^{BI}}{dt}\right]^B\left[s_{CD}\right]^R = 
+	m_{tot}\left[s_{DC}\right]^R\left[s_{DC}\right]^R
+	\left[\dot{\omega}^{BI}\right]^B
+\end{equation}
+با جایگذاری معادله
+\ref{sc}
+در معادله
+\ref{demifinalrotation}
+و ساده سازی بردار سرعت زاویه‌ای پرنده به صورت زیر حاصل می‌شود:
+\begin{equation}\label{finaltorquefinal}
+	\begin{split}
+		\left[\dfrac{d\omega^{BI}}{dt}\right]^B &= A^{-1}b\\
+		A &= I - m_{tot}\left(\left[J\right]^B\right)^{-1}
+		\left[s_{DC}\right]^B
+		\left[s_{DC}\right]^B\\
+		b = \left(\left[J\right]^B\right)^{-1}\Bigg(
+		-&\left[\Omega^{BI}\right]\times\left(
+		\left[J\right]^B\left[\omega^{BI}\right]^B
+		+\left[I_R\right]^B\right) + \\
+		&\left[m_A\right]^B+\left[s_{DC}\right]^B
+		\bigg(-\left[G\right]^B
+		-\left[T\right]^B+ \\
+		&m_{tot}\Bigl\{2
+		\left[\Omega^{BI}\right]^B
+		\left[\Omega^{BI}\right]^B
+		\left[s_{cd}\right]^B+
+		\left[\dfrac{d\Omega^{BI}}{dt}\right]^B
+		\left[s_{cd}\right]^B
+		\Bigr\}\bigg)\Bigg)		
+	\end{split}
+\end{equation}
+با جایگذاری معادلات بدست آمده در معادله
+\ref{finaltorquefinal}
+مؤلفه‌های بردار مشتق سرعت زاویه‌ای چهارپره به صورت زیر حاصل می‌شود:
+\begin{align}
+	\begin{split}
+		\dot{p} =& \dfrac{h_{cg}gm_{dot}\cos(\theta)\sin(\phi)
+			+\left(J_{22} - J_{33} +2m_{tot}h_{ch}^2\right)qr
+		}
+		{m_{tot}h_{cg}^2 + J_{11}} \\
+		&+\dfrac{bd_{cg}\left(\omega_2^2-\omega_4^2\right) + qJ_R(\omega_1-\omega_2+\omega_3-\omega_4)}
+		{m_{tot}h_{cg}^2 + J_{11}}
+	\end{split}\\[1em]
+		\begin{split}
+		\dot{q} =& \dfrac{h_{cg}gm_{dot}\sin(\theta)
+			+\left(J_{33} - J_{11} +2m_{tot}h_{ch}^2\right)pr
+		}
+		{m_{tot}h_{cg}^2 + J_{11}} \\
+		&+\dfrac{bd_{cg}\left(\omega_1^2-\omega_3^2\right) - pJ_R(\omega_1-\omega_2+\omega_3-\omega_4)}
+		{m_{tot}h_{cg}^2 + J_{11}}
+	\end{split}\\[1em]
+	\begin{split}
+		\dot{r} =& \dfrac{pq(J_{11}-J_{22})
+		+ d(\omega_1^2-\omega_2^2+\omega_3^2-\omega_4^2)
+	}{J_{33}}
+	\end{split}
+\end{align}
+به منظور انتشار وضعیت دورانی چهارپره، از روش انتشار اویلر استفاده می‌شود. در این‌صورت
+\cite{zipfel2000modeling}
+:
+$$\dot\phi = p + q\sin(\phi)\cos(\theta) +‌
+r\cos(\phi)\tan(\theta)
+$$
+$$
+\dot \theta = q\cos(\phi) - r\sin(\phi)
+$$
+$$
+\dot\psi = (q\sin(phi)) + r\cos(\phi))\sec(\theta) 
+$$
+
