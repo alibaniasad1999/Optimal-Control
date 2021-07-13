@@ -1,0 +1,125 @@
+\section{خطی‌سازی}
+در این قسمت با توجه به فضای حالت بدست آمده، چهارپره حول نقطه کار خطی‌سازی می‌شود.
+\begin{equation*}
+	a = \begin{bmatrix}
+		x_4 + x_5\sin(x_1)\tan(x_2) + x_6\cos(x_1)\tan(x_2)\\
+		x_5\cos(x_1)- x_6\sin(x_1)\\
+		(x_5\sin(x_1) + x_6\cos(x_1))\sec(x_2)\\
+		A_1\cos(x_2)\sin(x_1) + 
+		A_2x_5x_6 + A_3\left(\omega_2^2-\omega_4^2\right)+
+		A_4x_5\left(\omega_1-\omega_2+\omega_3-\omega_4\right)\\
+		B_1\sin(x_2) + 
+		B_2x_4x_6 + B_3\left(\omega_1^2-\omega_3^2\right)+
+		B_4x_4\left(\omega_1-\omega_2+\omega_3-\omega_4\right)\\
+		C_1x_4x_5 + 
+		C_2\left(\omega_1-\omega_2+\omega_3-\omega_4\right)
+	\end{bmatrix}
+\end{equation*} 
+\begin{equation}
+	\vec{x} = \begin{bmatrix}
+		\phi& \theta & \psi & p& q& r
+	\end{bmatrix}^T
+\end{equation}
+\begin{equation}
+	\vec{u} = \begin{bmatrix}
+		\omega_1&\omega_2&\omega_3&\omega_4
+	\end{bmatrix}^T
+\end{equation}
+برای خطی سازی از بسط تیلور استفاده شده‌است.
+\begin{equation}
+	\delta \dot x = \dfrac{\partial a}{\partial x}\delta x + \dfrac{\partial a}{\partial u}\delta u 
+\end{equation}
+\begin{equation}
+	\dot{\vec{x}} =
+	\begin{bmatrix}
+		\delta \dot x_1&
+		\delta \dot x_2&
+		\delta \dot x_3&
+		\delta \dot x_4&
+		\delta \dot x_5&
+		\delta \dot x_6&
+	\end{bmatrix}^T
+\end{equation}
+
+\begin{equation}
+	\dfrac{\partial \vec a}{\partial \vec x} = A = 
+	\begin{bmatrix}
+\dfrac{\partial  a_1}{\partial  x_1}&
+\dfrac{\partial  a_1}{\partial  x_2}&
+\dfrac{\partial  a_1}{\partial  x_3}&
+\dfrac{\partial  a_1}{\partial  x_4}&
+\dfrac{\partial  a_1}{\partial  x_5}&
+\dfrac{\partial  a_1}{\partial  x_6}&
+\\[1em]
+\dfrac{\partial  a_2}{\partial  x_1}&
+\dfrac{\partial  a_2}{\partial  x_2}&
+\dfrac{\partial  a_2}{\partial  x_3}&
+\dfrac{\partial  a_2}{\partial  x_4}&
+\dfrac{\partial  a_2}{\partial  x_5}&
+\dfrac{\partial  a_2}{\partial  x_6}&
+\\[1em]
+\dfrac{\partial  a_3}{\partial  x_1}&
+\dfrac{\partial  a_3}{\partial  x_2}&
+\dfrac{\partial  a_3}{\partial  x_3}&
+\dfrac{\partial  a_3}{\partial  x_4}&
+\dfrac{\partial  a_3}{\partial  x_5}&
+\dfrac{\partial  a_3}{\partial  x_6}&
+\\[1em]
+\dfrac{\partial  a_4}{\partial  x_1}&
+\dfrac{\partial  a_4}{\partial  x_2}&
+\dfrac{\partial  a_4}{\partial  x_3}&
+\dfrac{\partial  a_4}{\partial  x_4}&
+\dfrac{\partial  a_4}{\partial  x_5}&
+\dfrac{\partial  a_4}{\partial  x_6}&
+\\[1em]
+\dfrac{\partial  a_5}{\partial  x_1}&
+\dfrac{\partial  a_5}{\partial  x_2}&
+\dfrac{\partial  a_5}{\partial  x_3}&
+\dfrac{\partial  a_5}{\partial  x_4}&
+\dfrac{\partial  a_5}{\partial  x_5}&
+\dfrac{\partial  a_5}{\partial  x_6}&
+\\[1em]
+\dfrac{\partial  a_6}{\partial  x_1}&
+\dfrac{\partial  a_6}{\partial  x_2}&
+\dfrac{\partial  a_6}{\partial  x_3}&
+\dfrac{\partial  a_6}{\partial  x_4}&
+\dfrac{\partial  a_6}{\partial  x_5}&
+\dfrac{\partial  a_6}{\partial  x_6}&
+	\end{bmatrix}
+\end{equation}
+\begin{equation}
+	\dfrac{\partial \vec a}{\partial \vec u} = B = 
+	\begin{bmatrix}
+		\dfrac{\partial  a_1}{\partial  u_1}&
+		\dfrac{\partial  a_1}{\partial  u_2}&
+		\dfrac{\partial  a_1}{\partial  u_3}&
+		\dfrac{\partial  a_1}{\partial  u_4}&
+		\\[1em]
+		\dfrac{\partial  a_2}{\partial  u_1}&
+		\dfrac{\partial  a_2}{\partial  u_2}&
+		\dfrac{\partial  a_2}{\partial  u_3}&
+		\dfrac{\partial  a_2}{\partial  u_4}&
+		\\[1em]
+		\dfrac{\partial  a_3}{\partial  u_1}&
+		\dfrac{\partial  a_3}{\partial  u_2}&
+		\dfrac{\partial  a_3}{\partial  u_3}&
+		\dfrac{\partial  a_3}{\partial  u_4}&
+		\\[1em]
+		\dfrac{\partial  a_4}{\partial  u_1}&
+		\dfrac{\partial  a_4}{\partial  u_2}&
+		\dfrac{\partial  a_4}{\partial  u_3}&
+		\dfrac{\partial  a_4}{\partial  u_4}&
+		\\[1em]
+		\dfrac{\partial  a_5}{\partial  u_1}&
+		\dfrac{\partial  a_5}{\partial  u_2}&
+		\dfrac{\partial  a_5}{\partial  u_3}&
+		\dfrac{\partial  a_5}{\partial  u_4}&
+		\\[1em]
+		\dfrac{\partial  a_6}{\partial  u_1}&
+		\dfrac{\partial  a_6}{\partial  u_2}&
+		\dfrac{\partial  a_6}{\partial  u_3}&
+		\dfrac{\partial  a_6}{\partial  u_4}&
+		\\[1em]
+	\end{bmatrix}
+\end{equation}
+به علت حجم بالای معادلات رابطه خطی‌سازده شده چهارپرده در گزایش آورده نشده‌است اما در شبیه سازی به طور کامل لحاظ شده‌است.
