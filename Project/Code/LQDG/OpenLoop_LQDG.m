@@ -32,7 +32,7 @@ for i = 1:7
     xlabel('$Time_{(\sec)}$', 'interpreter', 'latex');
     ylabel('$System~State$', 'interpreter', 'latex');
     figure(102)
-    plot(t_u, u_saver);
+    plot(t_u, 2e6*u_saver);
     legend('$\omega_1$', '$\omega_2$', '$\omega_3$','$\omega_4$',...
         'interpreter', 'latex')
     xlabel('$Time_{(\sec)}$', 'interpreter', 'latex');
@@ -42,8 +42,8 @@ for i = 1:7
             print(101, '../../Figure/LQDG/OpenLoopLQDGroll.png','-dpng','-r500')
             print(102, '../../Figure/LQDG/OpenLoopLQDGrollcontrol.png','-dpng','-r500')
         case 2
-            print(101, '../../Figure/LQDG/OpenLoopLQDGpithc.png','-dpng','-r500')
-            print(102, '../../Figure/LQDG/OpenLoopLQDGpithccontrol.png','-dpng','-r500')
+            print(101, '../../Figure/LQDG/OpenLoopLQDGpitch.png','-dpng','-r500')
+            print(102, '../../Figure/LQDG/OpenLoopLQDGpitchcontrol.png','-dpng','-r500')
         case 3
             print(101, '../../Figure/LQDG/OpenLoopLQDGpsi.png','-dpng','-r500')
             print(102, '../../Figure/LQDG/OpenLoopLQDGpsicontrol.png','-dpng','-r500')

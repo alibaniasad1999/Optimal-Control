@@ -33,8 +33,12 @@ d	= reshape(Kdot,n^2,1);
 end
 
 function d = diff_eq_states(t,x)
-global A B R_inv n
+global A B R_inv n u
 global t_K K_arr
+if t == 0
+    u = zeros(4, 1);
+end
+[A, B] = Quadcopter_system(x, u);
 K_t	= interp1(t_K, K_arr, t);
 K	= reshape(K_t,n,n);
 u	= -R_inv*B'*K*x;

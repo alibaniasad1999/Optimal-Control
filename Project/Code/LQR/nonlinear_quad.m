@@ -9,10 +9,8 @@ x0	= [0 ;
     0 ;
     0 ;
     0];
-tic
-[t, x] = ode45(@diff_equ, [0, 7], x0);
-x(:, 1:3) = wrapToPi(x(:, 1:3));
-toc
+
+[t, x] = ode45(@diff_equ, [0, 10], x0);
 plot(t, x)
 xlabel('$Time_{\sec}$', 'interpreter', 'latex');
 ylabel('$\vec{X}$', 'interpreter', 'latex');

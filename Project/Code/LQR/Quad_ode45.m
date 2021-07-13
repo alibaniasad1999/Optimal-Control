@@ -1,18 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%% Quadcopter ODE45 %%%%%%%%%%%%%%%%%%%%%%
 QuadConstants;
 global A B k R
-A = [0  0  0 1 0 0  ;
-     0  0  0 0 1 0  ;
-     0  0  0 0 0 1  ;
-     A1 0  0 0 0 0  ;
-     0  B1 0 0 0 0  ;
-     0  0  0 0 0 0] ;
-B = [0   0   0   0  ;
-     0   0   0   0  ;
-     0   0   0   0  ;
-     0   A3  0  -A3 ;
-     B3  0  -B3  0  ;
-     C2 -C2  C2  C2];
+[A, B] = Quadcopter_system(zeros(6, 1), ones(4, 1) * 2000);
 Q = 10 * eye(6);
 R = eye(4);
 [k, ~, ~] = icare(A, B, Q, R);
@@ -20,7 +9,10 @@ R = eye(4);
 x(:, 1:3) = wrapToPi(x(:, 1:3));
 plot(t, x)
 legend('$\phi$', '$\theta$', '$\psi$','$p$','$q$','$r$',...
-    'interpreter', 'latex') 
+    'interpreter', 'latex')
+xlabel('$Time_{(\sec)}$', 'interpreter', 'latex');
+ylabel('$System~State$', 'interpreter', 'latex');
+print('../../Figure/LQR/LQRall.png','-dpng','-r500')
 function d = diff_equ(~, X)
 x = X(1:6);
 x(1:3) = wrapToPi(x(1:3));
